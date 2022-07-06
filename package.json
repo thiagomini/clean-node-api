@@ -7,8 +7,8 @@
     "node": ">=16.14.2"
   },
   "scripts": {
-    "test": "jest",
-    "test:staged": "jest",
+    "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests",
     "prepare": "husky install"
   },
   "author": "Thiago R. V. Martins",
