@@ -1,7 +1,7 @@
 import { MissingParamException } from '../errors'
-import { HttpRequest, HttpResponse, badRequest } from '../protocols'
+import { HttpRequest, HttpResponse, badRequest, Controller } from '../protocols'
 
-export class SignUpController {
+export class SignUpController implements Controller {
   private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
 
   handle (httpRequest: HttpRequest): HttpResponse | undefined {
