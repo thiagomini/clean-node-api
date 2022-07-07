@@ -1,4 +1,5 @@
 import { MissingParamException } from '../errors'
+import { HttpStatusCodes } from '../protocols'
 import { SignUpController } from './signup.controller'
 
 describe('SignupController', () => {
@@ -13,7 +14,7 @@ describe('SignupController', () => {
       }
     }
     const httpResponse = sut.handle(httpRequest)
-    expect(httpResponse?.statusCode).toBe(400)
+    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
     expect(httpResponse?.body).toEqual(new MissingParamException('name'))
   })
 
@@ -28,7 +29,7 @@ describe('SignupController', () => {
       }
     }
     const httpResponse = sut.handle(httpRequest)
-    expect(httpResponse?.statusCode).toBe(400)
+    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
     expect(httpResponse?.body).toEqual(new MissingParamException('email'))
   })
 })
