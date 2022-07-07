@@ -2,13 +2,13 @@ import { MissingParamException } from '../errors'
 import { HttpRequest, HttpResponse, badRequest } from '../protocols'
 
 export class SignUpController {
-  handle (httpRequest: HttpRequest): HttpResponse | undefined {
-    if (!httpRequest.body.name) {
-      return badRequest(new MissingParamException('name'))
-    }
+  private readonly requiredFields = ['email', 'name']
 
-    if (!httpRequest.body.email) {
-      return badRequest(new MissingParamException('email'))
+  handle (httpRequest: HttpRequest): HttpResponse | undefined {
+    for (const requiredField of this.requiredFields) {
+      if (!httpRequest.body[requiredField]) {
+        return badRequest(new MissingParamException(requiredField))
+      }
     }
   }
 }
