@@ -1,7 +1,9 @@
-import { MissingParamException } from '../errors'
-import { HttpRequest, HttpResponse, badRequest, Controller } from '../protocols'
+import { InvalidParamException, MissingParamException } from '../errors'
+import { badRequest, Controller, EmailValidator, HttpRequest, HttpResponse } from '../protocols'
 
 export class SignUpController implements Controller {
+  constructor (private readonly emailValidator: EmailValidator) {}
+
   private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
 
   handle (httpRequest: HttpRequest): HttpResponse | undefined {
@@ -9,6 +11,10 @@ export class SignUpController implements Controller {
       if (!httpRequest.body[requiredField]) {
         return badRequest(new MissingParamException(requiredField))
       }
+    }
+
+    if (!this.emailValidator.isValid(httpRequest.body.email)) {
+      return badRequest(new InvalidParamException('email'))
     }
   }
 }
