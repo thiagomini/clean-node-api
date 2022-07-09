@@ -1,9 +1,7 @@
-import { AccountModel } from '../../domain/models'
-import { AddAccountUseCase, AddAccountInput } from '../../domain/use-cases'
-import { InvalidParamException, MissingParamException, ServerError } from '../errors'
-import { EmailValidator, HttpRequest, HttpStatusCodes } from '../protocols'
-import { pick } from '../utils'
+import { InvalidParamException, MissingParamException, ServerError } from '../../errors'
+import { pick } from '../../utils'
 import { SignUpController } from './signup.controller'
+import { AccountModel, AddAccountInput, AddAccountUseCase, EmailValidator, HttpRequest, HttpStatusCodes } from './signup.protocols'
 
 describe('SignupController', () => {
   it('should return BAD_REQUEST if no name is provided', () => {
