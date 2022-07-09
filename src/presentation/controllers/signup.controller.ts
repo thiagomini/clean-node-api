@@ -1,8 +1,12 @@
+import { AddAccountUseCase } from '../../domain/use-cases'
 import { InvalidParamException, MissingParamException } from '../errors'
 import { badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, internalServerError } from '../protocols'
 
 export class SignUpController implements Controller {
-  constructor (private readonly emailValidator: EmailValidator) {}
+  constructor (
+    private readonly emailValidator: EmailValidator,
+    private readonly addAccountUseCase: AddAccountUseCase
+  ) {}
 
   private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
 
@@ -22,7 +26,7 @@ export class SignUpController implements Controller {
       }
     }
 
-    const { password, passwordConfirmation, email } = body
+    const { name, password, passwordConfirmation, email } = body
 
     if (password !== passwordConfirmation) {
       return badRequest(new InvalidParamException('passwordConfirmation'))
@@ -31,5 +35,11 @@ export class SignUpController implements Controller {
     if (!this.emailValidator.isValid(email)) {
       return badRequest(new InvalidParamException('email'))
     }
+
+    this.addAccountUseCase.add({
+      name,
+      email,
+      password
+    })
   }
 }

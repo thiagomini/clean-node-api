@@ -1,5 +1,8 @@
+import { AccountModel } from '../../domain/models'
+import { AddAccountUseCase, AddAccountInput } from '../../domain/use-cases'
 import { InvalidParamException, MissingParamException, ServerError } from '../errors'
 import { EmailValidator, HttpRequest, HttpStatusCodes } from '../protocols'
+import { pick } from '../utils'
 import { SignUpController } from './signup.controller'
 
 describe('SignupController', () => {
@@ -127,11 +130,37 @@ describe('SignupController', () => {
     expect(httpResponse?.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
     expect(httpResponse?.body).toEqual(new ServerError(errorThrown))
   })
+
+  it('should call AddAccountUseCase with correct values', () => {
+    // Arrange
+    const { sut, addAccountUseCase } = createSut()
+    const addSpy = jest.spyOn(addAccountUseCase, 'add')
+
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    sut.handle(httpRequest)
+
+    // Assert
+    expect(addSpy).toHaveBeenCalledWith(pick(httpRequest.body, 'name', 'email', 'password'))
+  })
 })
 
 interface SutFactoryResponse {
   sut: SignUpController
   emailValidator: EmailValidator
+  addAccountUseCase: AddAccountUseCase
+}
+
+const createSut = (): SutFactoryResponse => {
+  const emailValidator = createEmailValidator()
+  const addAccountUseCase = createAddAccountUseCase()
+  const sut = new SignUpController(emailValidator, addAccountUseCase)
+  return {
+    sut,
+    emailValidator,
+    addAccountUseCase
+  }
 }
 
 const createEmailValidator = (): EmailValidator => {
@@ -143,13 +172,20 @@ const createEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
-const createSut = (): SutFactoryResponse => {
-  const emailValidator = createEmailValidator()
-  const sut = new SignUpController(emailValidator)
-  return {
-    sut,
-    emailValidator
+const createAddAccountUseCase = (): AddAccountUseCase => {
+  class AddAccountStub implements AddAccountUseCase {
+    add (account: AddAccountInput): AccountModel {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      }
+
+      return fakeAccount
+    }
   }
+  return new AddAccountStub()
 }
 
 type RequestBody = Partial<{
