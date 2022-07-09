@@ -59,6 +59,20 @@ describe('SignupController', () => {
     expect(httpResponse?.body).toEqual(new MissingParamException('passwordConfirmation'))
   })
 
+  it('should return BAD_REQUEST if passwordConfirmation is different than the password', () => {
+    // Arrange
+    const { sut } = createSut()
+
+    const httpRequest = createRequestWithMismatchingPassword()
+
+    // Act
+    const httpResponse = sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
+    expect(httpResponse?.body).toEqual(new InvalidParamException('passwordConfirmation'))
+  })
+
   it('should return BAD_REQUEST if given email is invalid', () => {
     // Arrange
     const { sut, emailValidator } = createSut()
@@ -81,7 +95,7 @@ describe('SignupController', () => {
     expect(httpResponse?.body).toEqual(new InvalidParamException('email'))
   })
 
-  it('should call EmaiLValidator with correct email', () => {
+  it('should call EmailValidator with correct email', () => {
     // Arrange
     const { sut, emailValidator } = createSut()
     const emailValidatorSpy = jest.spyOn(emailValidator, 'isValid')
@@ -169,4 +183,11 @@ function createDefaultRequest (): HttpRequest {
   return {
     body: createDefaultRequestBody()
   }
+}
+
+function createRequestWithMismatchingPassword (): HttpRequest {
+  const defaultRequest = createDefaultRequest()
+  defaultRequest.body.passwordConfirmation = 'different'
+
+  return defaultRequest
 }
