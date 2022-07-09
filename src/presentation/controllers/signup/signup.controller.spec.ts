@@ -161,6 +161,19 @@ describe('SignupController', () => {
     expect(httpResponse?.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
     expect(httpResponse?.body).toEqual(new ServerError(errorThrown))
   })
+
+  it('should return OK (200) if valid data is provided', () => {
+    // Arrange
+    const { sut } = createSut()
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    const response = sut.handle(httpRequest)
+
+    // Assert
+    expect(response?.statusCode).toBe(HttpStatusCodes.OK)
+    expect(response?.body).toEqual(CREATED_ACCOUNT_RESPONSE)
+  })
 })
 
 interface SutFactoryResponse {
@@ -192,17 +205,17 @@ const createEmailValidator = (): EmailValidator => {
 const createAddAccountUseCase = (): AddAccountUseCase => {
   class AddAccountStub implements AddAccountUseCase {
     add (account: AddAccountInput): AccountModel {
-      const fakeAccount = {
-        id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      }
-
-      return fakeAccount
+      return CREATED_ACCOUNT_RESPONSE
     }
   }
   return new AddAccountStub()
+}
+
+const CREATED_ACCOUNT_RESPONSE: AccountModel = {
+  id: 'valid_id',
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'valid_password'
 }
 
 type RequestBody = Partial<{

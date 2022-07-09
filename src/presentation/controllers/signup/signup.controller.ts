@@ -1,5 +1,5 @@
 import { InvalidParamException, MissingParamException } from '../../errors'
-import { AddAccountUseCase, badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, internalServerError } from './signup.protocols'
+import { AddAccountUseCase, badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, HttpStatusCodes, internalServerError } from './signup.protocols'
 
 export class SignUpController implements Controller {
   constructor (
@@ -35,10 +35,15 @@ export class SignUpController implements Controller {
       return badRequest(new InvalidParamException('email'))
     }
 
-    this.addAccountUseCase.add({
+    const account = this.addAccountUseCase.add({
       name,
       email,
       password
     })
+
+    return {
+      statusCode: HttpStatusCodes.OK,
+      body: account
+    }
   }
 }
