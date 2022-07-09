@@ -9,15 +9,15 @@ export class SignUpController implements Controller {
 
   private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
 
-  handle (httpRequest: HttpRequest): HttpResponse | undefined {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse | undefined> {
     try {
-      return this.signUp(httpRequest)
+      return await this.signUp(httpRequest)
     } catch (error) {
       return internalServerError(error as Error)
     }
   }
 
-  private signUp (httpRequest: HttpRequest): HttpResponse | undefined {
+  private async signUp (httpRequest: HttpRequest): Promise<HttpResponse | undefined> {
     const { body } = httpRequest
     for (const requiredField of this.requiredFields) {
       if (!body[requiredField]) {
@@ -35,7 +35,7 @@ export class SignUpController implements Controller {
       return badRequest(new InvalidParamException('email'))
     }
 
-    const account = this.addAccountUseCase.add({
+    const account = await this.addAccountUseCase.add({
       name,
       email,
       password
