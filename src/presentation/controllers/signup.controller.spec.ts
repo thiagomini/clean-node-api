@@ -86,20 +86,13 @@ describe('SignupController', () => {
     const { sut, emailValidator } = createSut()
     const emailValidatorSpy = jest.spyOn(emailValidator, 'isValid')
 
-    const httpRequest = {
-      body: {
-        name: 'any_namy',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
+    const httpRequest = createDefaultRequest()
 
     // Act
     sut.handle(httpRequest)
 
     // Assert
-    expect(emailValidatorSpy).toHaveBeenCalledWith('any_email@mail.com')
+    expect(emailValidatorSpy).toHaveBeenCalledWith(httpRequest.body.email)
   })
 })
 
@@ -129,18 +122,28 @@ type RequestBody = Partial<{
   passwordConfirmation: string
 }>
 
-function createRequestWithout (parameter: keyof RequestBody): HttpRequest {
-  const defaultRequest: RequestBody = {
+function createDefaultRequestBody (): RequestBody {
+  return {
     name: 'any_namy',
     email: 'any_email@mail.com',
     password: 'any_password',
     passwordConfirmation: 'any_password'
   }
+}
+
+function createRequestWithout (parameter: keyof RequestBody): HttpRequest {
+  const defaultRequest: RequestBody = createDefaultRequestBody()
 
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete defaultRequest[parameter]
 
   return {
     body: defaultRequest
+  }
+}
+
+function createDefaultRequest (): HttpRequest {
+  return {
+    body: createDefaultRequestBody()
   }
 }
