@@ -2,9 +2,13 @@ import { MissingParamException } from '../errors'
 import { HttpStatusCodes } from '../protocols'
 import { SignUpController } from './signup.controller'
 
+const createSut = (): SignUpController => {
+  return new SignUpController()
+}
+
 describe('SignupController', () => {
   it('should return BAD_REQUEST if no name is provided', () => {
-    const sut = new SignUpController()
+    const sut = createSut()
 
     const httpRequest = {
       body: {
@@ -19,7 +23,7 @@ describe('SignupController', () => {
   })
 
   it('should return BAD_REQUEST if no email is provided', () => {
-    const sut = new SignUpController()
+    const sut = createSut()
 
     const httpRequest = {
       body: {
@@ -34,7 +38,7 @@ describe('SignupController', () => {
   })
 
   it('should return BAD_REQUEST if no password is provided', () => {
-    const sut = new SignUpController()
+    const sut = createSut()
 
     const httpRequest = {
       body: {
@@ -49,7 +53,7 @@ describe('SignupController', () => {
   })
 
   it('should return BAD_REQUEST if no passwordConfirmation is provided', () => {
-    const sut = new SignUpController()
+    const sut = createSut()
 
     const httpRequest = {
       body: {
