@@ -120,13 +120,17 @@ interface SutFactoryResponse {
   emailValidator: EmailValidator
 }
 
-const createSut = (): SutFactoryResponse => {
+const createEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
       return true
     }
   }
-  const emailValidator = new EmailValidatorStub()
+  return new EmailValidatorStub()
+}
+
+const createSut = (): SutFactoryResponse => {
+  const emailValidator = createEmailValidator()
   const sut = new SignUpController(emailValidator)
   return {
     sut,
