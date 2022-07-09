@@ -8,21 +8,28 @@ export class SignUpController implements Controller {
 
   handle (httpRequest: HttpRequest): HttpResponse | undefined {
     try {
-      for (const requiredField of this.requiredFields) {
-        if (!httpRequest.body[requiredField]) {
-          return badRequest(new MissingParamException(requiredField))
-        }
-      }
-
-      if (httpRequest.body.password !== httpRequest.body.passwordConfirmation) {
-        return badRequest(new InvalidParamException('passwordConfirmation'))
-      }
-
-      if (!this.emailValidator.isValid(httpRequest.body.email)) {
-        return badRequest(new InvalidParamException('email'))
-      }
+      return this.signUp(httpRequest)
     } catch (error) {
       return internalServerError(error as Error)
+    }
+  }
+
+  private signUp (httpRequest: HttpRequest): HttpResponse | undefined {
+    const { body } = httpRequest
+    for (const requiredField of this.requiredFields) {
+      if (!body[requiredField]) {
+        return badRequest(new MissingParamException(requiredField))
+      }
+    }
+
+    const { password, passwordConfirmation, email } = body
+
+    if (password !== passwordConfirmation) {
+      return badRequest(new InvalidParamException('passwordConfirmation'))
+    }
+
+    if (!this.emailValidator.isValid(email)) {
+      return badRequest(new InvalidParamException('email'))
     }
   }
 }
