@@ -1,4 +1,4 @@
-export function pick<T extends Record<string, unknown>, K extends keyof T> (object: T, ...keys: K[]): Pick<T, K> {
+export function pick<T, K extends keyof T> (object: T, ...keys: K[]): Pick<T, K> {
   const finalObject: Record<string, unknown> = {}
 
   for (const key of keys) {
