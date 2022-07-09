@@ -1,4 +1,4 @@
-import { InvalidParamException, MissingParamException } from '../errors'
+import { InvalidParamException, MissingParamException, ServerError } from '../errors'
 import { EmailValidator, HttpRequest, HttpStatusCodes } from '../protocols'
 import { SignUpController } from './signup.controller'
 
@@ -93,6 +93,25 @@ describe('SignupController', () => {
 
     // Assert
     expect(emailValidatorSpy).toHaveBeenCalledWith(httpRequest.body.email)
+  })
+
+  it('should return INTERNAL_SERVER_ERROR if EmailValidator throws an error', () => {
+    // Arrange
+    const { sut, emailValidator } = createSut()
+    const errorThrown = new Error('error')
+
+    jest.spyOn(emailValidator, 'isValid').mockImplementationOnce(() => {
+      throw errorThrown
+    })
+
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    const httpResponse = sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+    expect(httpResponse?.body).toEqual(new ServerError(errorThrown))
   })
 })
 
