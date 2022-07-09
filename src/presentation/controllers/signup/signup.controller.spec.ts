@@ -142,6 +142,25 @@ describe('SignupController', () => {
     // Assert
     expect(addSpy).toHaveBeenCalledWith(pick(httpRequest.body, 'name', 'email', 'password'))
   })
+
+  it('should return INTERNAL_SERVER_ERROR if AddAccountUseCase throws an error', () => {
+    // Arrange
+    const { sut, addAccountUseCase } = createSut()
+    const errorThrown = new Error('error')
+
+    jest.spyOn(addAccountUseCase, 'add').mockImplementationOnce(() => {
+      throw errorThrown
+    })
+
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    const httpResponse = sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+    expect(httpResponse?.body).toEqual(new ServerError(errorThrown))
+  })
 })
 
 interface SutFactoryResponse {
