@@ -15,3 +15,10 @@ export function internalServerError (error: Error): HttpResponse {
     body: new ServerError(error)
   }
 }
+
+export function ok<T = unknown> (body: T): HttpResponse {
+  return {
+    statusCode: HttpStatusCodes.OK,
+    body
+  }
+}

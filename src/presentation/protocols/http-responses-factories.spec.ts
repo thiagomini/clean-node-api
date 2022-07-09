@@ -1,5 +1,5 @@
 import { ServerError } from '../errors'
-import { badRequest, internalServerError } from './http-responses-factories'
+import { badRequest, internalServerError, ok } from './http-responses-factories'
 import { HttpStatusCodes } from './http-status-codes'
 
 describe('http responses factories', () => {
@@ -20,6 +20,16 @@ describe('http responses factories', () => {
 
       expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
       expect(badRequestResponse.body).toEqual(new ServerError(error))
+    })
+  })
+
+  describe('ok', () => {
+    it('should return an object with OK as statusCode and given object as body', () => {
+      const body = { key: 'value' }
+      const badRequestResponse = ok(body)
+
+      expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.OK)
+      expect(badRequestResponse.body).toEqual(body)
     })
   })
 })
