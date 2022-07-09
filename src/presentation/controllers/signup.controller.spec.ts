@@ -1,5 +1,5 @@
 import { InvalidParamException, MissingParamException } from '../errors'
-import { EmailValidator, HttpStatusCodes } from '../protocols'
+import { EmailValidator, HttpRequest, HttpStatusCodes } from '../protocols'
 import { SignUpController } from './signup.controller'
 
 describe('SignupController', () => {
@@ -7,13 +7,7 @@ describe('SignupController', () => {
     // Arrange
     const { sut } = createSut()
 
-    const httpRequest = {
-      body: {
-        email: 'any_email@mail.com',
-        password: 'password',
-        passwordConfirmation: 'password'
-      }
-    }
+    const httpRequest = createRequestWithout('name')
 
     // Act
     const httpResponse = sut.handle(httpRequest)
@@ -27,13 +21,7 @@ describe('SignupController', () => {
     // Arrange
     const { sut } = createSut()
 
-    const httpRequest = {
-      body: {
-        name: 'any_namy',
-        password: 'password',
-        passwordConfirmation: 'password'
-      }
-    }
+    const httpRequest = createRequestWithout('email')
 
     // Act
     const httpResponse = sut.handle(httpRequest)
@@ -47,13 +35,7 @@ describe('SignupController', () => {
     // Arrange
     const { sut } = createSut()
 
-    const httpRequest = {
-      body: {
-        name: 'any_namy',
-        email: 'any_email@mail.com',
-        passwordConfirmation: 'any_password'
-      }
-    }
+    const httpRequest = createRequestWithout('password')
 
     // Act
     const httpResponse = sut.handle(httpRequest)
@@ -67,13 +49,7 @@ describe('SignupController', () => {
     // Arrange
     const { sut } = createSut()
 
-    const httpRequest = {
-      body: {
-        name: 'any_namy',
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      }
-    }
+    const httpRequest = createRequestWithout('passwordConfirmation')
 
     // Act
     const httpResponse = sut.handle(httpRequest)
@@ -122,5 +98,28 @@ const createSut = (): SutFactoryResponse => {
   return {
     sut,
     emailValidator
+  }
+}
+
+type RequestBody = Partial<{
+  name: string
+  email: string
+  password: string
+  passwordConfirmation: string
+}>
+
+function createRequestWithout (parameter: keyof RequestBody): HttpRequest {
+  const defaultRequest: RequestBody = {
+    name: 'any_namy',
+    email: 'any_email@mail.com',
+    password: 'any_password',
+    passwordConfirmation: 'any_password'
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+  delete defaultRequest[parameter]
+
+  return {
+    body: defaultRequest
   }
 }
