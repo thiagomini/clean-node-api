@@ -20,4 +20,12 @@ describe('EmailValidatorAdapter', () => {
 
     expect(sut.isValid('valid_email@mail.com')).toBe(true)
   })
+
+  it('should call validator with correct email', () => {
+    const sut = new EmailValidatorAdapter()
+
+    sut.isValid('any_email@mail.com')
+
+    expect(validator.isEmail).toHaveBeenCalledWith('any_email@mail.com')
+  })
 })
