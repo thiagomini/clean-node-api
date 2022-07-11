@@ -13,6 +13,7 @@ export class SignUpController implements Controller {
     try {
       return await this.signUp(httpRequest)
     } catch (error) {
+      console.error(error)
       return internalServerError(error as Error)
     }
   }
