@@ -40,9 +40,7 @@ describe('DbAddAccountUseCase', () => {
     const addAccountPromise = sut.add(accountData)
 
     // Assert
-    await expect(addAccountPromise).rejects.toThrow(new AddAccountUseCaseError({
-      cause: innerError
-    }))
+    await expect(addAccountPromise).rejects.toThrow(AddAccountUseCaseError)
   })
 
   it('should call AddAccountRepository with correct values', async () => {
@@ -83,9 +81,7 @@ describe('DbAddAccountUseCase', () => {
     const addAccountPromise = sut.add(accountData)
 
     // Assert
-    await expect(addAccountPromise).rejects.toThrow(new AddAccountUseCaseError({
-      cause: innerError
-    }))
+    await expect(addAccountPromise).rejects.toThrowError(AddAccountUseCaseError)
   })
 
   it('should return the account fetched from the repository', async () => {
