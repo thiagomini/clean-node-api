@@ -87,6 +87,20 @@ describe('DbAddAccountUseCase', () => {
       cause: innerError
     }))
   })
+
+  it('should return the account fetched from the repository', async () => {
+    // Arrange
+    const {
+      sut
+    } = createSut()
+    const accountData = createDefaultAddAccountInput()
+
+    // Act
+    const account = await sut.add(accountData)
+
+    // Assert
+    expect(account).toEqual(getDefaultSavedAccountData())
+  })
 })
 
 interface SutFactoryResponse {
@@ -119,17 +133,19 @@ const createEncrypter = (): Encrypter => {
 const createRepository = (): any => {
   class RepositoryStub implements AddAccountRepository {
     public async add (account: AddAccountInput): Promise<AccountModel> {
-      return {
-        id: '1',
-        email: 'any_email@mail.com',
-        name: 'Test Account',
-        password: 'any_password'
-      }
+      return getDefaultSavedAccountData()
     }
   }
 
   return new RepositoryStub()
 }
+
+const getDefaultSavedAccountData = (): AccountModel => ({
+  id: 'valid_id',
+  email: 'valid_email@mail.com',
+  name: 'valid_name',
+  password: 'hashed_password'
+})
 
 const createDefaultAddAccountInput = (): AddAccountInput => ({
   name: 'valid_name',

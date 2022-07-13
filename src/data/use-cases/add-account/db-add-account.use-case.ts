@@ -10,15 +10,10 @@ export class DbAddAccountUseCase implements AddAccountUseCase {
   async add (account: AddAccountInput): Promise<AccountModel> {
     try {
       const hashedPassword = await this.encrypter.encrypt(account.password)
-      await this.addAccountRepository.add({
+      return await this.addAccountRepository.add({
         ...account,
         password: hashedPassword
       })
-
-      return {
-        ...account,
-        id: '1'
-      }
     } catch (error) {
       throw new AddAccountUseCaseError({
         cause: error as Error
