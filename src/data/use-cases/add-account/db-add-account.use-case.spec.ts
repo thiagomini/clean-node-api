@@ -3,7 +3,7 @@ import { AddAccountInput } from '../../../domain/use-cases/add-account'
 import { Encrypter } from '../../protocols'
 import { AddAccountRepository } from '../../protocols/add-account.repository'
 import { DbAddAccountUseCase } from './db-add-account.use-case'
-import { EncryptionError } from './errors'
+import { AddAccountUseCaseError } from './errors'
 
 describe('DbAddAccountUseCase', () => {
   it('should call Encrypter with correct password', async () => {
@@ -22,7 +22,7 @@ describe('DbAddAccountUseCase', () => {
     expect(encryptSpy).toHaveBeenCalledWith(accountData.password)
   })
 
-  it('should throw an EncryptionError if the encrypter throws', async () => {
+  it('should throw a AddAccountUseCaseError if the encrypter throws', async () => {
     // Arrange
     const {
       sut,
@@ -40,7 +40,7 @@ describe('DbAddAccountUseCase', () => {
     const addAccountPromise = sut.add(accountData)
 
     // Assert
-    await expect(addAccountPromise).rejects.toThrow(new EncryptionError({
+    await expect(addAccountPromise).rejects.toThrow(new AddAccountUseCaseError({
       cause: innerError
     }))
   })
@@ -63,6 +63,29 @@ describe('DbAddAccountUseCase', () => {
       email: accountData.email,
       password: 'hashed_password'
     })
+  })
+
+  it('should throw a AddAccountUseCaseError if the repository throws', async () => {
+    // Arrange
+    const {
+      sut,
+      repositoryStub
+    } = createSut()
+
+    const innerError = new Error('RepositoryError')
+    jest.spyOn(repositoryStub, 'add').mockImplementationOnce(async () => {
+      throw innerError
+    })
+
+    const accountData = createDefaultAddAccountInput()
+
+    // Act
+    const addAccountPromise = sut.add(accountData)
+
+    // Assert
+    await expect(addAccountPromise).rejects.toThrow(new AddAccountUseCaseError({
+      cause: innerError
+    }))
   })
 })
 
