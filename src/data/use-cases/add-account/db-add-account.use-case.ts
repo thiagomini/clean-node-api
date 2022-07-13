@@ -12,7 +12,8 @@ export class DbAddAccountUseCase implements AddAccountUseCase {
       return await this.saveAccount(account)
     } catch (error) {
       throw new AddAccountUseCaseError({
-        cause: error as Error
+        cause: error as Error,
+        context: account
       })
     }
   }

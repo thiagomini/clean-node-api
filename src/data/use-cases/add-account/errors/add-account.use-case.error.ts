@@ -1,6 +1,6 @@
 import { ContextError, ContextErrorInput } from '../../../../errors'
 
-export type AddAccountUseCaseErrorInput = Pick<ContextErrorInput, 'cause'>
+export type AddAccountUseCaseErrorInput = Pick<ContextErrorInput, 'cause' | 'context'>
 
 export class AddAccountUseCaseError extends ContextError {
   constructor (errorInput: AddAccountUseCaseErrorInput) {
