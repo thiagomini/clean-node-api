@@ -1,5 +1,7 @@
+import { AccountModel } from '../../../domain/models'
 import { AddAccountInput } from '../../../domain/use-cases/add-account'
 import { Encrypter } from '../../protocols'
+import { AddAccountRepository } from '../../protocols/add-account.repository'
 import { DbAddAccountUseCase } from './db-add-account.use-case'
 import { EncryptionError } from './errors'
 
@@ -42,20 +44,43 @@ describe('DbAddAccountUseCase', () => {
       cause: innerError
     }))
   })
+
+  it('should call AddAccountRepository with correct values', async () => {
+    // Arrange
+    const {
+      sut,
+      repositoryStub
+    } = createSut()
+    const repositorySpy = jest.spyOn(repositoryStub, 'add')
+    const accountData = createDefaultAddAccountInput()
+
+    // Act
+    await sut.add(accountData)
+
+    // Assert
+    expect(repositorySpy).toHaveBeenCalledWith({
+      name: accountData.name,
+      email: accountData.email,
+      password: 'hashed_password'
+    })
+  })
 })
 
 interface SutFactoryResponse {
   sut: DbAddAccountUseCase
   encrypterStub: Encrypter
+  repositoryStub: AddAccountRepository
 }
 
 const createSut = (): SutFactoryResponse => {
   const encrypterStub = createEncrypter()
-  const sut = new DbAddAccountUseCase(encrypterStub)
+  const repositoryStub = createRepository()
+  const sut = new DbAddAccountUseCase(encrypterStub, repositoryStub)
 
   return {
     sut,
-    encrypterStub
+    encrypterStub,
+    repositoryStub
   }
 }
 
@@ -66,6 +91,21 @@ const createEncrypter = (): Encrypter => {
     }
   }
   return new EncrypterStub()
+}
+
+const createRepository = (): any => {
+  class RepositoryStub implements AddAccountRepository {
+    public async add (account: AddAccountInput): Promise<AccountModel> {
+      return {
+        id: '1',
+        email: 'any_email@mail.com',
+        name: 'Test Account',
+        password: 'any_password'
+      }
+    }
+  }
+
+  return new RepositoryStub()
 }
 
 const createDefaultAddAccountInput = (): AddAccountInput => ({
