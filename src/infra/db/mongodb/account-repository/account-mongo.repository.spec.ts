@@ -6,6 +6,10 @@ describe('AccountMongoRepository', () => {
     await mongoHelper.connect(String(process.env.MONGO_URL))
   })
 
+  beforeEach(async () => {
+    await clearAccountsCollection()
+  })
+
   afterAll(async () => {
     await mongoHelper.disconnect()
   })
@@ -27,3 +31,7 @@ describe('AccountMongoRepository', () => {
     })
   })
 })
+
+async function clearAccountsCollection (): Promise<void> {
+  await mongoHelper.getCollection('accounts').deleteMany({})
+}
