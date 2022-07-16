@@ -5,11 +5,13 @@ import { addIdToDocument } from './mongo-document-helper'
 describe('addIdToDocument', () => {
   it('should add the id attribute from the _id', () => {
     const objectFromMongo = {
-      _id: 'valid_id'
+      _id: 'valid_id',
+      otherProp: 'any_value'
     }
 
     expect(addIdToDocument(objectFromMongo)).toEqual({
-      id: 'valid_id'
+      id: 'valid_id',
+      otherProp: 'any_value'
     })
   })
 

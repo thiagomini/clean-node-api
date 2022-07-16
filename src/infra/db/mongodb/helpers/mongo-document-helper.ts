@@ -1,10 +1,12 @@
 import { Document } from 'mongodb'
 import { NullDocumentError } from './errors/null-document.error'
 
-export function addIdToDocument<T extends Document> (mongoDocument: T): T & { id: string } {
+export type DocumentWithId<T> = Omit<T, '_id'> & { id: string | undefined }
+
+export function addIdToDocument<T extends Document> (mongoDocument: T): DocumentWithId<T> {
   if (!mongoDocument) throw new NullDocumentError(mongoDocument)
 
-  const { _id, otherProperties } = mongoDocument
+  const { _id, ...otherProperties } = mongoDocument
 
   return {
     ...otherProperties,
