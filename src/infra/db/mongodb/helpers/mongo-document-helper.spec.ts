@@ -1,3 +1,5 @@
+import { Document } from 'mongodb'
+import { NullDocumentError } from './errors/null-document.error'
 import { setIdAttributeTo } from './mongo-document-helper'
 
 describe('setIdAttributeTo', () => {
@@ -12,12 +14,16 @@ describe('setIdAttributeTo', () => {
   })
 
   it('should return undefined id if the object does not have _id', () => {
-    const objectFromMongo = {
-
-    }
+    const objectFromMongo = {}
 
     expect(setIdAttributeTo(objectFromMongo)).toEqual({
       id: undefined
     })
+  })
+
+  it('should return throw an error if the object is undefined', () => {
+    const objectFromMongo = undefined
+
+    expect(() => setIdAttributeTo(objectFromMongo as unknown as Document)).toThrowError(NullDocumentError)
   })
 })
