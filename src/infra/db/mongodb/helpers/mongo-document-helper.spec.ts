@@ -10,4 +10,14 @@ describe('setIdAttributeTo', () => {
       id: 'valid_id'
     })
   })
+
+  it('should return undefined id if the object does not have _id', () => {
+    const objectFromMongo = {
+
+    }
+
+    expect(setIdAttributeTo(objectFromMongo)).toEqual({
+      id: undefined
+    })
+  })
 })
