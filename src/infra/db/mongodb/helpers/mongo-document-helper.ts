@@ -6,7 +6,7 @@ type DocumentWithId = Document & {
 }
 
 export function setIdAttributeTo<T extends Document> (mongoDocument: T): DocumentWithId {
-  if (!mongoDocument) throw new NullDocumentError()
+  if (!mongoDocument) throw new NullDocumentError(mongoDocument)
 
   const { _id, otherProperties } = mongoDocument
 

@@ -1,6 +1,6 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, Collection } from 'mongodb'
 
-export class MongoHelper {
+class MongoHelper {
   private client: MongoClient | undefined
 
   async connect (url: string): Promise<void> {
@@ -9,6 +9,12 @@ export class MongoHelper {
 
   async disconnect (): Promise<void> {
     await this.client?.close()
+  }
+
+  getCollection (collectionName: string): Collection | never {
+    if (!this.client) throw new Error('Connection does not exist yet!')
+
+    return this.client?.db(collectionName).collection(collectionName)
   }
 }
 
