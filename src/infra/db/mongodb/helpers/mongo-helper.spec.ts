@@ -11,8 +11,22 @@ describe('MongoHelper', () => {
         await mongoHelper.disconnect()
       })
 
-      it('should return a collection', () => {
-        expect(mongoHelper.getCollection('some-collection')).toBeDefined()
+      it('should return a collection', async () => {
+        expect(await mongoHelper.getCollection('some-collection')).toBeDefined()
+      })
+
+      describe('when the client is disconnected', () => {
+        beforeEach(async () => {
+          await mongoHelper.disconnect()
+        })
+
+        afterEach(async () => {
+          await mongoHelper.disconnect()
+        })
+
+        it('should return a collection', async () => {
+          expect(await mongoHelper.getCollection('some-collection')).toBeDefined()
+        })
       })
     })
   })

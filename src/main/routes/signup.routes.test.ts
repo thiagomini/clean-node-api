@@ -28,5 +28,6 @@ describe('signup routes', () => {
 })
 
 async function clearAccountsCollection (): Promise<void> {
-  await mongoHelper.getCollection('accounts').deleteMany({})
+  const accountsCollection = await mongoHelper.getCollection('accounts')
+  await accountsCollection.deleteMany({})
 }
