@@ -4,7 +4,7 @@ import { MongoConnectionError } from './errors'
 class MongoHelper {
   private client: MongoClient | undefined
 
-  async connect (url: string): Promise<void> {
+  async connect (url: string = process.env.MONGO_URL ?? ''): Promise<void> {
     this.client = await MongoClient.connect(url)
   }
 

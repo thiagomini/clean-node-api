@@ -1,10 +1,19 @@
-import { MongoConnectionError } from './errors'
 import { mongoHelper } from './mongo-helper'
 
 describe('MongoHelper', () => {
   describe('getCollection', () => {
-    it('should throw an error if mongoClient is not available', () => {
-      expect(() => mongoHelper.getCollection('some-collection')).toThrowError(MongoConnectionError)
+    describe('when the client is connected', () => {
+      beforeEach(async () => {
+        await mongoHelper.connect()
+      })
+
+      afterEach(async () => {
+        await mongoHelper.disconnect()
+      })
+
+      it('should return a collection', () => {
+        expect(mongoHelper.getCollection('some-collection')).toBeDefined()
+      })
     })
   })
 })
