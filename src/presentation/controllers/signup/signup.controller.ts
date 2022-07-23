@@ -9,7 +9,7 @@ export class SignUpController implements Controller {
 
   private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse | undefined> {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       return await this.signUp(httpRequest)
     } catch (error) {
@@ -18,7 +18,7 @@ export class SignUpController implements Controller {
     }
   }
 
-  private async signUp (httpRequest: HttpRequest): Promise<HttpResponse | undefined> {
+  private async signUp (httpRequest: HttpRequest): Promise<HttpResponse> {
     const { body } = httpRequest
     for (const requiredField of this.requiredFields) {
       if (!body[requiredField]) {
