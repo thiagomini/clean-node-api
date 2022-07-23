@@ -1,5 +1,18 @@
 import request from 'supertest'
+import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import app from '../config/app'
+
+beforeAll(async () => {
+  await mongoHelper.connect(String(process.env.MONGO_URL))
+})
+
+beforeEach(async () => {
+  await clearAccountsCollection()
+})
+
+afterAll(async () => {
+  await mongoHelper.disconnect()
+})
 
 describe('signup routes', () => {
   describe('signup', () => {
@@ -13,3 +26,7 @@ describe('signup routes', () => {
     })
   })
 })
+
+async function clearAccountsCollection (): Promise<void> {
+  await mongoHelper.getCollection('accounts').deleteMany({})
+}
