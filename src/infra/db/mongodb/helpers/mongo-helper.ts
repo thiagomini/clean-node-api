@@ -1,4 +1,5 @@
 import { MongoClient, Collection } from 'mongodb'
+import { MongoConnectionError } from './errors'
 
 class MongoHelper {
   private client: MongoClient | undefined
@@ -12,7 +13,7 @@ class MongoHelper {
   }
 
   getCollection (collectionName: string): Collection | never {
-    if (!this.client) throw new Error('Connection does not exist yet!')
+    if (!this.client) throw new MongoConnectionError(collectionName)
 
     return this.client?.db(collectionName).collection(collectionName)
   }
