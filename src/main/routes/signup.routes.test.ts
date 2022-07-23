@@ -1,5 +1,6 @@
 import request from 'supertest'
 import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
+import { HttpStatusCodes } from '../../presentation/protocols'
 import app from '../config/app'
 
 beforeAll(async () => {
@@ -22,7 +23,7 @@ describe('signup routes', () => {
         email: 'thiago@mail.com',
         password: '123',
         passwordConfirmation: '123'
-      }).expect(200)
+      }).expect(HttpStatusCodes.OK)
     })
   })
 })
