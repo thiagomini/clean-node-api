@@ -1,4 +1,5 @@
 import { mongoHelper } from '../helpers/mongo-helper'
+import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
 
 describe('AccountMongoRepository', () => {
@@ -31,8 +32,3 @@ describe('AccountMongoRepository', () => {
     })
   })
 })
-
-async function clearAccountsCollection (): Promise<void> {
-  const accountsCollection = await mongoHelper.getCollection('accounts')
-  await accountsCollection.deleteMany({})
-}

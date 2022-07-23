@@ -1,5 +1,6 @@
 import request from 'supertest'
 import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
+import { clearAccountsCollection } from '../../infra/db/mongodb/helpers/test-teardown-helpers'
 import { HttpStatusCodes } from '../../presentation/protocols'
 import app from '../config/app'
 
@@ -27,8 +28,3 @@ describe('signup routes', () => {
     })
   })
 })
-
-async function clearAccountsCollection (): Promise<void> {
-  const accountsCollection = await mongoHelper.getCollection('accounts')
-  await accountsCollection.deleteMany({})
-}
