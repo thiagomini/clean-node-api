@@ -1,5 +1,5 @@
 import { Document } from 'mongodb'
-import { NullDocumentError } from './errors/null-document.error'
+import { NullDocumentError } from './errors'
 
 export type DocumentWithId<T> = Omit<T, '_id'> & { id: string | undefined }
 

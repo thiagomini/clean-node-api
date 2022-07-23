@@ -1,5 +1,5 @@
 import { Document } from 'mongodb'
-import { NullDocumentError } from './errors/null-document.error'
+import { NullDocumentError } from './errors'
 import { addIdToDocument } from './mongo-document-helper'
 
 describe('addIdToDocument', () => {
