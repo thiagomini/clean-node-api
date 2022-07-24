@@ -1,4 +1,5 @@
-import { Controller, HttpRequest, HttpResponse, HttpStatusCodes } from '../../presentation/protocols'
+import { LogRepository } from '../../data/protocols'
+import { Controller, HttpRequest, HttpResponse, HttpStatusCodes, internalServerError } from '../../presentation/protocols'
 import { LogDecoratorController } from './log.decorator'
 
 describe('LogDecorator', () => {
@@ -31,21 +32,43 @@ describe('LogDecorator', () => {
 
       expect(response).toEqual(getStubControllerResponse())
     })
+    it('should call LogRepository when controller returns serverError', async () => {
+      const {
+        sut,
+        stubLogRepository,
+        stubController
+      } = createSut()
+
+      const thrownError = internalServerError(new Error('something wrong happened'))
+      jest.spyOn(stubController, 'handle').mockResolvedValueOnce(thrownError)
+
+      const logSpy = jest.spyOn(stubLogRepository, 'error')
+      const request: HttpRequest = {
+        body: {}
+      }
+
+      await sut.handle(request)
+
+      expect(logSpy).toHaveBeenCalledWith(thrownError.body)
+    })
   })
 })
 
 interface SutFactoryResponse {
   sut: LogDecoratorController
   stubController: Controller
+  stubLogRepository: LogRepository
 }
 
 const createSut = (): SutFactoryResponse => {
   const stubController = createStubController()
-  const sut = new LogDecoratorController(stubController)
+  const stubLogRepository = createStubLogRepository()
+  const sut = new LogDecoratorController(stubController, stubLogRepository)
 
   return {
     sut,
-    stubController
+    stubController,
+    stubLogRepository
   }
 }
 
@@ -65,3 +88,12 @@ const getStubControllerResponse = (): HttpResponse => ({
   },
   statusCode: HttpStatusCodes.OK
 })
+
+const createStubLogRepository = (): LogRepository => {
+  class StubLogRepository implements LogRepository {
+    async error (): Promise<void> {
+    }
+  }
+
+  return new StubLogRepository()
+}
