@@ -1,7 +1,7 @@
-import { InvalidParamException, MissingParamException, ServerError } from '../../errors'
+import { InvalidParamException, MissingParamException } from '../../errors'
 import { pick } from '../../utils'
 import { SignUpController } from './signup.controller'
-import { AccountModel, AddAccountInput, AddAccountUseCase, EmailValidator, HttpRequest, HttpStatusCodes } from './signup.protocols'
+import { AccountModel, AddAccountInput, AddAccountUseCase, badRequest, EmailValidator, HttpRequest, internalServerError, ok } from './signup.protocols'
 
 describe('SignupController', () => {
   it('should return BAD_REQUEST if no name is provided', async () => {
@@ -14,8 +14,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
-    expect(httpResponse?.body).toEqual(new MissingParamException('name'))
+    expect(httpResponse).toEqual(badRequest(new MissingParamException('name')))
   })
 
   it('should return BAD_REQUEST if no email is provided', async () => {
@@ -28,8 +27,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
-    expect(httpResponse?.body).toEqual(new MissingParamException('email'))
+    expect(httpResponse).toEqual(badRequest(new MissingParamException('email')))
   })
 
   it('should return BAD_REQUEST if no password is provided', async () => {
@@ -42,8 +40,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
-    expect(httpResponse?.body).toEqual(new MissingParamException('password'))
+    expect(httpResponse).toEqual(badRequest(new MissingParamException('password')))
   })
 
   it('should return BAD_REQUEST if no passwordConfirmation is provided', async () => {
@@ -56,8 +53,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
-    expect(httpResponse?.body).toEqual(new MissingParamException('passwordConfirmation'))
+    expect(httpResponse).toEqual(badRequest(new MissingParamException('passwordConfirmation')))
   })
 
   it('should return BAD_REQUEST if passwordConfirmation is different than the password', async () => {
@@ -70,8 +66,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
-    expect(httpResponse?.body).toEqual(new InvalidParamException('passwordConfirmation'))
+    expect(httpResponse).toEqual(badRequest(new InvalidParamException('passwordConfirmation')))
   })
 
   it('should return BAD_REQUEST if given email is invalid', async () => {
@@ -92,8 +87,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.BAD_REQUEST)
-    expect(httpResponse?.body).toEqual(new InvalidParamException('email'))
+    expect(httpResponse).toEqual(badRequest(new InvalidParamException('email')))
   })
 
   it('should call EmailValidator with correct email', async () => {
@@ -125,8 +119,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-    expect(httpResponse?.body).toEqual(new ServerError(errorThrown))
+    expect(httpResponse).toEqual(internalServerError(errorThrown))
   })
 
   it('should call AddAccountUseCase with correct values', async () => {
@@ -158,8 +151,7 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse?.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-    expect(httpResponse?.body).toEqual(new ServerError(errorThrown))
+    expect(httpResponse).toEqual(internalServerError(errorThrown))
   })
 
   it('should return OK (200) if valid data is provided', async () => {
@@ -171,8 +163,7 @@ describe('SignupController', () => {
     const response = await sut.handle(httpRequest)
 
     // Assert
-    expect(response?.statusCode).toBe(HttpStatusCodes.OK)
-    expect(response?.body).toEqual(CREATED_ACCOUNT_RESPONSE)
+    expect(response).toEqual(ok(CREATED_ACCOUNT_RESPONSE))
   })
 })
 
