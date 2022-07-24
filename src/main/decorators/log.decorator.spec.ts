@@ -5,6 +5,7 @@ import { LogDecoratorController } from './log.decorator'
 describe('LogDecorator', () => {
   describe('handle', () => {
     it('should call the decorated controller handle function', async () => {
+      // Arrange
       const {
         sut,
         stubController
@@ -15,11 +16,14 @@ describe('LogDecorator', () => {
         body: {}
       }
 
+      // Act
       await sut.handle(request)
 
+      // Assert
       expect(handleSpy).toHaveBeenCalledWith(request)
     })
     it('should return the same result of the decorated controller', async () => {
+      // Arrange
       const {
         sut
       } = createSut()
@@ -28,11 +32,14 @@ describe('LogDecorator', () => {
         body: {}
       }
 
+      // Act
       const response = await sut.handle(request)
 
+      // Assert
       expect(response).toEqual(getStubControllerResponse())
     })
     it('should call LogRepository when controller returns serverError', async () => {
+      // Arrange
       const {
         sut,
         stubLogRepository,
@@ -47,8 +54,10 @@ describe('LogDecorator', () => {
         body: {}
       }
 
+      // Act
       await sut.handle(request)
 
+      // Assert
       expect(logSpy).toHaveBeenCalledWith(thrownError.body)
     })
   })
