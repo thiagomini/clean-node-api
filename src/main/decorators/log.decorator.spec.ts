@@ -18,6 +18,19 @@ describe('LogDecorator', () => {
 
       expect(handleSpy).toHaveBeenCalledWith(request)
     })
+    it('should return the same result of the decorated controller', async () => {
+      const {
+        sut
+      } = createSut()
+
+      const request: HttpRequest = {
+        body: {}
+      }
+
+      const response = await sut.handle(request)
+
+      expect(response).toEqual(getStubControllerResponse())
+    })
   })
 })
 
@@ -38,13 +51,17 @@ const createSut = (): SutFactoryResponse => {
 
 const createStubController = (): Controller => {
   class StubController implements Controller {
-    async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-      return {
-        body: {},
-        statusCode: HttpStatusCodes.OK
-      }
+    async handle (): Promise<HttpResponse> {
+      return getStubControllerResponse()
     }
   }
 
   return new StubController()
 }
+
+const getStubControllerResponse = (): HttpResponse => ({
+  body: {
+    key: 'value'
+  },
+  statusCode: HttpStatusCodes.OK
+})
