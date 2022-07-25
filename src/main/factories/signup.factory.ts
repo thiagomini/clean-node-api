@@ -8,14 +8,16 @@ import { LogMongoRepository } from '../../infra/db/mongodb/log-repository/log-mo
 import { LogDecoratorController } from '../decorators/log.decorator'
 
 export const createSignupController = (): Controller => {
+  const signupController = createRawSignupController()
+  const signupControllerWithLogger = decorateController(signupController)
+  return signupControllerWithLogger
+}
+
+const createRawSignupController = (): SignUpController => {
   const emailValidatorAdapter = new EmailValidatorAdapter()
   const dbAddAccountUseCase = createDbAddAccount()
   const signupController = new SignUpController(emailValidatorAdapter, dbAddAccountUseCase)
-
-  const logErrorRepository = new LogMongoRepository()
-  const logDecoratorController = new LogDecoratorController(signupController, logErrorRepository)
-
-  return logDecoratorController
+  return signupController
 }
 
 const createDbAddAccount = (): DbAddAccountUseCase => {
@@ -23,4 +25,11 @@ const createDbAddAccount = (): DbAddAccountUseCase => {
   const addAccountRepository = new AccountMongoRepository()
 
   return new DbAddAccountUseCase(encrypter, addAccountRepository)
+}
+
+const decorateController = (signupController: SignUpController): LogDecoratorController => {
+  const logErrorRepository = new LogMongoRepository()
+  const logDecoratorController = new LogDecoratorController(signupController, logErrorRepository)
+
+  return logDecoratorController
 }
