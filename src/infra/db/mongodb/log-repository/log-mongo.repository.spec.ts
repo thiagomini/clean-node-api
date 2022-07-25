@@ -1,12 +1,15 @@
-import { ObjectId } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { ContextError } from '../../../../errors'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearErrorLogsCollection } from '../helpers/test-teardown-helpers'
 import { LogMongoRepository } from './log-mongo.repository'
 
 describe('LogMongoRepository', () => {
+  let errorsCollection: Collection
+
   beforeAll(async () => {
     await mongoHelper.connect(String(process.env.MONGO_URL))
+    errorsCollection = await mongoHelper.getCollection('errors')
   })
 
   beforeEach(async () => {
@@ -18,12 +21,15 @@ describe('LogMongoRepository', () => {
   })
 
   it('should save an error log for common Error instances', async () => {
+    // Arrange
     const logRepository = new LogMongoRepository()
     const error = new Error('Some Error Occurred')
 
+    // Act
     await logRepository.error(error)
 
-    const errorLog = await (await mongoHelper.getCollection('errors')).findOne()
+    // Assert
+    const errorLog = await errorsCollection.findOne()
 
     expect(errorLog).toEqual({
       _id: expect.any(ObjectId),
@@ -36,6 +42,7 @@ describe('LogMongoRepository', () => {
   })
 
   it('should save an error log for ContextError instances with a context', async () => {
+    // Arrange
     const logRepository = new LogMongoRepository()
     const error = new ContextError({
       message: 'Some error occurred',
@@ -45,10 +52,11 @@ describe('LogMongoRepository', () => {
       errorName: 'CustomName'
     })
 
+    // Act
     await logRepository.error(error)
 
-    const errorLog = await (await mongoHelper.getCollection('errors')).findOne()
-
+    // Assert
+    const errorLog = await errorsCollection.findOne()
     expect(errorLog).toEqual({
       _id: expect.any(ObjectId),
       name: error.name,
@@ -60,6 +68,7 @@ describe('LogMongoRepository', () => {
   })
 
   it('should save an error log for ContextError instances with a cause', async () => {
+    // Arrange
     const logRepository = new LogMongoRepository()
     const error = new ContextError({
       message: 'Some error occurred',
@@ -67,10 +76,11 @@ describe('LogMongoRepository', () => {
       errorName: 'CustomName'
     })
 
+    // Act
     await logRepository.error(error)
 
-    const errorLog = await (await mongoHelper.getCollection('errors')).findOne()
-
+    // Assert
+    const errorLog = await errorsCollection.findOne()
     expect(errorLog).toEqual({
       _id: expect.any(ObjectId),
       name: error.name,
