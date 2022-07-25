@@ -1,5 +1,5 @@
 import { ContextError } from '../../errors'
 
-export interface LogRepository {
+export interface LogErrorRepository {
   error: (error: ContextError | Error) => Promise<void>
 }

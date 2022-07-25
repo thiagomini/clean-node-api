@@ -1,4 +1,4 @@
-import { LogRepository } from '../../data/protocols'
+import { LogErrorRepository } from '../../data/protocols'
 import { Controller, HttpRequest, HttpResponse, HttpStatusCodes, internalServerError } from '../../presentation/protocols'
 import { LogDecoratorController } from './log.decorator'
 
@@ -66,7 +66,7 @@ describe('LogDecorator', () => {
 interface SutFactoryResponse {
   sut: LogDecoratorController
   stubController: Controller
-  stubLogRepository: LogRepository
+  stubLogRepository: LogErrorRepository
 }
 
 const createSut = (): SutFactoryResponse => {
@@ -98,8 +98,8 @@ const getStubControllerResponse = (): HttpResponse => ({
   statusCode: HttpStatusCodes.OK
 })
 
-const createStubLogRepository = (): LogRepository => {
-  class StubLogRepository implements LogRepository {
+const createStubLogRepository = (): LogErrorRepository => {
+  class StubLogRepository implements LogErrorRepository {
     async error (): Promise<void> {
     }
   }
