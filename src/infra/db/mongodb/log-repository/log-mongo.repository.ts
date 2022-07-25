@@ -6,12 +6,12 @@ export class LogMongoRepository implements LogErrorRepository {
   async error (error: ContextError | Error): Promise<void> {
     const errorLogCollection = await mongoHelper.getCollection('errors')
 
-    let context: unknown = {}
-    let cause: ContextError | Error | undefined
+    let context: unknown
+    let cause: string | undefined
 
     if (error instanceof ContextError) {
       context = error.context
-      cause = error.cause
+      cause = error.cause?.toString()
     }
 
     await errorLogCollection.insertOne({

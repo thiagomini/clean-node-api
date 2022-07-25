@@ -30,7 +30,7 @@ describe('LogMongoRepository', () => {
       name: error.name,
       stack: error.stack,
       cause: null,
-      context: {},
+      context: null,
       createdAt: expect.any(Date)
     })
   })
@@ -55,6 +55,28 @@ describe('LogMongoRepository', () => {
       stack: error.stack,
       cause: null,
       context: error.context,
+      createdAt: expect.any(Date)
+    })
+  })
+
+  it('should save an error log for ContextError instances with a cause', async () => {
+    const logRepository = new LogMongoRepository()
+    const error = new ContextError({
+      message: 'Some error occurred',
+      cause: new Error('Some inner error cause'),
+      errorName: 'CustomName'
+    })
+
+    await logRepository.error(error)
+
+    const errorLog = await (await mongoHelper.getCollection('errors')).findOne()
+
+    expect(errorLog).toEqual({
+      _id: expect.any(ObjectId),
+      name: error.name,
+      stack: error.stack,
+      cause: error.cause?.toString(),
+      context: null,
       createdAt: expect.any(Date)
     })
   })
