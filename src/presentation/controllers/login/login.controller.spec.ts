@@ -31,12 +31,7 @@ describe('LoginController', () => {
     const { sut, emailValidatorStub } = createSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
 
-    const httpRequest: HttpRequest = {
-      body: {
-        email: 'any_email@mail.com',
-        password: 'any_password'
-      }
-    }
+    const httpRequest: HttpRequest = createFakeRequest()
     await sut.handle(httpRequest)
 
     expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com')
@@ -45,12 +40,7 @@ describe('LoginController', () => {
   it('should return 400 if email is invalid', async () => {
     // Arrange
     const { sut, emailValidatorStub } = createSut()
-    const httpRequest: HttpRequest = {
-      body: {
-        email: 'invalid_email@mail.com',
-        password: 'any_password'
-      }
-    }
+    const httpRequest: HttpRequest = createFakeRequest()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
 
     // Act
@@ -84,3 +74,10 @@ const createEmailValidatorStub = (): EmailValidator => {
 
   return new EmailValidatorStub()
 }
+
+const createFakeRequest = (): HttpRequest => ({
+  body: {
+    email: 'any_email@mail.com',
+    password: 'any_password'
+  }
+})
