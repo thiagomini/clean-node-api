@@ -1,4 +1,4 @@
-import { MissingParamException } from '../../errors'
+import { InvalidParamException, MissingParamException } from '../../errors'
 import { badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, HttpStatusCodes } from '../../protocols'
 
 export class LoginController implements Controller {
@@ -13,7 +13,11 @@ export class LoginController implements Controller {
       return badRequest(new MissingParamException('password'))
     }
 
-    this.emailValidator.isValid(httpRequest.body.email)
+    const emailIsValid = this.emailValidator.isValid(httpRequest.body.email)
+
+    if (!emailIsValid) {
+      return badRequest(new InvalidParamException('email'))
+    }
 
     return {
       statusCode: HttpStatusCodes.OK,
