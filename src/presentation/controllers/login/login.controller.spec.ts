@@ -4,7 +4,7 @@ import { LoginController } from './login.controller'
 
 describe('LoginController', () => {
   it('should return 400 if no email is provided', async () => {
-    const sut = new LoginController()
+    const { sut } = createSut()
     const httpRequest: HttpRequest = {
       body: {
         password: 'any_password'
@@ -16,7 +16,7 @@ describe('LoginController', () => {
   })
 
   it('should return 400 if no password is provided', async () => {
-    const sut = new LoginController()
+    const { sut } = createSut()
     const httpRequest: HttpRequest = {
       body: {
         email: 'any_email@mail.com'
@@ -27,3 +27,14 @@ describe('LoginController', () => {
     expect(httpResponse).toEqual(badRequest(new MissingParamException('password')))
   })
 })
+
+interface SutFactoryResponse {
+  sut: LoginController
+}
+
+const createSut = (): SutFactoryResponse => {
+  const sut = new LoginController()
+  return {
+    sut
+  }
+}
