@@ -1,6 +1,6 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { InvalidParamException, MissingParamException } from '../../errors'
-import { badRequest, EmailValidator, HttpRequest, HttpStatusCodes, internalServerError } from '../../protocols'
+import { badRequest, EmailValidator, HttpRequest, internalServerError, unauthorized } from '../../protocols'
 import { LoginController } from './login.controller'
 
 describe('LoginController', () => {
@@ -89,7 +89,7 @@ describe('LoginController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse).toHaveProperty('statusCode', HttpStatusCodes.UNAUTHORIZED)
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
 
