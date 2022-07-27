@@ -1,6 +1,6 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { InvalidParamException, MissingParamException } from '../../errors'
-import { badRequest, EmailValidator, HttpRequest, internalServerError, unauthorized } from '../../protocols'
+import { badRequest, EmailValidator, HttpRequest, internalServerError, ok, unauthorized } from '../../protocols'
 import { LoginController } from './login.controller'
 
 describe('LoginController', () => {
@@ -103,6 +103,20 @@ describe('LoginController', () => {
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(new Error()))
+  })
+
+  it('should return user access token if credentials provided are valid', async () => {
+    // Arrange
+    const { sut } = createSut()
+    const httpRequest: HttpRequest = createFakeRequest()
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toEqual(ok({
+      accessToken: 'valid_token'
+    }))
   })
 })
 
