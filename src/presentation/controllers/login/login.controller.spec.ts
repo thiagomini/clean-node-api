@@ -1,6 +1,6 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { InvalidParamException, MissingParamException } from '../../errors'
-import { badRequest, EmailValidator, HttpRequest, internalServerError } from '../../protocols'
+import { badRequest, EmailValidator, HttpRequest, HttpStatusCodes, internalServerError } from '../../protocols'
 import { LoginController } from './login.controller'
 
 describe('LoginController', () => {
@@ -77,6 +77,19 @@ describe('LoginController', () => {
 
     // Assert
     expect(authenticateSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
+  })
+
+  it('should return Unauthorized if invalid credentials are provided', async () => {
+    // Arrange
+    const { sut, authenticationStub } = createSut()
+    const httpRequest: HttpRequest = createFakeRequest()
+    jest.spyOn(authenticationStub, 'authenticate').mockResolvedValueOnce(undefined)
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toHaveProperty('statusCode', HttpStatusCodes.UNAUTHORIZED)
   })
 })
 
