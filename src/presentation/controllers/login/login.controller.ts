@@ -4,11 +4,13 @@ import { badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, Http
 import { firstMissingAttributeOf } from '../../utils'
 
 export class LoginController implements Controller {
+  private readonly requiredFields = ['email', 'password']
+
   constructor (private readonly emailValidator: EmailValidator, private readonly authentication: Authentication) { }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const missingAttribute = firstMissingAttributeOf(httpRequest.body, ['email', 'password'])
+      const missingAttribute = firstMissingAttributeOf(httpRequest.body, this.requiredFields)
 
       if (missingAttribute) {
         return badRequest(new MissingParamException(missingAttribute))
