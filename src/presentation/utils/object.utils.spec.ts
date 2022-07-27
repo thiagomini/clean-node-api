@@ -62,5 +62,17 @@ describe('Object utils', () => {
         expect(firstMissingAttributeOf(object, requiredAttributes)).toBeUndefined()
       })
     })
+
+    describe('when the object and required attributes are empty', () => {
+      it('should return the missing attribute', () => {
+        const object = {
+
+        }
+
+        const requiredAttributes: string[] = []
+
+        expect(firstMissingAttributeOf(object, requiredAttributes)).toBeUndefined()
+      })
+    })
   })
 })
