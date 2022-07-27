@@ -1,4 +1,4 @@
-import { pick } from './object.utils'
+import { firstMissingAttributeOf, pick } from './object.utils'
 
 describe('Object utils', () => {
   describe('pick', () => {
@@ -18,6 +18,21 @@ describe('Object utils', () => {
       }
 
       expect(pick(object, 'key', 'key2')).toEqual(object)
+    })
+  })
+
+  describe('firstMissingAttributeOf', () => {
+    describe('when the object does not have one of the attributes', () => {
+      it('should return the missing attribute', () => {
+        const object = {
+          name: 'any_name',
+          email: 'any_mail@mail.com'
+        }
+
+        const requiredAttributes = ['name', 'email', 'password']
+
+        expect(firstMissingAttributeOf(object, requiredAttributes)).toBe('password')
+      })
     })
   })
 })
