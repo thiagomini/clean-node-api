@@ -91,6 +91,19 @@ describe('LoginController', () => {
     // Assert
     expect(httpResponse).toEqual(unauthorized())
   })
+
+  it('should return internalServerError if Authentication throws', async () => {
+    // Arrange
+    const { sut, authenticationStub } = createSut()
+    const httpRequest: HttpRequest = createFakeRequest()
+    jest.spyOn(authenticationStub, 'authenticate').mockRejectedValueOnce(new Error())
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toEqual(internalServerError(new Error()))
+  })
 })
 
 interface SutFactoryResponse {
