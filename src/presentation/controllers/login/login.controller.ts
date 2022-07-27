@@ -10,34 +10,38 @@ export class LoginController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const missingAttribute = firstMissingAttributeOf(httpRequest.body, this.requiredFields)
-
-      if (missingAttribute) {
-        return badRequest(new MissingParamException(missingAttribute))
-      }
-
-      const { email, password } = httpRequest.body
-
-      const emailIsValid = this.emailValidator.isValid(email)
-
-      if (!emailIsValid) {
-        return badRequest(new InvalidParamException('email'))
-      }
-
-      const accessToken = await this.authentication.authenticate(email, password)
-      if (!accessToken) {
-        return unauthorized()
-      }
-
-      return {
-        statusCode: HttpStatusCodes.OK,
-        body: {
-          accessToken
-        }
-      }
+      return await this.loginUser(httpRequest)
     } catch (error) {
       console.error(error)
       return internalServerError(error as Error)
+    }
+  }
+
+  private async loginUser (httpRequest: HttpRequest): Promise<HttpResponse> {
+    const missingAttribute = firstMissingAttributeOf(httpRequest.body, this.requiredFields)
+
+    if (missingAttribute) {
+      return badRequest(new MissingParamException(missingAttribute))
+    }
+
+    const { email, password } = httpRequest.body
+
+    const emailIsValid = this.emailValidator.isValid(email)
+
+    if (!emailIsValid) {
+      return badRequest(new InvalidParamException('email'))
+    }
+
+    const accessToken = await this.authentication.authenticate(email, password)
+    if (!accessToken) {
+      return unauthorized()
+    }
+
+    return {
+      statusCode: HttpStatusCodes.OK,
+      body: {
+        accessToken
+      }
     }
   }
 }
