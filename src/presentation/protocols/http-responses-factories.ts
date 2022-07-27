@@ -1,4 +1,4 @@
-import { ServerError } from '../errors'
+import { ServerError, UnauthorizedError } from '../errors'
 import { HttpResponse } from './http'
 import { HttpStatusCodes } from './http-status-codes'
 
@@ -20,5 +20,12 @@ export function ok<T = unknown> (body: T): HttpResponse {
   return {
     statusCode: HttpStatusCodes.OK,
     body
+  }
+}
+
+export function unauthorized (): HttpResponse {
+  return {
+    statusCode: HttpStatusCodes.UNAUTHORIZED,
+    body: new UnauthorizedError()
   }
 }

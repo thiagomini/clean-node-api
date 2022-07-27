@@ -1,5 +1,5 @@
-import { ServerError } from '../errors'
-import { badRequest, internalServerError, ok } from './http-responses-factories'
+import { ServerError, UnauthorizedError } from '../errors'
+import { badRequest, internalServerError, ok, unauthorized } from './http-responses-factories'
 import { HttpStatusCodes } from './http-status-codes'
 
 describe('http responses factories', () => {
@@ -30,6 +30,15 @@ describe('http responses factories', () => {
 
       expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.OK)
       expect(badRequestResponse.body).toEqual(body)
+    })
+  })
+
+  describe('unauthorized', () => {
+    it('should return an object with UNAUTHORIZED as statusCode and UnauthorizedError as body', () => {
+      const badRequestResponse = unauthorized()
+
+      expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.UNAUTHORIZED)
+      expect(badRequestResponse.body).toEqual(new UnauthorizedError())
     })
   })
 })
