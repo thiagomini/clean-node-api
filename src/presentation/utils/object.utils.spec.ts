@@ -34,5 +34,19 @@ describe('Object utils', () => {
         expect(firstMissingAttributeOf(object, requiredAttributes)).toBe('password')
       })
     })
+
+    describe('when the object has one of the required attributes set to undefined', () => {
+      it('should return the missing attribute', () => {
+        const object = {
+          name: 'any_name',
+          email: 'any_mail@mail.com',
+          password: undefined
+        }
+
+        const requiredAttributes = ['name', 'email', 'password']
+
+        expect(firstMissingAttributeOf(object, requiredAttributes)).toBe('password')
+      })
+    })
   })
 })
