@@ -9,11 +9,7 @@ export class EmailValidation implements Validation {
 
   validate (input: Record<string, any>): Optional<Error> {
     try {
-      const isValid = this.emailValidator.isValid(input[this.fieldName])
-      if (!isValid) {
-        return new InvalidParamException(this.fieldName)
-      }
-      return undefined
+      return this.validateEmail(input)
     } catch (err) {
       const email = input?.[this.fieldName]
       throw new EmailValidationError({
@@ -25,5 +21,13 @@ export class EmailValidation implements Validation {
         }
       })
     }
+  }
+
+  private validateEmail (input: Record<string, any>): Optional<Error> {
+    const isValid = this.emailValidator.isValid(input[this.fieldName])
+    if (!isValid) {
+      return new InvalidParamException(this.fieldName)
+    }
+    return undefined
   }
 }
