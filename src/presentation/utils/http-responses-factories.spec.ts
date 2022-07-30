@@ -1,6 +1,6 @@
 import { ServerError, UnauthorizedError } from '../errors'
 import { badRequest, internalServerError, ok, unauthorized } from './http-responses-factories'
-import { HttpStatusCodes } from './http-status-codes'
+import { HttpStatusCodes } from '../protocols/http-status-codes'
 
 describe('http responses factories', () => {
   describe('badRequest', () => {

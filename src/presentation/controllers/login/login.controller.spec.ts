@@ -1,6 +1,7 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { InvalidParamException, MissingParamException } from '../../errors'
-import { badRequest, EmailValidator, HttpRequest, internalServerError, ok, unauthorized } from '../../protocols'
+import { EmailValidator, HttpRequest } from '../../protocols'
+import { badRequest, internalServerError, unauthorized, ok } from '../../utils/http-responses-factories'
 import { LoginController } from './login.controller'
 
 describe('LoginController', () => {

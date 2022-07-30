@@ -1,5 +1,6 @@
 import { LogErrorRepository } from '../../data/protocols'
-import { Controller, HttpRequest, HttpResponse, HttpStatusCodes, internalServerError } from '../../presentation/protocols'
+import { Controller, HttpRequest, HttpResponse, HttpStatusCodes } from '../../presentation/protocols'
+import { internalServerError } from '../../presentation/utils/http-responses-factories'
 import { LogDecoratorController } from './log.decorator'
 
 describe('LogDecorator', () => {

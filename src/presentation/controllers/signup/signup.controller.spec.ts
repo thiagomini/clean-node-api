@@ -1,7 +1,9 @@
+import { Optional } from '../../../utils'
 import { InvalidParamException, MissingParamException } from '../../errors'
 import { pick } from '../../utils'
+import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
-import { AccountModel, AddAccountInput, AddAccountUseCase, badRequest, EmailValidator, HttpRequest, internalServerError, ok } from './signup.protocols'
+import { AccountModel, AddAccountInput, AddAccountUseCase, EmailValidator, HttpRequest, Validation } from './signup.protocols'
 
 describe('SignupController', () => {
   it('should return BAD_REQUEST if no name is provided', async () => {
@@ -165,22 +167,39 @@ describe('SignupController', () => {
     // Assert
     expect(response).toEqual(ok(CREATED_ACCOUNT_RESPONSE))
   })
+
+  it('should call Validation with correct value', async () => {
+    // Arrange
+    const { sut, validationStub } = createSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    await sut.handle(httpRequest)
+
+    // Assert
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
 })
 
 interface SutFactoryResponse {
   sut: SignUpController
   emailValidator: EmailValidator
   addAccountUseCase: AddAccountUseCase
+  validationStub: Validation
 }
 
 const createSut = (): SutFactoryResponse => {
   const emailValidator = createEmailValidator()
   const addAccountUseCase = createAddAccountUseCase()
-  const sut = new SignUpController(emailValidator, addAccountUseCase)
+  const validationStub = createValidation()
+  const sut = new SignUpController(emailValidator, addAccountUseCase, validationStub)
   return {
     sut,
     emailValidator,
-    addAccountUseCase
+    addAccountUseCase,
+    validationStub
   }
 }
 
@@ -207,6 +226,16 @@ const CREATED_ACCOUNT_RESPONSE: AccountModel = {
   name: 'valid_name',
   email: 'valid_email@mail.com',
   password: 'valid_password'
+}
+
+const createValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (): Optional<Error> {
+      return undefined
+    }
+  }
+
+  return new ValidationStub()
 }
 
 type RequestBody = Partial<{

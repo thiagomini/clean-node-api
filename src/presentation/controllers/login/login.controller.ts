@@ -1,7 +1,8 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { InvalidParamException, MissingParamException } from '../../errors'
-import { badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, HttpStatusCodes, internalServerError, unauthorized } from '../../protocols'
+import { Controller, EmailValidator, HttpRequest, HttpResponse, HttpStatusCodes } from '../../protocols'
 import { firstMissingAttributeOf } from '../../utils'
+import { internalServerError, badRequest, unauthorized } from '../../utils/http-responses-factories'
 
 export class LoginController implements Controller {
   private readonly requiredFields = ['email', 'password']

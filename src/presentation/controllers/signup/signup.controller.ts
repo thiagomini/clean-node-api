@@ -1,11 +1,13 @@
 import { InvalidParamException, MissingParamException } from '../../errors'
 import { firstMissingAttributeOf } from '../../utils'
-import { AddAccountUseCase, badRequest, Controller, EmailValidator, HttpRequest, HttpResponse, internalServerError, ok } from './signup.protocols'
+import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
+import { AddAccountUseCase, Controller, EmailValidator, HttpRequest, HttpResponse, Validation } from './signup.protocols'
 
 export class SignUpController implements Controller {
   constructor (
     private readonly emailValidator: EmailValidator,
-    private readonly addAccountUseCase: AddAccountUseCase
+    private readonly addAccountUseCase: AddAccountUseCase,
+    private readonly validation: Validation
   ) {}
 
   private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
@@ -21,6 +23,8 @@ export class SignUpController implements Controller {
 
   private async signUp (httpRequest: HttpRequest): Promise<HttpResponse> {
     const { body } = httpRequest
+    this.validation.validate(body)
+
     const missingAttribute = firstMissingAttributeOf(httpRequest.body, this.requiredFields)
 
     if (missingAttribute) {
