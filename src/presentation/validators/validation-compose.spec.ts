@@ -1,6 +1,7 @@
 import { Optional } from '../../utils'
 import { Validation } from './validation'
 import { ValidationComposite } from './validation-composite'
+import { ValidationError } from './validation.error'
 
 describe('ValidationComposite', () => {
   describe('validate', () => {
@@ -27,6 +28,16 @@ describe('ValidationComposite', () => {
       // Assert
       expect(spyValidation1).toHaveBeenCalledWith(input)
       expect(spyValidation2).toHaveBeenCalledWith(input)
+    })
+
+    it('should throw a ValidationError if one validation throws an error', () => {
+      const { sut, validations } = createSut()
+
+      jest.spyOn(validations[1], 'validate').mockImplementationOnce(() => {
+        throw new Error('some error')
+      })
+
+      expect(() => sut.validate({})).toThrowError(ValidationError)
     })
   })
 })
