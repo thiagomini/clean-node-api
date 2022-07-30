@@ -1,4 +1,5 @@
 import { Optional } from '../../utils'
+import { InvalidParamException } from '../errors'
 import { Validation } from './validation'
 
 export class CompareFieldsValidation implements Validation {
@@ -6,7 +7,9 @@ export class CompareFieldsValidation implements Validation {
 
   }
 
-  validate (input: unknown): Optional<Error> {
-    return undefined
+  validate (input: Record<string, any>): Optional<Error> {
+    if (input[this.fieldName] !== input[this.fieldToCompare]) {
+      return new InvalidParamException(this.fieldToCompare)
+    }
   }
 }

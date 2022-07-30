@@ -1,3 +1,4 @@
+import { InvalidParamException } from '../errors'
 import { CompareFieldsValidation } from './compare-fields.validation'
 
 describe('CompareFieldsValidation', () => {
@@ -14,6 +15,18 @@ describe('CompareFieldsValidation', () => {
           field2: value
         }
         expect(compareFieldsValidation.validate(input)).toBeUndefined()
+      })
+
+      it.each([
+        ['string', 'otherString'],
+        [1, 2],
+        [true, false]
+      ])('it should return InvalidParamException when fields are different primitives', (value, otherValue) => {
+        const input = {
+          field1: value,
+          field2: otherValue
+        }
+        expect(compareFieldsValidation.validate(input)).toEqual(new InvalidParamException('field2'))
       })
     })
   })
