@@ -26,6 +26,16 @@ describe('EmaiLValidation', () => {
 
     expect(response).toEqual(new InvalidParamException('email'))
   })
+
+  it('should return undefined if EmailValidator returns true', () => {
+    const { sut } = createSut()
+
+    const response = sut.validate({
+      email: 'any_mail@mail.com'
+    })
+
+    expect(response).toBeUndefined()
+  })
 })
 
 interface SutFactoryResponse {
