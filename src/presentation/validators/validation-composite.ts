@@ -6,12 +6,7 @@ export class ValidationComposite implements Validation {
   constructor (private readonly validations: Validation[]) {}
   validate (input: unknown): Optional<Error> {
     try {
-      for (const validation of this.validations) {
-        const errorOrUndefined = validation.validate(input)
-        if (errorOrUndefined) {
-          return errorOrUndefined
-        }
-      }
+      return this.validateWithEachValidation(input)
     } catch (error) {
       throw new ValidationError({
         cause: error as Error,
@@ -19,6 +14,15 @@ export class ValidationComposite implements Validation {
           input
         }
       })
+    }
+  }
+
+  private validateWithEachValidation (input: unknown): Optional<Error> {
+    for (const validation of this.validations) {
+      const errorOrUndefined = validation.validate(input)
+      if (errorOrUndefined) {
+        return errorOrUndefined
+      }
     }
   }
 }
