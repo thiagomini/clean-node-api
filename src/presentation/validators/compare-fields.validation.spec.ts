@@ -29,5 +29,11 @@ describe('CompareFieldsValidation', () => {
         expect(compareFieldsValidation.validate(input)).toEqual(new InvalidParamException('field2'))
       })
     })
+
+    describe('when input is undefined', () => {
+      it('should return undefined', () => {
+        expect(compareFieldsValidation.validate(undefined as unknown as Record<string, any>)).toBeUndefined()
+      })
+    })
   })
 })
