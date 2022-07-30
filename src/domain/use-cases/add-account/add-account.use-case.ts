@@ -2,5 +2,5 @@ import { AccountModel } from '../../models'
 import { AddAccountInput } from './add-account.input'
 
 export interface AddAccountUseCase {
-  add: (account: AddAccountInput) => Promise<AccountModel>
+  add(account: AddAccountInput): Promise<AccountModel>
 }
