@@ -6,19 +6,6 @@ import { SignUpController } from './signup.controller'
 import { AccountModel, AddAccountInput, AddAccountUseCase, EmailValidator, HttpRequest, Validation } from './signup.protocols'
 
 describe('SignupController', () => {
-  it('should return BAD_REQUEST if passwordConfirmation is different than the password', async () => {
-    // Arrange
-    const { sut } = createSut()
-
-    const httpRequest = createRequestWithMismatchingPassword()
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(badRequest(new InvalidParamException('passwordConfirmation')))
-  })
-
   it('should return BAD_REQUEST if given email is invalid', async () => {
     // Arrange
     const { sut, emailValidator } = createSut()
@@ -220,11 +207,4 @@ function createDefaultRequest (): HttpRequest {
   return {
     body: createDefaultRequestBody()
   }
-}
-
-function createRequestWithMismatchingPassword (): HttpRequest {
-  const defaultRequest = createDefaultRequest()
-  defaultRequest.body.passwordConfirmation = 'different'
-
-  return defaultRequest
 }
