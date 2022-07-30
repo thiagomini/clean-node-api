@@ -1,11 +1,12 @@
-import { SignUpController } from '../../presentation/controllers/signup/signup.controller'
-import { EmailValidatorAdapter } from '../../utils/email-validator.adapter'
 import { DbAddAccountUseCase } from '../../data/use-cases/add-account/db-add-account.use-case'
 import { BCryptEncrypterAdapter } from '../../infra/cryptography/bcrypt-encrypter.adapter'
 import { AccountMongoRepository } from '../../infra/db/mongodb/account-repository/account-mongo.repository'
-import { Controller } from '../../presentation/protocols'
 import { LogMongoRepository } from '../../infra/db/mongodb/log-repository/log-mongo.repository'
+import { SignUpController } from '../../presentation/controllers/signup/signup.controller'
+import { Controller } from '../../presentation/protocols'
+import { EmailValidatorAdapter } from '../../utils/email-validator.adapter'
 import { LogDecoratorController } from '../decorators/log.decorator'
+import { createValidation } from './signup-validation.factory'
 
 export const createSignupController = (): Controller => {
   const signupController = createRawSignupController()
@@ -16,7 +17,9 @@ export const createSignupController = (): Controller => {
 const createRawSignupController = (): SignUpController => {
   const emailValidatorAdapter = new EmailValidatorAdapter()
   const dbAddAccountUseCase = createDbAddAccount()
-  const signupController = new SignUpController(emailValidatorAdapter, dbAddAccountUseCase)
+  const validation = createValidation()
+
+  const signupController = new SignUpController(emailValidatorAdapter, dbAddAccountUseCase, validation)
   return signupController
 }
 
