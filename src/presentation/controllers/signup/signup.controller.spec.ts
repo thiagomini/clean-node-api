@@ -6,58 +6,6 @@ import { SignUpController } from './signup.controller'
 import { AccountModel, AddAccountInput, AddAccountUseCase, EmailValidator, HttpRequest, Validation } from './signup.protocols'
 
 describe('SignupController', () => {
-  it('should return BAD_REQUEST if no name is provided', async () => {
-    // Arrange
-    const { sut } = createSut()
-
-    const httpRequest = createRequestWithout('name')
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(badRequest(new MissingParamException('name')))
-  })
-
-  it('should return BAD_REQUEST if no email is provided', async () => {
-    // Arrange
-    const { sut } = createSut()
-
-    const httpRequest = createRequestWithout('email')
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(badRequest(new MissingParamException('email')))
-  })
-
-  it('should return BAD_REQUEST if no password is provided', async () => {
-    // Arrange
-    const { sut } = createSut()
-
-    const httpRequest = createRequestWithout('password')
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(badRequest(new MissingParamException('password')))
-  })
-
-  it('should return BAD_REQUEST if no passwordConfirmation is provided', async () => {
-    // Arrange
-    const { sut } = createSut()
-
-    const httpRequest = createRequestWithout('passwordConfirmation')
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(badRequest(new MissingParamException('passwordConfirmation')))
-  })
-
   it('should return BAD_REQUEST if passwordConfirmation is different than the password', async () => {
     // Arrange
     const { sut } = createSut()
@@ -265,17 +213,6 @@ function createDefaultRequestBody (): RequestBody {
     email: 'any_email@mail.com',
     password: 'any_password',
     passwordConfirmation: 'any_password'
-  }
-}
-
-function createRequestWithout (parameter: keyof RequestBody): HttpRequest {
-  const defaultRequest: RequestBody = createDefaultRequestBody()
-
-  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-  delete defaultRequest[parameter]
-
-  return {
-    body: defaultRequest
   }
 }
 

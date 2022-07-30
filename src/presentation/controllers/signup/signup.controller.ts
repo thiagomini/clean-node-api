@@ -1,5 +1,4 @@
-import { InvalidParamException, MissingParamException } from '../../errors'
-import { firstMissingAttributeOf } from '../../utils'
+import { InvalidParamException } from '../../errors'
 import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
 import { AddAccountUseCase, Controller, EmailValidator, HttpRequest, HttpResponse, Validation } from './signup.protocols'
 
@@ -27,12 +26,6 @@ export class SignUpController implements Controller {
 
     if (errorOrUndefined) {
       return badRequest(errorOrUndefined)
-    }
-
-    const missingAttribute = firstMissingAttributeOf(httpRequest.body, this.requiredFields)
-
-    if (missingAttribute) {
-      return badRequest(new MissingParamException(missingAttribute))
     }
 
     const { name, password, passwordConfirmation, email } = body
