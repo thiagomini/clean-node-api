@@ -1,15 +1,11 @@
-import { InvalidParamException } from '../../errors'
 import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
-import { AddAccountUseCase, Controller, EmailValidator, HttpRequest, HttpResponse, Validation } from './signup.protocols'
+import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.protocols'
 
 export class SignUpController implements Controller {
   constructor (
-    private readonly emailValidator: EmailValidator,
     private readonly addAccountUseCase: AddAccountUseCase,
     private readonly validation: Validation
   ) {}
-
-  private readonly requiredFields = ['email', 'name', 'password', 'passwordConfirmation']
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -29,10 +25,6 @@ export class SignUpController implements Controller {
     }
 
     const { name, password, email } = body
-
-    if (!this.emailValidator.isValid(email)) {
-      return badRequest(new InvalidParamException('email'))
-    }
 
     const account = await this.addAccountUseCase.add({
       name,

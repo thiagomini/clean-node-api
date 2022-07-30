@@ -1,4 +1,6 @@
+import { EmailValidator } from '../../presentation/protocols'
 import { CompareFieldsValidation } from '../../presentation/validators/compare-fields.validation'
+import { EmailValidation } from '../../presentation/validators/email.validation'
 import { RequiredFieldValidation } from '../../presentation/validators/required-field.validation'
 import { ValidationComposite } from '../../presentation/validators/validation-composite'
 import { createValidation } from './signup-validation.factory'
@@ -11,7 +13,18 @@ describe('SignupValidationFactory', () => {
 
     expect(ValidationComposite).toHaveBeenCalledWith([
       new RequiredFieldValidation(['name', 'email', 'password', 'passwordConfirmation']),
-      new CompareFieldsValidation('password', 'passwordConfirmation')
+      new CompareFieldsValidation('password', 'passwordConfirmation'),
+      new EmailValidation('email', createEmailValidatorStub())
     ])
   })
 })
+
+const createEmailValidatorStub = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (): boolean {
+      return true
+    }
+  }
+
+  return new EmailValidatorStub()
+}

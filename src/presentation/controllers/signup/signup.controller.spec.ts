@@ -1,64 +1,11 @@
 import { Optional } from '../../../utils'
-import { InvalidParamException, MissingParamException } from '../../errors'
+import { MissingParamException } from '../../errors'
 import { pick } from '../../utils'
 import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
-import { AccountModel, AddAccountInput, AddAccountUseCase, EmailValidator, HttpRequest, Validation } from './signup.protocols'
+import { AccountModel, AddAccountInput, AddAccountUseCase, HttpRequest, Validation } from './signup.protocols'
 
 describe('SignupController', () => {
-  it('should return BAD_REQUEST if given email is invalid', async () => {
-    // Arrange
-    const { sut, emailValidator } = createSut()
-    jest.spyOn(emailValidator, 'isValid').mockReturnValueOnce(false)
-
-    const httpRequest = {
-      body: {
-        name: 'any_namy',
-        email: 'invalid_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password'
-      }
-    }
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(badRequest(new InvalidParamException('email')))
-  })
-
-  it('should call EmailValidator with correct email', async () => {
-    // Arrange
-    const { sut, emailValidator } = createSut()
-    const emailValidatorSpy = jest.spyOn(emailValidator, 'isValid')
-
-    const httpRequest = createDefaultRequest()
-
-    // Act
-    await sut.handle(httpRequest)
-
-    // Assert
-    expect(emailValidatorSpy).toHaveBeenCalledWith(httpRequest.body.email)
-  })
-
-  it('should return INTERNAL_SERVER_ERROR if EmailValidator throws an error', async () => {
-    // Arrange
-    const { sut, emailValidator } = createSut()
-    const errorThrown = new Error('error')
-
-    jest.spyOn(emailValidator, 'isValid').mockImplementationOnce(() => {
-      throw errorThrown
-    })
-
-    const httpRequest = createDefaultRequest()
-
-    // Act
-    const httpResponse = await sut.handle(httpRequest)
-
-    // Assert
-    expect(httpResponse).toEqual(internalServerError(errorThrown))
-  })
-
   it('should call AddAccountUseCase with correct values', async () => {
     // Arrange
     const { sut, addAccountUseCase } = createSut()
@@ -134,31 +81,19 @@ describe('SignupController', () => {
 
 interface SutFactoryResponse {
   sut: SignUpController
-  emailValidator: EmailValidator
   addAccountUseCase: AddAccountUseCase
   validationStub: Validation
 }
 
 const createSut = (): SutFactoryResponse => {
-  const emailValidator = createEmailValidator()
   const addAccountUseCase = createAddAccountUseCase()
   const validationStub = createValidation()
-  const sut = new SignUpController(emailValidator, addAccountUseCase, validationStub)
+  const sut = new SignUpController(addAccountUseCase, validationStub)
   return {
     sut,
-    emailValidator,
     addAccountUseCase,
     validationStub
   }
-}
-
-const createEmailValidator = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      return true
-    }
-  }
-  return new EmailValidatorStub()
 }
 
 const createAddAccountUseCase = (): AddAccountUseCase => {
