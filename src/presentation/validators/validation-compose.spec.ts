@@ -13,6 +13,21 @@ describe('ValidationComposite', () => {
 
       expect(response).toEqual(new Error('some error'))
     })
+
+    it('should call all validations with the same input', () => {
+      // Arrange
+      const { sut, validations } = createSut()
+      const spyValidation1 = jest.spyOn(validations[0], 'validate')
+      const spyValidation2 = jest.spyOn(validations[1], 'validate')
+      const input = {}
+
+      // Act
+      sut.validate(input)
+
+      // Assert
+      expect(spyValidation1).toHaveBeenCalledWith(input)
+      expect(spyValidation2).toHaveBeenCalledWith(input)
+    })
   })
 })
 
