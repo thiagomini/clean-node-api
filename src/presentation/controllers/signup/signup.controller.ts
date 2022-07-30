@@ -23,7 +23,11 @@ export class SignUpController implements Controller {
 
   private async signUp (httpRequest: HttpRequest): Promise<HttpResponse> {
     const { body } = httpRequest
-    this.validation.validate(body)
+    const errorOrUndefined = this.validation.validate(body)
+
+    if (errorOrUndefined) {
+      return badRequest(errorOrUndefined)
+    }
 
     const missingAttribute = firstMissingAttributeOf(httpRequest.body, this.requiredFields)
 
