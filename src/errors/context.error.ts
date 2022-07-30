@@ -17,4 +17,10 @@ export class ContextError extends Error {
     this.context = errorInput.context
     this.name = errorInput.errorName ?? ContextError.name
   }
+
+  toJSON (): Pick<this, 'message'> {
+    return {
+      message: this.message
+    }
+  }
 }
