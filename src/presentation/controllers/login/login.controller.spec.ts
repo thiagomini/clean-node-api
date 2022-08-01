@@ -1,7 +1,9 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
+import { Optional } from '../../../utils'
 import { InvalidParamException, MissingParamException } from '../../errors'
 import { EmailValidator, HttpRequest } from '../../protocols'
 import { badRequest, internalServerError, unauthorized, ok } from '../../utils/http-responses-factories'
+import { Validation } from '../../validators'
 import { LoginController } from './login.controller'
 
 describe('LoginController', () => {
@@ -119,22 +121,39 @@ describe('LoginController', () => {
       accessToken: 'valid_token'
     }))
   })
+
+  it('should return badRequest if Validation returns an error', async () => {
+    // Arrange
+    const { sut, validationStub } = createSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamException('any_field'))
+
+    const httpRequest = createFakeRequest()
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toEqual(badRequest(new MissingParamException('any_field')))
+  })
 })
 
 interface SutFactoryResponse {
   sut: LoginController
   emailValidatorStub: EmailValidator
   authenticationStub: Authentication
+  validationStub: Validation
 }
 
 const createSut = (): SutFactoryResponse => {
   const emailValidatorStub = createEmailValidatorStub()
+  const validationStub = createValidationStub()
   const authenticationStub = createAuthenticationStub()
-  const sut = new LoginController(emailValidatorStub, authenticationStub)
+  const sut = new LoginController(emailValidatorStub, authenticationStub, validationStub)
   return {
     sut,
     emailValidatorStub,
-    authenticationStub
+    authenticationStub,
+    validationStub
   }
 }
 
@@ -146,6 +165,16 @@ const createEmailValidatorStub = (): EmailValidator => {
   }
 
   return new EmailValidatorStub()
+}
+
+const createValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (): Optional<Error> {
+      return undefined
+    }
+  }
+
+  return new ValidationStub()
 }
 
 const createAuthenticationStub = (): Authentication => {
