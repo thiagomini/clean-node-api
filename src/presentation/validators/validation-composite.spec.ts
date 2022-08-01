@@ -53,7 +53,7 @@ describe('ValidationComposite', () => {
       expect(() => sut.validate({})).toThrowError(ValidationError)
     })
 
-    it('should return undefined if all validation passes', () => {
+    it('should return undefined if all validations pass', () => {
       const { sut } = createSut()
 
       const response = sut.validate({})
