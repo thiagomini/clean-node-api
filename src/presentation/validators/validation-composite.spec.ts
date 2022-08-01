@@ -15,6 +15,19 @@ describe('ValidationComposite', () => {
       expect(response).toEqual(new Error('some error'))
     })
 
+    it('should return the first error if more than one validation fails', () => {
+      // Arrange
+      const { sut, validations } = createSut()
+      jest.spyOn(validations[0], 'validate').mockReturnValueOnce(new Error('first error'))
+      jest.spyOn(validations[1], 'validate').mockReturnValueOnce(new Error('second error'))
+
+      // Act
+      const response = sut.validate({})
+
+      // Assert
+      expect(response).toEqual(new Error('first error'))
+    })
+
     it('should call all validations with the same input', () => {
       // Arrange
       const { sut, validations } = createSut()
