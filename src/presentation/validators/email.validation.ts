@@ -2,7 +2,7 @@ import { Optional } from '../../utils'
 import { InvalidParamException } from '../errors'
 import { EmailValidator } from '../protocols'
 import { EmailValidationError } from './email-validation.error'
-import { Validation } from './validation'
+import { Validation } from '../protocols/validation'
 
 export class EmailValidation implements Validation {
   constructor (private readonly fieldName: string, private readonly emailValidator: EmailValidator) {}

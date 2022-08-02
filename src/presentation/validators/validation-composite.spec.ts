@@ -1,5 +1,5 @@
 import { Optional } from '../../utils'
-import { Validation } from './validation'
+import { Validation } from '../protocols/validation'
 import { ValidationComposite } from './validation-composite'
 import { ValidationError } from './validation.error'
 
