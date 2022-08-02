@@ -16,7 +16,10 @@ describe('LoginController', () => {
     await sut.handle(httpRequest)
 
     // Assert
-    expect(authenticateSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
+    expect(authenticateSpy).toHaveBeenCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
   })
 
   it('should return Unauthorized if invalid credentials are provided', async () => {
