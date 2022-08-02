@@ -1,9 +1,8 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
 import { MissingParamException } from '../../errors'
-import { HttpRequest } from '../../protocols'
+import { HttpRequest, Validation } from '../../protocols'
 import { badRequest, internalServerError, ok, unauthorized } from '../../utils/http-responses-factories'
-import { Validation } from '../../validators'
 import { LoginController } from './login.controller'
 
 describe('LoginController', () => {
