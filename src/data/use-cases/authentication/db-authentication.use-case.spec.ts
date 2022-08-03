@@ -1,4 +1,5 @@
 import { AccountModel } from '../../../domain/models'
+import { AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { LoadAccountByEmailRepository } from '../../protocols'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
 
@@ -7,7 +8,7 @@ describe('DbAuthenticationUseCase', () => {
     const { sut, loadAccountByEmailRepositoryStub } = createSut()
     const loadAccountByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
 
-    await sut.authenticate({ email: 'any_mail@mail.com', password: 'any_password' })
+    await sut.authenticate(createFakeAuthenticationInput())
 
     expect(loadAccountByEmailSpy).toHaveBeenCalledWith('any_mail@mail.com')
   })
@@ -42,3 +43,8 @@ const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
 
   return new LoadAccountByEmailRepositoryStub()
 }
+
+const createFakeAuthenticationInput = (): AuthenticationInput => ({
+  email: 'any_mail@mail.com',
+  password: 'any_password'
+})
