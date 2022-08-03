@@ -8,8 +8,7 @@ export class DbAuthenticationUseCase implements Authentication {
 
   async authenticate (authenticationInput: AuthenticationInput): Promise<Optional<string>> {
     try {
-      await this.loadAccountByEmailRepository.load(authenticationInput.email)
-      return undefined
+      return await this.authenticateUser(authenticationInput)
     } catch (err) {
       throw new AuthenticationError({
         email: authenticationInput.email,
@@ -19,5 +18,10 @@ export class DbAuthenticationUseCase implements Authentication {
         }
       })
     }
+  }
+
+  private async authenticateUser (authenticationInput: AuthenticationInput): Promise<Optional<string>> {
+    await this.loadAccountByEmailRepository.load(authenticationInput.email)
+    return undefined
   }
 }
