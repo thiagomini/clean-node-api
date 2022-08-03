@@ -1,6 +1,6 @@
 import { AccountModel } from '../../../domain/models'
 import { AuthenticationInput } from '../../../domain/use-cases/authentication'
-import { LoadAccountByEmailRepository } from '../../protocols'
+import { LoadAccountByEmailRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
 

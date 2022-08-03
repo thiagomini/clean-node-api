@@ -1,6 +1,6 @@
 import { Authentication, AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
-import { LoadAccountByEmailRepository } from '../../protocols'
+import { LoadAccountByEmailRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 
 export class DbAuthenticationUseCase implements Authentication {
