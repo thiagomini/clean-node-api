@@ -22,6 +22,15 @@ describe('DbAuthenticationUseCase', () => {
 
     await expect(authenticatePromise).rejects.toThrowError(AuthenticationError)
   })
+
+  it('should return undefined if user does not exist', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = createSut()
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(null)
+
+    const response = await sut.authenticate(createFakeAuthenticationInput())
+
+    expect(response).toBeUndefined()
+  })
 })
 
 interface SutFactoryResponse {
