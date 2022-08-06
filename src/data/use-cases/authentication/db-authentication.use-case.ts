@@ -1,10 +1,11 @@
 import { Authentication, AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
+import { HashComparer } from '../../protocols/cryptography'
 import { LoadAccountByEmailRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 
 export class DbAuthenticationUseCase implements Authentication {
-  constructor (private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository) {}
+  constructor (private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository, private readonly hashComparer: HashComparer) {}
 
   async authenticate (authenticationInput: AuthenticationInput): Promise<Optional<string>> {
     try {
@@ -20,8 +21,9 @@ export class DbAuthenticationUseCase implements Authentication {
     }
   }
 
-  private async authenticateUser (authenticationInput: AuthenticationInput): Promise<Optional<string>> {
-    await this.loadAccountByEmailRepository.load(authenticationInput.email)
+  private async authenticateUser ({ email, password }: AuthenticationInput): Promise<Optional<string>> {
+    const account = await this.loadAccountByEmailRepository.load(email)
+    this.hashComparer.compare(password, account?.password ?? '')
     return undefined
   }
 }

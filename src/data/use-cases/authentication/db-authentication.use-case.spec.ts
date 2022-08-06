@@ -1,5 +1,6 @@
 import { AccountModel } from '../../../domain/models'
 import { AuthenticationInput } from '../../../domain/use-cases/authentication'
+import { HashComparer } from '../../protocols/cryptography'
 import { LoadAccountByEmailRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
@@ -25,26 +26,38 @@ describe('DbAuthenticationUseCase', () => {
 
   it('should return undefined if user does not exist', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = createSut()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(null)
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(undefined)
 
     const response = await sut.authenticate(createFakeAuthenticationInput())
 
     expect(response).toBeUndefined()
+  })
+
+  it('should call HashComparer with correct password', async () => {
+    const { sut, hashComparerStub } = createSut()
+    const compareSpy = jest.spyOn(hashComparerStub, 'compare')
+
+    await sut.authenticate(createFakeAuthenticationInput())
+
+    expect(compareSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
   })
 })
 
 interface SutFactoryResponse {
   sut: DbAuthenticationUseCase
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
+  hashComparerStub: HashComparer
 }
 
 const createSut = (): SutFactoryResponse => {
   const loadAccountByEmailRepositoryStub = createLoadAccountByEmailRepoStub()
-  const sut = new DbAuthenticationUseCase(loadAccountByEmailRepositoryStub)
+  const hashComparerStub = createHashComparerStub()
+  const sut = new DbAuthenticationUseCase(loadAccountByEmailRepositoryStub, hashComparerStub)
 
   return {
     sut,
-    loadAccountByEmailRepositoryStub
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub
   }
 }
 
@@ -55,7 +68,7 @@ const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
         email,
         id: 'valid_id',
         name: 'any_name',
-        password: 'any_password'
+        password: 'hashed_password'
       }
     }
   }
@@ -63,6 +76,15 @@ const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
   return new LoadAccountByEmailRepositoryStub()
 }
 
+const createHashComparerStub = (): HashComparer => {
+  class HashComparerStub implements HashComparer {
+    compare (): boolean {
+      return true
+    }
+  }
+
+  return new HashComparerStub()
+}
 const createFakeAuthenticationInput = (): AuthenticationInput => ({
   email: 'any_mail@mail.com',
   password: 'any_password'
