@@ -50,6 +50,15 @@ describe('DbAuthenticationUseCase', () => {
 
     await expect(authenticatePromise).rejects.toThrowError(AuthenticationError)
   })
+
+  it('should return undefined if password comparison fails', async () => {
+    const { sut, hashComparerStub } = createSut()
+    jest.spyOn(hashComparerStub, 'compare').mockResolvedValueOnce(false)
+
+    const response = await sut.authenticate(createFakeAuthenticationInput())
+
+    expect(response).toBeUndefined()
+  })
 })
 
 interface SutFactoryResponse {
