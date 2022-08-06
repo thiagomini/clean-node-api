@@ -68,6 +68,15 @@ describe('DbAuthenticationUseCase', () => {
 
     expect(generateSpy).toHaveBeenCalledWith('valid_id')
   })
+
+  it('should throw AuthenticationError if TokenGenerator throws', async () => {
+    const { sut, tokenGeneratorStub } = createSut()
+    jest.spyOn(tokenGeneratorStub, 'generate').mockRejectedValueOnce(new Error())
+
+    const authenticatePromise = sut.authenticate(createFakeAuthenticationInput())
+
+    await expect(authenticatePromise).rejects.toThrowError(AuthenticationError)
+  })
 })
 
 interface SutFactoryResponse {
