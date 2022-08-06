@@ -28,14 +28,17 @@ export class DbAuthenticationUseCase implements Authentication {
 
   private async authenticateUser ({ email, password }: AuthenticationInput): Promise<Optional<string>> {
     const account = await this.loadAccountByEmailRepository.load(email)
-    if (account) {
-      const passwordIsCorrect = await this.hashComparer.compare(password, account.password)
-      if (passwordIsCorrect) {
-        const token = await this.tokenGenerator.generate(account.id)
-        await this.updateAccessTokenRepository.update(account.id, token)
-        return token
-      }
+    if (!account) {
+      return undefined
     }
-    return undefined
+
+    const passwordIsCorrect = await this.hashComparer.compare(password, account.password)
+    if (!passwordIsCorrect) {
+      return undefined
+    }
+
+    const token = await this.tokenGenerator.generate(account.id)
+    await this.updateAccessTokenRepository.update(account.id, token)
+    return token
   }
 }
