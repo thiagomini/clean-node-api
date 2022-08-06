@@ -1,6 +1,6 @@
 import { AccountModel } from '../../../domain/models'
 import { AuthenticationInput } from '../../../domain/use-cases/authentication'
-import { HashComparer } from '../../protocols/cryptography'
+import { HashComparer, TokenGenerator } from '../../protocols/cryptography'
 import { LoadAccountByEmailRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
@@ -59,40 +59,58 @@ describe('DbAuthenticationUseCase', () => {
 
     expect(response).toBeUndefined()
   })
+
+  it('should call TokenGenerator with correct id', async () => {
+    const { sut, tokenGeneratorStub } = createSut()
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+
+    await sut.authenticate(createFakeAuthenticationInput())
+
+    expect(generateSpy).toHaveBeenCalledWith('valid_id')
+  })
 })
 
 interface SutFactoryResponse {
   sut: DbAuthenticationUseCase
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashComparerStub: HashComparer
+  tokenGeneratorStub: TokenGenerator
 }
 
 const createSut = (): SutFactoryResponse => {
   const loadAccountByEmailRepositoryStub = createLoadAccountByEmailRepoStub()
   const hashComparerStub = createHashComparerStub()
-  const sut = new DbAuthenticationUseCase(loadAccountByEmailRepositoryStub, hashComparerStub)
+  const tokenGeneratorStub = createTokenGeneratorStub()
+  const sut = new DbAuthenticationUseCase(
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub,
+    tokenGeneratorStub
+  )
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGeneratorStub
   }
 }
 
 const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    public async load (email: string): Promise<AccountModel> {
-      return {
-        email,
-        id: 'valid_id',
-        name: 'any_name',
-        password: 'hashed_password'
-      }
+    public async load (): Promise<AccountModel> {
+      return getFakeAccount()
     }
   }
 
   return new LoadAccountByEmailRepositoryStub()
 }
+
+const getFakeAccount = (): AccountModel => ({
+  email: 'any_email@mail.com',
+  id: 'valid_id',
+  name: 'any_name',
+  password: 'hashed_password'
+})
 
 const createHashComparerStub = (): HashComparer => {
   class HashComparerStub implements HashComparer {
@@ -103,6 +121,17 @@ const createHashComparerStub = (): HashComparer => {
 
   return new HashComparerStub()
 }
+
+const createTokenGeneratorStub = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate (): Promise<string> {
+      return 'token'
+    }
+  }
+
+  return new TokenGeneratorStub()
+}
+
 const createFakeAuthenticationInput = (): AuthenticationInput => ({
   email: 'any_mail@mail.com',
   password: 'any_password'
