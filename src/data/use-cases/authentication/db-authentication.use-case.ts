@@ -1,14 +1,15 @@
 import { Authentication, AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
 import { HashComparer, TokenGenerator } from '../../protocols/cryptography'
-import { LoadAccountByEmailRepository } from '../../protocols/db'
+import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 
 export class DbAuthenticationUseCase implements Authentication {
   constructor (
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator
+    private readonly tokenGenerator: TokenGenerator,
+    private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
   async authenticate (authenticationInput: AuthenticationInput): Promise<Optional<string>> {
@@ -30,7 +31,9 @@ export class DbAuthenticationUseCase implements Authentication {
     if (account) {
       const passwordIsCorrect = await this.hashComparer.compare(password, account.password)
       if (passwordIsCorrect) {
-        return await this.tokenGenerator.generate(account.id)
+        const token = await this.tokenGenerator.generate(account.id)
+        await this.updateAccessTokenRepository.update(account.id, token)
+        return token
       }
     }
     return undefined

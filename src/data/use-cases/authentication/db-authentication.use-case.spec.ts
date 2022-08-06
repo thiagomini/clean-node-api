@@ -1,7 +1,7 @@
 import { AccountModel } from '../../../domain/models'
 import { AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { HashComparer, TokenGenerator } from '../../protocols/cryptography'
-import { LoadAccountByEmailRepository } from '../../protocols/db'
+import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
 
@@ -85,6 +85,15 @@ describe('DbAuthenticationUseCase', () => {
 
     expect(response).toBe('token')
   })
+
+  it('should call UpdateAccessTokenRepository with correct values on success', async () => {
+    const { sut, updateAccessTokenRepositoryStub } = createSut()
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
+
+    await sut.authenticate(createFakeAuthenticationInput())
+
+    expect(updateSpy).toHaveBeenCalledWith('valid_id', 'token')
+  })
 })
 
 interface SutFactoryResponse {
@@ -92,23 +101,27 @@ interface SutFactoryResponse {
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashComparerStub: HashComparer
   tokenGeneratorStub: TokenGenerator
+  updateAccessTokenRepositoryStub: UpdateAccessTokenRepository
 }
 
 const createSut = (): SutFactoryResponse => {
   const loadAccountByEmailRepositoryStub = createLoadAccountByEmailRepoStub()
   const hashComparerStub = createHashComparerStub()
   const tokenGeneratorStub = createTokenGeneratorStub()
+  const updateAccessTokenRepositoryStub = createUpdateAccessTokenRepositoryStub()
   const sut = new DbAuthenticationUseCase(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub
+    tokenGeneratorStub,
+    updateAccessTokenRepositoryStub
   )
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub
+    tokenGeneratorStub,
+    updateAccessTokenRepositoryStub
   }
 }
 
@@ -147,6 +160,16 @@ const createTokenGeneratorStub = (): TokenGenerator => {
   }
 
   return new TokenGeneratorStub()
+}
+
+const createUpdateAccessTokenRepositoryStub = (): UpdateAccessTokenRepository => {
+  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
+    async update (): Promise<void> {
+
+    }
+  }
+
+  return new UpdateAccessTokenRepositoryStub()
 }
 
 const createFakeAuthenticationInput = (): AuthenticationInput => ({
