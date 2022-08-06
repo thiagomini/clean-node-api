@@ -77,6 +77,14 @@ describe('DbAuthenticationUseCase', () => {
 
     await expect(authenticatePromise).rejects.toThrowError(AuthenticationError)
   })
+
+  it('should return a token on success', async () => {
+    const { sut } = createSut()
+
+    const response = await sut.authenticate(createFakeAuthenticationInput())
+
+    expect(response).toBe('token')
+  })
 })
 
 interface SutFactoryResponse {
