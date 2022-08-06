@@ -23,7 +23,9 @@ export class DbAuthenticationUseCase implements Authentication {
 
   private async authenticateUser ({ email, password }: AuthenticationInput): Promise<Optional<string>> {
     const account = await this.loadAccountByEmailRepository.load(email)
-    await this.hashComparer.compare(password, account?.password ?? '')
+    if (account) {
+      await this.hashComparer.compare(password, account.password)
+    }
     return undefined
   }
 }
