@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt'
-import { Encrypter } from '../../data/protocols/cryptography'
+import { Hasher } from '../../data/protocols/cryptography'
 import { EncryptionError } from './encryption.error'
 
-export class BCryptEncrypterAdapter implements Encrypter {
-  public async encrypt (password: string): Promise<string> {
+export class BCryptEncrypterAdapter implements Hasher {
+  public async hash (password: string): Promise<string> {
     try {
       const hashedValue = await bcrypt.hash(password, 12)
       return hashedValue

@@ -1,18 +1,18 @@
 import { AccountModel } from '../../../domain/models'
 import { AddAccountInput } from '../../../domain/use-cases/add-account'
-import { Encrypter } from '../../protocols/cryptography'
+import { Hasher } from '../../protocols/cryptography'
 import { AddAccountRepository } from '../../protocols/db/add-account.repository'
 import { DbAddAccountUseCase } from './db-add-account.use-case'
 import { AddAccountUseCaseError } from './errors'
 
 describe('DbAddAccountUseCase', () => {
-  it('should call Encrypter with correct password', async () => {
+  it('should call Hasher with correct password', async () => {
     // Arrange
     const {
       sut,
-      encrypterStub
+      hasherStub: encrypterStub
     } = createSut()
-    const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
+    const encryptSpy = jest.spyOn(encrypterStub, 'hash')
     const accountData = createDefaultAddAccountInput()
 
     // Act
@@ -26,11 +26,11 @@ describe('DbAddAccountUseCase', () => {
     // Arrange
     const {
       sut,
-      encrypterStub
+      hasherStub
     } = createSut()
 
     const innerError = new Error('EncrypterError')
-    jest.spyOn(encrypterStub, 'encrypt').mockImplementationOnce(async () => {
+    jest.spyOn(hasherStub, 'hash').mockImplementationOnce(async () => {
       throw innerError
     })
 
@@ -101,25 +101,25 @@ describe('DbAddAccountUseCase', () => {
 
 interface SutFactoryResponse {
   sut: DbAddAccountUseCase
-  encrypterStub: Encrypter
+  hasherStub: Hasher
   repositoryStub: AddAccountRepository
 }
 
 const createSut = (): SutFactoryResponse => {
-  const encrypterStub = createEncrypter()
+  const hasherStub = createHasher()
   const repositoryStub = createRepository()
-  const sut = new DbAddAccountUseCase(encrypterStub, repositoryStub)
+  const sut = new DbAddAccountUseCase(hasherStub, repositoryStub)
 
   return {
     sut,
-    encrypterStub,
+    hasherStub,
     repositoryStub
   }
 }
 
-const createEncrypter = (): Encrypter => {
-  class EncrypterStub implements Encrypter {
-    async encrypt (password: string): Promise<string> {
+const createHasher = (): Hasher => {
+  class EncrypterStub implements Hasher {
+    async hash (): Promise<string> {
       return 'hashed_password'
     }
   }
@@ -128,7 +128,7 @@ const createEncrypter = (): Encrypter => {
 
 const createRepository = (): any => {
   class RepositoryStub implements AddAccountRepository {
-    public async add (account: AddAccountInput): Promise<AccountModel> {
+    public async add (): Promise<AccountModel> {
       return getDefaultSavedAccountData()
     }
   }

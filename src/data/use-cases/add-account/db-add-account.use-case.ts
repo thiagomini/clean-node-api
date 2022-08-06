@@ -1,11 +1,11 @@
 import { AccountModel } from '../../../domain/models'
 import { AddAccountInput, AddAccountUseCase } from '../../../domain/use-cases/add-account'
-import { Encrypter } from '../../protocols/cryptography'
+import { Hasher } from '../../protocols/cryptography'
 import { AddAccountRepository } from '../../protocols/db/add-account.repository'
 import { AddAccountUseCaseError } from './errors'
 
 export class DbAddAccountUseCase implements AddAccountUseCase {
-  constructor (private readonly encrypter: Encrypter, private readonly addAccountRepository: AddAccountRepository) {}
+  constructor (private readonly hasher: Hasher, private readonly addAccountRepository: AddAccountRepository) {}
 
   async add (account: AddAccountInput): Promise<AccountModel> {
     try {
@@ -19,7 +19,7 @@ export class DbAddAccountUseCase implements AddAccountUseCase {
   }
 
   private async saveAccount (account: AddAccountInput): Promise<AccountModel> {
-    const hashedPassword = await this.encrypter.encrypt(account.password)
+    const hashedPassword = await this.hasher.hash(account.password)
     return await this.addAccountRepository.add({
       ...account,
       password: hashedPassword
