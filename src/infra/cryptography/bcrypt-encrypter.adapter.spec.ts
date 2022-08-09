@@ -5,12 +5,16 @@ import { EncryptionError } from './encryption.error'
 jest.mock('bcrypt', () => ({
   async hash (): Promise<string> {
     return 'hased_value'
+  },
+
+  async compare (): Promise<boolean> {
+    return true
   }
 }))
 
 describe('BCryptEncrypterAdapter', () => {
   describe('encrypt', () => {
-    it('should call bcrypt with correct value', async () => {
+    it('should call bcrypt.hash with correct value', async () => {
       const sut = new BCryptEncrypterAdapter()
       const hashSpy = jest.spyOn(bcrypt, 'hash')
 
@@ -36,6 +40,17 @@ describe('BCryptEncrypterAdapter', () => {
       const responsePromise = sut.hash('any_value')
 
       await expect(responsePromise).rejects.toThrowError(EncryptionError)
+    })
+  })
+
+  describe('compare', () => {
+    it('should call bcrypt.compare with correct values', async () => {
+      const sut = new BCryptEncrypterAdapter()
+      const compareSpy = jest.spyOn(bcrypt, 'compare')
+
+      await sut.compare('value', 'hash')
+
+      expect(compareSpy).toHaveBeenCalledWith('value', 'hash')
     })
   })
 })
