@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { HashComparer, Hasher } from '../../data/protocols/cryptography'
+import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 
 export class BCryptEncrypterAdapter implements Hasher, HashComparer {
@@ -18,6 +19,16 @@ export class BCryptEncrypterAdapter implements Hasher, HashComparer {
   }
 
   async compare (value: string, hash: string): Promise<boolean> {
-    return await bcrypt.compare(value, hash)
+    try {
+      return await bcrypt.compare(value, hash)
+    } catch (err) {
+      throw new HashComparisonError({
+        cause: err as Error,
+        context: {
+          value,
+          hash
+        }
+      })
+    }
   }
 }

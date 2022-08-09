@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { BCryptEncrypterAdapter } from './bcrypt-encrypter.adapter'
+import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 
 jest.mock('bcrypt', () => ({
@@ -73,6 +74,17 @@ describe('BCryptEncrypterAdapter', () => {
       const response = await sut.compare('value', 'hash')
 
       expect(response).toBe(true)
+    })
+
+    it('should throw an HashComparisonError if bcrypt.compare throws', async () => {
+      const sut = new BCryptEncrypterAdapter()
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      const responsePromise = sut.compare('value', 'hash')
+
+      await expect(responsePromise).rejects.toThrowError(HashComparisonError)
     })
   })
 })
