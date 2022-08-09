@@ -54,7 +54,7 @@ describe('BCryptEncrypterAdapter', () => {
       expect(compareSpy).toHaveBeenCalledWith('value', 'hash')
     })
 
-    it('should return false when bcrypt.hash returns false', async () => {
+    it('should return false when bcrypt.compare returns false', async () => {
       // Arrange
       const sut = new BCryptEncrypterAdapter()
       const originalCompare = bcrypt.compare
@@ -68,7 +68,7 @@ describe('BCryptEncrypterAdapter', () => {
       bcrypt.compare = originalCompare
     })
 
-    it('should return true when bcrypt.hash returns true', async () => {
+    it('should return true when bcrypt.compare returns true', async () => {
       const sut = new BCryptEncrypterAdapter()
 
       const response = await sut.compare('value', 'hash')
