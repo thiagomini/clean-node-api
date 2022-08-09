@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { HashComparer, Hasher } from '../../data/protocols/cryptography'
-import { EncryptionError } from './encryption.error'
+import { HashingError } from './hashing.error'
 
 export class BCryptEncrypterAdapter implements Hasher, HashComparer {
   public async hash (password: string): Promise<string> {
@@ -8,7 +8,7 @@ export class BCryptEncrypterAdapter implements Hasher, HashComparer {
       const hashedValue = await bcrypt.hash(password, 12)
       return hashedValue
     } catch (err) {
-      throw new EncryptionError({
+      throw new HashingError({
         cause: err as Error,
         context: {
           password

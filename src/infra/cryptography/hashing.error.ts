@@ -2,12 +2,12 @@ import { ContextError, ContextErrorInput } from '../../errors'
 
 export type EncryptionErrorInput = Omit<ContextErrorInput, 'message' | 'errorName'>
 
-export class EncryptionError extends ContextError {
+export class HashingError extends ContextError {
   constructor (errorInput: EncryptionErrorInput) {
     super({
       ...errorInput,
-      message: 'An error occurred while encrypting the value',
-      errorName: EncryptionError.name
+      message: 'An error occurred while trying to hash the value',
+      errorName: HashingError.name
     })
   }
 }
