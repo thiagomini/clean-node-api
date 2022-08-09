@@ -1,6 +1,6 @@
 import { Authentication, AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
-import { HashComparer, TokenGenerator } from '../../protocols/cryptography'
+import { HashComparer, Encrypter } from '../../protocols/cryptography'
 import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db'
 import { AuthenticationError } from './authentication.error'
 
@@ -8,7 +8,7 @@ export class DbAuthenticationUseCase implements Authentication {
   constructor (
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator,
+    private readonly encrypter: Encrypter,
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
@@ -37,7 +37,7 @@ export class DbAuthenticationUseCase implements Authentication {
       return undefined
     }
 
-    const token = await this.tokenGenerator.generate(account.id)
+    const token = await this.encrypter.encrypt(account.id)
     await this.updateAccessTokenRepository.update(account.id, token)
     return token
   }
