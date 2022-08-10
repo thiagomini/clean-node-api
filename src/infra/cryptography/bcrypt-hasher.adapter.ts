@@ -3,7 +3,7 @@ import { HashComparer, Hasher } from '../../data/protocols/cryptography'
 import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 
-export class BCryptEncrypterAdapter implements Hasher, HashComparer {
+export class BCryptHasherAdapter implements Hasher, HashComparer {
   public async hash (password: string): Promise<string> {
     try {
       const hashedValue = await bcrypt.hash(password, 12)

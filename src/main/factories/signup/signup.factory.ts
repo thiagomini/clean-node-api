@@ -1,5 +1,5 @@
 import { DbAddAccountUseCase } from '../../../data/use-cases/add-account/db-add-account.use-case'
-import { BCryptEncrypterAdapter } from '../../../infra/cryptography/bcrypt-encrypter.adapter'
+import { BCryptHasherAdapter } from '../../../infra/cryptography/bcrypt-hasher.adapter'
 import { AccountMongoRepository } from '../../../infra/db/mongodb/account-repository/account-mongo.repository'
 import { LogMongoRepository } from '../../../infra/db/mongodb/log-repository/log-mongo.repository'
 import { SignUpController } from '../../../presentation/controllers/signup/signup.controller'
@@ -22,7 +22,7 @@ const createRawSignupController = (): SignUpController => {
 }
 
 const createDbAddAccount = (): DbAddAccountUseCase => {
-  const encrypter = new BCryptEncrypterAdapter()
+  const encrypter = new BCryptHasherAdapter()
   const addAccountRepository = new AccountMongoRepository()
 
   return new DbAddAccountUseCase(encrypter, addAccountRepository)

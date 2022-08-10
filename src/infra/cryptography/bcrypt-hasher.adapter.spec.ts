@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { BCryptEncrypterAdapter } from './bcrypt-encrypter.adapter'
+import { BCryptHasherAdapter } from './bcrypt-hasher.adapter'
 import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 
@@ -13,10 +13,10 @@ jest.mock('bcrypt', () => ({
   }
 }))
 
-describe('BCryptEncrypterAdapter', () => {
+describe('BCryptHasherAdapter', () => {
   describe('encrypt', () => {
     it('should call bcrypt.hash with correct value', async () => {
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
       const hashSpy = jest.spyOn(bcrypt, 'hash')
 
       await sut.hash('any_value')
@@ -25,7 +25,7 @@ describe('BCryptEncrypterAdapter', () => {
     })
 
     it('should return the hash returned by bcrypt', async () => {
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
 
       const response = await sut.hash('any_value')
 
@@ -33,7 +33,7 @@ describe('BCryptEncrypterAdapter', () => {
     })
 
     it('should throw an HashingError if bcrypt throws', async () => {
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
       jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
         throw new Error()
       })
@@ -46,7 +46,7 @@ describe('BCryptEncrypterAdapter', () => {
 
   describe('compare', () => {
     it('should call bcrypt.compare with correct values', async () => {
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
       const compareSpy = jest.spyOn(bcrypt, 'compare')
 
       await sut.compare('value', 'hash')
@@ -56,7 +56,7 @@ describe('BCryptEncrypterAdapter', () => {
 
     it('should return false when bcrypt.compare returns false', async () => {
       // Arrange
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
       const originalCompare = bcrypt.compare
       bcrypt.compare = async () => false
 
@@ -69,7 +69,7 @@ describe('BCryptEncrypterAdapter', () => {
     })
 
     it('should return true when bcrypt.compare returns true', async () => {
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
 
       const response = await sut.compare('value', 'hash')
 
@@ -77,7 +77,7 @@ describe('BCryptEncrypterAdapter', () => {
     })
 
     it('should throw an HashComparisonError if bcrypt.compare throws', async () => {
-      const sut = new BCryptEncrypterAdapter()
+      const sut = new BCryptHasherAdapter()
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => {
         throw new Error()
       })
