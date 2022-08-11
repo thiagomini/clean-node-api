@@ -56,5 +56,16 @@ describe('AccountMongoRepository', () => {
         password: 'valid_password'
       })
     })
+
+    it('should return an undefined if account does not exist', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+
+      // Act
+      const account = await sut.loadByEmail('nonexistent@mail.com')
+
+      // Assert
+      expect(account).toBeUndefined()
+    })
   })
 })
