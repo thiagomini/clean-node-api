@@ -1,3 +1,4 @@
+import { AccountModel } from '../../../../domain/models'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
@@ -66,6 +67,26 @@ describe('AccountMongoRepository', () => {
 
       // Assert
       expect(account).toBeUndefined()
+    })
+  })
+
+  describe('updateAccessToken', () => {
+    it('should update an account access token on success', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+      const accountsCollection = await mongoHelper.getCollection('accounts')
+      const insertResult = await accountsCollection.insertOne({
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      })
+
+      // Act
+      await sut.updateAccessToken(insertResult.insertedId.toString(), 'valid_token')
+
+      // Assert
+      const updatedAccount = await accountsCollection.findOne<AccountModel>({ _id: insertResult.insertedId })
+      expect(updatedAccount?.accessToken).toBe('valid_token')
     })
   })
 })
