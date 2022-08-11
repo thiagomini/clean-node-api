@@ -31,13 +31,7 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
 
   async updateAccessToken (id: string, accessToken: string): Promise<void> {
     const accountCollection = await mongoHelper.getCollection('accounts')
-    let idAsMongoObjectId: ObjectId
-
-    try {
-      idAsMongoObjectId = new ObjectId(id)
-    } catch (err) {
-      throw new AccountNotFoundError(id)
-    }
+    const idAsMongoObjectId = this.transformToMongoObjectId(id)
 
     const updateResult = await accountCollection.updateOne({
       _id: idAsMongoObjectId
@@ -48,6 +42,14 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
     })
 
     if (updateResult.matchedCount === 0) {
+      throw new AccountNotFoundError(id)
+    }
+  }
+
+  private transformToMongoObjectId (id: string): ObjectId {
+    try {
+      return new ObjectId(id)
+    } catch (err) {
       throw new AccountNotFoundError(id)
     }
   }
