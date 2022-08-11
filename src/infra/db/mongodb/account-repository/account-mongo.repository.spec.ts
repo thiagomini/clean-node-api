@@ -1,7 +1,9 @@
+import { ObjectId } from 'mongodb'
 import { AccountModel } from '../../../../domain/models'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
+import { AccountNotFoundError } from './account-not-found.error'
 
 describe('AccountMongoRepository', () => {
   beforeAll(async () => {
@@ -87,6 +89,17 @@ describe('AccountMongoRepository', () => {
       // Assert
       const updatedAccount = await accountsCollection.findOne<AccountModel>({ _id: insertResult.insertedId })
       expect(updatedAccount?.accessToken).toBe('valid_token')
+    })
+
+    it('should throw an error if the account does not exist', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+
+      // Act
+      const updateAccessTokenPromise = sut.updateAccessToken(new ObjectId().toString(), 'valid_token')
+
+      // Assert
+      await expect(updateAccessTokenPromise).rejects.toThrowError(AccountNotFoundError)
     })
   })
 })

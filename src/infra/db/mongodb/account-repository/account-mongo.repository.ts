@@ -6,6 +6,7 @@ import { AddAccountInput } from '../../../../domain/use-cases/add-account'
 import { Optional } from '../../../../utils'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { mongoHelper } from '../helpers/mongo-helper'
+import { AccountNotFoundError } from './account-not-found.error'
 
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository {
   async add (addAccountInput: AddAccountInput): Promise<AccountModel> {
@@ -31,12 +32,16 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
   async updateAccessToken (id: string, accessToken: string): Promise<void> {
     const accountCollection = await mongoHelper.getCollection('accounts')
 
-    await accountCollection.updateOne({
+    const updateResult = await accountCollection.updateOne({
       _id: new ObjectId(id)
     }, {
       $set: {
         accessToken
       }
     })
+
+    if (updateResult.matchedCount === 0) {
+      throw new AccountNotFoundError(id)
+    }
   }
 }
