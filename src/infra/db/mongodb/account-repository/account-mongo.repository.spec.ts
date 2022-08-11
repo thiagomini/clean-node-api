@@ -91,12 +91,23 @@ describe('AccountMongoRepository', () => {
       expect(updatedAccount?.accessToken).toBe('valid_token')
     })
 
-    it('should throw an error if the account does not exist', async () => {
+    it('should throw an AccountNotFoundError if the account does not exist', async () => {
       // Arrange
       const sut = new AccountMongoRepository()
 
       // Act
       const updateAccessTokenPromise = sut.updateAccessToken(new ObjectId().toString(), 'valid_token')
+
+      // Assert
+      await expect(updateAccessTokenPromise).rejects.toThrowError(AccountNotFoundError)
+    })
+
+    it('should throw an AccountNotFoundError if the given id is not an ObjectId', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+
+      // Act
+      const updateAccessTokenPromise = sut.updateAccessToken('not_an_object_id', 'valid_token')
 
       // Assert
       await expect(updateAccessTokenPromise).rejects.toThrowError(AccountNotFoundError)
