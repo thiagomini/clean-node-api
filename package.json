@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "sucrase-node src/main/server.ts",
-    "test": "jest --passWithNoTests --silent --coverage=false --noStackTrace --runInBand",
+    "test": "jest --passWithNoTests --silent --coverage=false --runInBand",
     "test:verbose": "jest --passWithNoTests",
     "test:unit": "npm test -- --runInBand=false --watch -c jest-unit.config.js",
     "test:integration": "npm test -- -c jest-integration.config.js",

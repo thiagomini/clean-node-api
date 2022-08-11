@@ -33,4 +33,28 @@ describe('AccountMongoRepository', () => {
       })
     })
   })
+
+  describe('loadByEmail', () => {
+    it('should return an account by email on success', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+      const accountsCollection = await mongoHelper.getCollection('accounts')
+      await accountsCollection.insertOne({
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      })
+
+      // Act
+      const account = await sut.loadByEmail('valid_email@mail.com')
+
+      // Assert
+      expect(account).toEqual({
+        id: expect.any(String),
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      })
+    })
+  })
 })
