@@ -8,7 +8,7 @@ import { DbAuthenticationUseCase } from './db-authentication.use-case'
 describe('DbAuthenticationUseCase', () => {
   it('should call LoadAccountByEmailRepository with correct email', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = createSut()
-    const loadAccountByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load')
+    const loadAccountByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
 
     await sut.authenticate(createFakeAuthenticationInput())
 
@@ -17,7 +17,7 @@ describe('DbAuthenticationUseCase', () => {
 
   it('should throw AuthenticationError if LoadAccountByEmailRepository throws', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = createSut()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockRejectedValueOnce(new Error())
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockRejectedValueOnce(new Error())
 
     const authenticatePromise = sut.authenticate(createFakeAuthenticationInput())
 
@@ -26,7 +26,7 @@ describe('DbAuthenticationUseCase', () => {
 
   it('should return undefined if user does not exist', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = createSut()
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(undefined)
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockResolvedValueOnce(undefined)
 
     const response = await sut.authenticate(createFakeAuthenticationInput())
 
@@ -88,7 +88,7 @@ describe('DbAuthenticationUseCase', () => {
 
   it('should call UpdateAccessTokenRepository with correct values on success', async () => {
     const { sut, updateAccessTokenRepositoryStub } = createSut()
-    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update')
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken')
 
     await sut.authenticate(createFakeAuthenticationInput())
 
@@ -97,7 +97,7 @@ describe('DbAuthenticationUseCase', () => {
 
   it('should throw AuthenticationError if UpdateAccessTokenRepository throws', async () => {
     const { sut, updateAccessTokenRepositoryStub } = createSut()
-    jest.spyOn(updateAccessTokenRepositoryStub, 'update').mockRejectedValueOnce(new Error())
+    jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken').mockRejectedValueOnce(new Error())
 
     const authenticatePromise = sut.authenticate(createFakeAuthenticationInput())
 
@@ -136,7 +136,7 @@ const createSut = (): SutFactoryResponse => {
 
 const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    public async load (): Promise<AccountModel> {
+    public async loadByEmail (): Promise<AccountModel> {
       return getFakeAccount()
     }
   }
@@ -173,7 +173,7 @@ const createEncrypterStub = (): Encrypter => {
 
 const createUpdateAccessTokenRepositoryStub = (): UpdateAccessTokenRepository => {
   class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async update (): Promise<void> {
+    async updateAccessToken (): Promise<void> {
 
     }
   }

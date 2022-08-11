@@ -15,20 +15,22 @@ describe('AccountMongoRepository', () => {
     await mongoHelper.disconnect()
   })
 
-  it('should return an account on success', async () => {
-    const sut = new AccountMongoRepository()
+  describe('add', () => {
+    it('should return an account on success', async () => {
+      const sut = new AccountMongoRepository()
 
-    const account = await sut.add({
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'valid_password'
-    })
+      const account = await sut.add({
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      })
 
-    expect(account).toEqual({
-      id: expect.any(String),
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'valid_password'
+      expect(account).toEqual({
+        id: expect.any(String),
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      })
     })
   })
 })

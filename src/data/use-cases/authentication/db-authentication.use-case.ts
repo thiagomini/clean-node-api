@@ -27,7 +27,7 @@ export class DbAuthenticationUseCase implements Authentication {
   }
 
   private async authenticateUser ({ email, password }: AuthenticationInput): Promise<Optional<string>> {
-    const account = await this.loadAccountByEmailRepository.load(email)
+    const account = await this.loadAccountByEmailRepository.loadByEmail(email)
     if (!account) {
       return undefined
     }
@@ -38,7 +38,7 @@ export class DbAuthenticationUseCase implements Authentication {
     }
 
     const token = await this.encrypter.encrypt(account.id)
-    await this.updateAccessTokenRepository.update(account.id, token)
+    await this.updateAccessTokenRepository.updateAccessToken(account.id, token)
     return token
   }
 }
