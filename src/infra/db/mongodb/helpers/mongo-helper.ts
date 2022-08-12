@@ -1,4 +1,4 @@
-import { MongoClient, Collection } from 'mongodb'
+import { MongoClient, Collection, Document } from 'mongodb'
 
 class MongoHelper {
   private client?: MongoClient
@@ -14,12 +14,12 @@ class MongoHelper {
     this.client = undefined
   }
 
-  async getCollection (collectionName: string): Promise<Collection> {
+  async getCollection<TModel extends Document = Document> (collectionName: string): Promise<Collection<TModel>> {
     if (!this.client) {
       await this.connect(this.url)
     }
 
-    return (this.client as MongoClient).db(collectionName).collection(collectionName)
+    return (this.client as MongoClient).db(collectionName).collection<TModel>(collectionName)
   }
 }
 
