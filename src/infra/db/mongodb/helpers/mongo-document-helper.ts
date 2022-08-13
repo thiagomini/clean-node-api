@@ -1,7 +1,9 @@
-import { Document } from 'mongodb'
+import { Document, ObjectId } from 'mongodb'
 import { NullDocumentError } from './errors'
 
 export type DocumentWithId<T> = Omit<T, '_id'> & { id: string | undefined }
+
+export type DocumentWithMongoId<T> = T & { _id: ObjectId }
 
 export function addIdToDocument<T extends Document> (mongoDocument: T): DocumentWithId<T> {
   if (!mongoDocument) throw new NullDocumentError(mongoDocument)
