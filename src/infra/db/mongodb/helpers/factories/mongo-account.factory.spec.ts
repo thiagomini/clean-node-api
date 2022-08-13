@@ -1,13 +1,12 @@
 import { Collection, ObjectId } from 'mongodb'
 import { AccountModel } from '../../../../../domain/models'
-import { ModelAttributes } from '../../../../../domain/models/model-attributes'
 import { DocumentWithMongoId } from '../mongo-document-helper'
 import { mongoHelper } from '../mongo-helper'
 import { clearAccountsCollection } from '../test-teardown-helpers'
 import { MongoAccountFactory } from './mongo-account.factory'
 
 describe('MongoAccountFactory', () => {
-  let accountCollection: Collection<DocumentWithMongoId<ModelAttributes<AccountModel>>>
+  let accountCollection: Collection<DocumentWithMongoId<AccountModel>>
 
   beforeAll(async () => {
     await mongoHelper.connect()
