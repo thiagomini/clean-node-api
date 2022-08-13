@@ -45,5 +45,12 @@ describe('auth routes', () => {
         password: '123'
       }).expect(HttpStatusCodes.OK)
     })
+
+    it('should return 401 when user email does not exist', async () => {
+      await request(app).post('/api/login').send({
+        email: 'thiago@mail.com',
+        password: '123'
+      }).expect(HttpStatusCodes.UNAUTHORIZED)
+    })
   })
 })
