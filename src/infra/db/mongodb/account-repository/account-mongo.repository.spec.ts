@@ -1,13 +1,19 @@
-import { ObjectId } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { AccountModel } from '../../../../domain/models'
+import { MongoAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
 import { AccountNotFoundError } from './account-not-found.error'
 
 describe('AccountMongoRepository', () => {
+  let mongoAccountFactory: MongoAccountFactory
+  let accountsCollection: Collection
+
   beforeAll(async () => {
-    await mongoHelper.connect(String(process.env.MONGO_URL))
+    await mongoHelper.connect()
+    mongoAccountFactory = await MongoAccountFactory.createFactory()
+    accountsCollection = await mongoHelper.getCollection('accounts')
   })
 
   beforeEach(async () => {
@@ -76,18 +82,13 @@ describe('AccountMongoRepository', () => {
     it('should update an account access token on success', async () => {
       // Arrange
       const sut = new AccountMongoRepository()
-      const accountsCollection = await mongoHelper.getCollection('accounts')
-      const insertResult = await accountsCollection.insertOne({
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password'
-      })
+      const existingAccount = await mongoAccountFactory.createAccount()
 
       // Act
-      await sut.updateAccessToken(insertResult.insertedId.toString(), 'valid_token')
+      await sut.updateAccessToken(existingAccount.id, 'valid_token')
 
       // Assert
-      const updatedAccount = await accountsCollection.findOne<AccountModel>({ _id: insertResult.insertedId })
+      const updatedAccount = await accountsCollection.findOne<AccountModel>({ _id: new ObjectId(existingAccount.id) })
       expect(updatedAccount?.accessToken).toBe('valid_token')
     })
 
