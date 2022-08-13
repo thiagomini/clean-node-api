@@ -53,5 +53,25 @@ describe('MongoAccountFactory', () => {
         accessToken: expect.any(String)
       })
     })
+
+    it('should create an account with all properties but id', async () => {
+      // Arrange
+      const sut = await MongoAccountFactory.createFactory()
+      const accountData: Partial<AccountModel> = {
+        accessToken: 'some_token',
+        email: 'some_email',
+        name: 'some_name',
+        password: 'some_password'
+      }
+
+      // Act
+      const createdAccount = await sut.createAccount(accountData)
+
+      // Assert
+      expect(createdAccount).toEqual({
+        ...accountData,
+        id: expect.any(String)
+      })
+    })
   })
 })
