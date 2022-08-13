@@ -1,5 +1,5 @@
 import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
-import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.protocols'
+import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.controller.protocols'
 
 export class SignUpController implements Controller {
   constructor (

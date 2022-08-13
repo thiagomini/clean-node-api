@@ -3,7 +3,7 @@ import { MissingParamException } from '../../errors'
 import { pick } from '../../utils'
 import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
-import { AccountModel, AddAccountInput, AddAccountUseCase, HttpRequest, Validation } from './signup.protocols'
+import { AccountModel, AddAccountInput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
 
 describe('SignupController', () => {
   it('should call AddAccountUseCase with correct values', async () => {
