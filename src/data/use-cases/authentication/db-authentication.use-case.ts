@@ -1,7 +1,7 @@
 import { Authentication, AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
 import { HashComparer, Encrypter } from '../../protocols/cryptography'
-import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db'
+import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db/log-repository'
 import { AuthenticationError } from './authentication.error'
 
 export class DbAuthenticationUseCase implements Authentication {

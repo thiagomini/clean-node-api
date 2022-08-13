@@ -1,7 +1,7 @@
 import { AccountModel } from '../../../domain/models'
 import { AuthenticationInput } from '../../../domain/use-cases/authentication'
 import { HashComparer, Encrypter } from '../../protocols/cryptography'
-import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db'
+import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '../../protocols/db/log-repository'
 import { AuthenticationError } from './authentication.error'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
 

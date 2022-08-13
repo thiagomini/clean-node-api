@@ -1,7 +1,7 @@
 import { AccountModel } from '../../../domain/models'
 import { AddAccountInput } from '../../../domain/use-cases/add-account'
 import { Hasher } from '../../protocols/cryptography'
-import { AddAccountRepository } from '../../protocols/db/add-account.repository'
+import { AddAccountRepository } from '../../protocols/db/account-repository/add-account.repository'
 import { DbAddAccountUseCase } from './db-add-account.use-case'
 import { AddAccountUseCaseError } from './errors'
 
