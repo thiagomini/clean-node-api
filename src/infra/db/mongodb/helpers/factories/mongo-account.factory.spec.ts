@@ -1,10 +1,12 @@
 import { ObjectId } from 'mongodb'
 import { AccountModel } from '../../../../../domain/models'
 import { mongoHelper } from '../mongo-helper'
+import { clearAccountsCollection } from '../test-teardown-helpers'
 import { MongoAccountFactory } from './mongo-account.factory'
 
 describe('MongoAccountFactory', () => {
   afterAll(async () => {
+    await clearAccountsCollection()
     await mongoHelper.disconnect()
   })
 
@@ -33,6 +35,23 @@ describe('MongoAccountFactory', () => {
 
       // Assert
       expect(createdAccount).toEqual(accountData)
+    })
+
+    it('should create an account with all default properties', async () => {
+      // Arrange
+      const sut = await MongoAccountFactory.createFactory()
+
+      // Act
+      const createdAccount = await sut.createAccount()
+
+      // Assert
+      expect(createdAccount).toEqual<AccountModel>({
+        id: expect.any(String),
+        email: expect.any(String),
+        name: expect.any(String),
+        password: expect.any(String),
+        accessToken: expect.any(String)
+      })
     })
   })
 })
