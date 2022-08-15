@@ -7,7 +7,9 @@
     "node": ">=16.14.2"
   },
   "scripts": {
-    "start": "sucrase-node src/main/server.ts",
+    "start": "node dist/main/server.js",
+    "build": "rimraf dist && tsc",
+    "dev": "sucrase-node src/main/server.ts",
     "test": "jest --passWithNoTests --coverage=false --runInBand",
     "test:verbose": "jest --passWithNoTests",
     "test:unit": "npm test -- --runInBand=false --watch -c jest-unit.config.js",
@@ -33,6 +35,7 @@
     "husky": "^8.0.1",
     "jest": "^28.1.2",
     "lint-staged": "^13.0.3",
+    "rimraf": "^3.0.2",
     "sucrase": "^3.24.0",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.5",

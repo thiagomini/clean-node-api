@@ -1,10 +1,16 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "dist",
     "module": "CommonJS",
     "target": "es2021",
     "esModuleInterop": true,
-    "allowJs": true,
     "strict": true
-  }
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+  ]
 }
