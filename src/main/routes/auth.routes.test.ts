@@ -3,15 +3,10 @@ import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import { clearAccountsCollection } from '../../infra/db/mongodb/helpers/test-teardown-helpers'
 import { HttpStatusCodes } from '../../presentation/protocols'
 import app from '../config/app'
-import { hash } from 'bcrypt'
-import { Collection } from 'mongodb'
+import { AuthDSL } from '../dsl/auth/auth.dsl'
 
 describe('auth routes', () => {
-  let mongoAccountCollection: Collection
-
-  beforeAll(async () => {
-    mongoAccountCollection = await mongoHelper.getCollection('accounts')
-  })
+  const authDSL = AuthDSL.create()
 
   beforeEach(async () => {
     await clearAccountsCollection()
@@ -33,11 +28,11 @@ describe('auth routes', () => {
   })
 
   describe('[POST] /login', () => {
-    it('should return 200 on login', async () => {
-      await mongoAccountCollection.insertOne({
+    it('should return 200 on login success', async () => {
+      await authDSL.signupUser({
         name: 'thiago',
         email: 'thiago@mail.com',
-        password: await hash('123', 12)
+        password: '123'
       })
 
       await request(app).post('/api/login').send({
