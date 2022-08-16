@@ -6,11 +6,14 @@ export const setupRoutesFor = (app: Express): void => {
   const router = Router()
   app.use('/api', router)
 
-  fs.readdirSync(path.join(__dirname, '../routes')).filter(file => {
-    return (file.indexOf('.') !== 0) && (file.endsWith('routes.ts'))
-  }).map(async routeFile => {
-    const route = (await import(`../routes/${routeFile}`))
-    route.default(router)
-  }
-  )
+  fs.readdirSync(path.join(__dirname, '../routes'))
+    .filter(fileIsRouteHandler)
+    .map(async routeFile => {
+      const route = (await import(`../routes/${routeFile}`))
+      route.default(router)
+    }
+    )
 }
+
+const fileIsRouteHandler = (fileName: string): boolean =>
+  (fileName.indexOf('.') !== 0) && (fileName.endsWith('routes.ts') || fileName.endsWith('routes.js'))
