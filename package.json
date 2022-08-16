@@ -4,7 +4,7 @@
   "description": "Example Node API using TDD and Clean Architecture",
   "main": "index.js",
   "engines": {
-    "node": "16.14.2"
+    "node": ">= 16.14.2 <18"
   },
   "scripts": {
     "start": "node dist/main/server.js",
