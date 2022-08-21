@@ -13,8 +13,9 @@ services:
     build: .
     ports:
       - "5050:5050"
+      - "9222:9222"
     restart: always
-    command: npm start
+    command: npm run debug
     volumes:
       - ./dist:/app/dist
     depends_on:
