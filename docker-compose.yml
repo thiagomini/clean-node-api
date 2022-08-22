@@ -17,7 +17,7 @@ services:
     restart: always
     command: npm run debug
     volumes:
-      - ./dist:/app/dist
+      - ./dist/:/app/dist/
     depends_on:
       - mongo
 
