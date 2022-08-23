@@ -99,6 +99,26 @@ describe('DbAddAccountUseCase', () => {
     // Assert
     expect(account).toEqual(getDefaultSavedAccountData())
   })
+
+  it('should return an existing account if it exists', async () => {
+    // Arrange
+    const {
+      sut,
+      loadAccountByEmailRepository
+    } = createSut()
+    const existingAccount = getExistingAccount()
+    jest.spyOn(loadAccountByEmailRepository, 'loadByEmail').mockResolvedValueOnce(existingAccount)
+    const accountData = createDefaultAddAccountInput()
+
+    // Act
+    const account = await sut.findOrCreate(accountData)
+
+    // Assert
+    expect(account).toEqual<AddAccountOutput>({
+      ...existingAccount,
+      isNew: false,
+    })
+  })
 })
 
 interface SutFactoryResponse {
@@ -144,7 +164,7 @@ const createAddAccountRepositoryStub = (): any => {
 const createLoadAccountByEmailRepositoryStub = (): any => {
   class RepositoryStub implements LoadAccountByEmailRepository {
     async loadByEmail(): Promise<Optional<AccountModel>> {
-      return getDefaultSavedAccountData()
+      return undefined
     }
   }
 
@@ -157,6 +177,13 @@ const getDefaultSavedAccountData = (): AddAccountOutput => ({
   name: 'valid_name',
   password: 'hashed_password',
   isNew: true
+})
+
+const getExistingAccount = (): AccountModel => ({
+  id: 'existing_id',
+  email: 'existing@mail.com',
+  name: 'existing_name',
+  password: 'existing_hashed_password',
 })
 
 const createDefaultAddAccountInput = (): AddAccountInput => ({

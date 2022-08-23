@@ -14,7 +14,7 @@ export class DbAddAccountUseCase implements AddAccountUseCase {
 
   async findOrCreate (account: AddAccountInput): Promise<AddAccountOutput> {
     try {
-      return await this.saveAccount(account)
+      return await this.findOrSaveAccount(account)
     } catch (error) {
       throw new AddAccountUseCaseError({
         cause: error as Error,
@@ -23,7 +23,14 @@ export class DbAddAccountUseCase implements AddAccountUseCase {
     }
   }
 
-  private async saveAccount (account: AddAccountInput): Promise<AddAccountOutput> {
+  private async findOrSaveAccount (account: AddAccountInput): Promise<AddAccountOutput> {
+    const existingAccount = await this.loadAccountByEmailRepository.loadByEmail(account.email)
+    if (existingAccount) {
+      return {
+        ...existingAccount,
+        isNew: false,
+      }
+    }
     const hashedPassword = await this.hasher.hash(account.password)
     const newAccount = await this.addAccountRepository.add({
       ...account,
