@@ -1,6 +1,6 @@
-import { AccountModel } from '../../models'
 import { AddAccountInput } from './add-account.input'
+import { AddAccountOutput } from './add-account.output'
 
 export interface AddAccountUseCase {
-  add(account: AddAccountInput): Promise<AccountModel>
+  findOrCreate(account: AddAccountInput): Promise<AddAccountOutput>
 }
