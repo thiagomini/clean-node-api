@@ -1,3 +1,4 @@
+import { Authentication } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
 import { MissingParamException } from '../../errors'
 import { pick } from '../../utils'
@@ -18,6 +19,22 @@ describe('SignupController', () => {
 
     // Assert
     expect(addSpy).toHaveBeenCalledWith(pick(httpRequest.body, 'name', 'email', 'password'))
+  })
+
+  it('should call Authentication with correct values', async () => {
+    // Arrange
+    const { sut, authenticationStub } = createSut()
+    const authenticateSpy = jest.spyOn(authenticationStub, 'authenticate')
+    const httpRequest: HttpRequest = createDefaultRequest()
+
+    // Act
+    await sut.handle(httpRequest)
+
+    // Assert
+    expect(authenticateSpy).toHaveBeenCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
   })
 
   it('should return INTERNAL_SERVER_ERROR if AddAccountUseCase throws an error', async () => {
@@ -83,20 +100,23 @@ interface SutFactoryResponse {
   sut: SignUpController
   addAccountUseCase: AddAccountUseCase
   validationStub: Validation
+  authenticationStub: Authentication
 }
 
 const createSut = (): SutFactoryResponse => {
-  const addAccountUseCase = createAddAccountUseCase()
-  const validationStub = createValidation()
-  const sut = new SignUpController(addAccountUseCase, validationStub)
+  const addAccountUseCase = createAddAccountUseCaseStub()
+  const validationStub = createValidationStub()
+  const authenticationStub = createAuthenticationStub()
+  const sut = new SignUpController(addAccountUseCase, validationStub, authenticationStub)
   return {
     sut,
     addAccountUseCase,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
-const createAddAccountUseCase = (): AddAccountUseCase => {
+const createAddAccountUseCaseStub = (): AddAccountUseCase => {
   class AddAccountStub implements AddAccountUseCase {
     async add (account: AddAccountInput): Promise<AccountModel> {
       return CREATED_ACCOUNT_RESPONSE
@@ -112,7 +132,7 @@ const CREATED_ACCOUNT_RESPONSE: AccountModel = {
   password: 'valid_password'
 }
 
-const createValidation = (): Validation => {
+const createValidationStub = (): Validation => {
   class ValidationStub implements Validation {
     validate (): Optional<Error> {
       return undefined
@@ -120,6 +140,16 @@ const createValidation = (): Validation => {
   }
 
   return new ValidationStub()
+}
+
+const createAuthenticationStub = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async authenticate (): Promise<string> {
+      return 'valid_token'
+    }
+  }
+
+  return new AuthenticationStub()
 }
 
 type RequestBody = Partial<{
