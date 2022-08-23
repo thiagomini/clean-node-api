@@ -55,6 +55,24 @@ describe('SignupController', () => {
     expect(httpResponse).toEqual(internalServerError(errorThrown))
   })
 
+  it('should return INTERNAL_SERVER_ERROR if Authentication throws an error', async () => {
+    // Arrange
+    const { sut, authenticationStub } = createSut()
+    const errorThrown = new Error('error')
+
+    jest.spyOn(authenticationStub, 'authenticate').mockImplementationOnce(() => {
+      throw errorThrown
+    })
+
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toEqual(internalServerError(errorThrown))
+  })
+
   it('should return OK (200) with user token if valid data is provided', async () => {
     // Arrange
     const { sut } = createSut()
