@@ -55,7 +55,7 @@ describe('SignupController', () => {
     expect(httpResponse).toEqual(internalServerError(errorThrown))
   })
 
-  it('should return OK (200) if valid data is provided', async () => {
+  it('should return OK (200) with user token if valid data is provided', async () => {
     // Arrange
     const { sut } = createSut()
     const httpRequest = createDefaultRequest()
@@ -64,7 +64,9 @@ describe('SignupController', () => {
     const response = await sut.handle(httpRequest)
 
     // Assert
-    expect(response).toEqual(ok(CREATED_ACCOUNT_RESPONSE))
+    expect(response).toEqual(ok({
+      accessToken: 'valid_token'
+    }))
   })
 
   it('should call Validation with correct value', async () => {
