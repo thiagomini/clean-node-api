@@ -4,7 +4,7 @@ import { ExistingEmailException, MissingParamException } from '../../errors'
 import { pick } from '../../utils'
 import { badRequest, forbidden, internalServerError, ok } from '../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
-import { AddAccountOutput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
+import { AccountModel, AddAccountOutput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
 
 describe('SignupController', () => {
   it('should call AddAccountUseCase with correct values', async () => {
@@ -118,7 +118,10 @@ describe('SignupController', () => {
   it('should return forbidden if email already exists', async () => {
     // Arrange
     const { sut, addAccountUseCase } = createSut()
-    jest.spyOn(addAccountUseCase, 'findOrCreate').mockResolvedValueOnce(getExistingAccount())
+    jest.spyOn(addAccountUseCase, 'findOrCreate').mockResolvedValueOnce({
+      ...getDefaultAccount(),
+      isNew: false
+    })
 
     const httpRequest = createDefaultRequest()
 
@@ -153,26 +156,20 @@ const createSut = (): SutFactoryResponse => {
 const createAddAccountUseCaseStub = (): AddAccountUseCase => {
   class AddAccountStub implements AddAccountUseCase {
     async findOrCreate (): Promise<AddAccountOutput> {
-      return CREATED_ACCOUNT_RESPONSE
+      return {
+        ...getDefaultAccount(),
+        isNew: true
+      }
     }
   }
   return new AddAccountStub()
 }
 
-const CREATED_ACCOUNT_RESPONSE: AddAccountOutput = {
+const getDefaultAccount = (): AccountModel => ({
   id: 'valid_id',
   name: 'valid_name',
   email: 'valid_email@mail.com',
-  password: 'valid_password',
-  isNew: true
-}
-
-const getExistingAccount = (): AddAccountOutput => ({
-  id: 'existing_id',
-  name: 'existing_name',
-  email: 'any_email@mail.com',
-  password: 'existing_password',
-  isNew: false
+  password: 'valid_password'
 })
 
 const createValidationStub = (): Validation => {
