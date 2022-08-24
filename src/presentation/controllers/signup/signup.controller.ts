@@ -1,5 +1,6 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
-import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
+import { ExistingEmailException } from '../../errors'
+import { badRequest, forbidden, internalServerError, ok } from '../../utils/http-responses-factories'
 import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.controller.protocols'
 
 export class SignUpController implements Controller {
@@ -28,11 +29,15 @@ export class SignUpController implements Controller {
 
     const { name, password, email } = body
 
-    await this.addAccountUseCase.add({
+    const account = await this.addAccountUseCase.findOrCreate({
       name,
       email,
       password
     })
+
+    if (!account.isNew) {
+      return forbidden(new ExistingEmailException(email))
+    }
 
     const accessToken = await this.authentication.authenticate({
       email,

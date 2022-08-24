@@ -1,16 +1,16 @@
 import { Authentication } from '../../../domain/use-cases/authentication'
 import { Optional } from '../../../utils'
-import { MissingParamException } from '../../errors'
+import { ExistingEmailException, MissingParamException } from '../../errors'
 import { pick } from '../../utils'
-import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
+import { badRequest, forbidden, internalServerError, ok } from '../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
-import { AccountModel, AddAccountInput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
+import { AddAccountOutput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
 
 describe('SignupController', () => {
   it('should call AddAccountUseCase with correct values', async () => {
     // Arrange
     const { sut, addAccountUseCase } = createSut()
-    const addSpy = jest.spyOn(addAccountUseCase, 'add')
+    const addSpy = jest.spyOn(addAccountUseCase, 'findOrCreate')
 
     const httpRequest = createDefaultRequest()
 
@@ -42,7 +42,7 @@ describe('SignupController', () => {
     const { sut, addAccountUseCase } = createSut()
     const errorThrown = new Error('error')
 
-    jest.spyOn(addAccountUseCase, 'add').mockImplementationOnce(() => {
+    jest.spyOn(addAccountUseCase, 'findOrCreate').mockImplementationOnce(() => {
       throw errorThrown
     })
 
@@ -114,6 +114,20 @@ describe('SignupController', () => {
     // Assert
     expect(httpResponse).toEqual(badRequest(new MissingParamException('any_field')))
   })
+
+  it('should return forbidden if email already exists', async () => {
+    // Arrange
+    const { sut, addAccountUseCase } = createSut()
+    jest.spyOn(addAccountUseCase, 'findOrCreate').mockResolvedValueOnce(getExistingAccount())
+
+    const httpRequest = createDefaultRequest()
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toEqual(forbidden(new ExistingEmailException('any_email@mail.com')))
+  })
 })
 
 interface SutFactoryResponse {
@@ -138,19 +152,28 @@ const createSut = (): SutFactoryResponse => {
 
 const createAddAccountUseCaseStub = (): AddAccountUseCase => {
   class AddAccountStub implements AddAccountUseCase {
-    async add (account: AddAccountInput): Promise<AccountModel> {
+    async findOrCreate (): Promise<AddAccountOutput> {
       return CREATED_ACCOUNT_RESPONSE
     }
   }
   return new AddAccountStub()
 }
 
-const CREATED_ACCOUNT_RESPONSE: AccountModel = {
+const CREATED_ACCOUNT_RESPONSE: AddAccountOutput = {
   id: 'valid_id',
   name: 'valid_name',
   email: 'valid_email@mail.com',
-  password: 'valid_password'
+  password: 'valid_password',
+  isNew: true
 }
+
+const getExistingAccount = (): AddAccountOutput => ({
+  id: 'existing_id',
+  name: 'existing_name',
+  email: 'any_email@mail.com',
+  password: 'existing_password',
+  isNew: false
+})
 
 const createValidationStub = (): Validation => {
   class ValidationStub implements Validation {
