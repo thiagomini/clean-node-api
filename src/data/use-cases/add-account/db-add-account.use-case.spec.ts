@@ -1,11 +1,15 @@
-import { AccountModel } from '../../../domain/models'
-import { AddAccountInput, AddAccountOutput } from '../../../domain/use-cases/add-account'
-import { Optional } from '../../../utils'
-import { Hasher } from '../../protocols/cryptography'
-import { LoadAccountByEmailRepository } from '../../protocols/db/account-repository'
-import { AddAccountRepository } from '../../protocols/db/account-repository/add-account.repository'
+import {
+  AddAccountInput,
+  AddAccountOutput,
+  AddAccountUseCaseError,
+  AccountModel,
+  AddAccountRepository,
+  Hasher,
+  LoadAccountByEmailRepository,
+  Optional
+} from './db-add-account.protocols'
+
 import { DbAddAccountUseCase } from './db-add-account.use-case'
-import { AddAccountUseCaseError } from './errors'
 
 describe('DbAddAccountUseCase', () => {
   it('should call Hasher with correct password', async () => {
