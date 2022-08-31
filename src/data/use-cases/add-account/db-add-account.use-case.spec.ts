@@ -116,7 +116,7 @@ describe('DbAddAccountUseCase', () => {
     // Assert
     expect(account).toEqual<AddAccountOutput>({
       ...existingAccount,
-      isNew: false,
+      isNew: false
     })
   })
 })
@@ -163,7 +163,7 @@ const createAddAccountRepositoryStub = (): any => {
 
 const createLoadAccountByEmailRepositoryStub = (): any => {
   class RepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail(): Promise<Optional<AccountModel>> {
+    async loadByEmail (): Promise<Optional<AccountModel>> {
       return undefined
     }
   }
@@ -183,7 +183,7 @@ const getExistingAccount = (): AccountModel => ({
   id: 'existing_id',
   email: 'existing@mail.com',
   name: 'existing_name',
-  password: 'existing_hashed_password',
+  password: 'existing_hashed_password'
 })
 
 const createDefaultAddAccountInput = (): AddAccountInput => ({
