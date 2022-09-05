@@ -1,7 +1,7 @@
+import { MissingParamException } from '../../presentation/errors'
+import { Validation } from '../../presentation/protocols'
+import { firstMissingAttributeOf } from '../../presentation/utils'
 import { Optional } from '../../utils'
-import { MissingParamException } from '../errors'
-import { firstMissingAttributeOf } from '../utils'
-import { Validation } from '../protocols/validation'
 
 export class RequiredFieldValidation implements Validation {
   constructor (private readonly requiredFields: string[]) {}
