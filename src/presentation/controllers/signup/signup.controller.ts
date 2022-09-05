@@ -1,10 +1,13 @@
-import { badRequest, internalServerError, ok } from '../../utils/http-responses-factories'
+import { Authentication } from '../../../domain/use-cases/authentication'
+import { ExistingEmailException } from '../../errors'
+import { badRequest, forbidden, internalServerError, ok } from '../../utils/http-responses-factories'
 import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.controller.protocols'
 
 export class SignUpController implements Controller {
   constructor (
     private readonly addAccountUseCase: AddAccountUseCase,
-    private readonly validation: Validation
+    private readonly validation: Validation,
+    private readonly authentication: Authentication
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -26,12 +29,21 @@ export class SignUpController implements Controller {
 
     const { name, password, email } = body
 
-    const account = await this.addAccountUseCase.add({
+    const account = await this.addAccountUseCase.findOrCreate({
       name,
       email,
       password
     })
 
-    return ok(account)
+    if (!account.isNew) {
+      return forbidden(new ExistingEmailException(email))
+    }
+
+    const accessToken = await this.authentication.authenticate({
+      email,
+      password
+    })
+
+    return ok({ accessToken })
   }
 }

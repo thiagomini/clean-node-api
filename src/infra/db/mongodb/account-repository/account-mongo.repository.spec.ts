@@ -1,5 +1,5 @@
 import { Collection, ObjectId } from 'mongodb'
-import { AccountModel } from '../../../../domain/models'
+import { AccountModel } from '../../../../data/use-cases/add-account/db-add-account.protocols'
 import { MongoAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'

@@ -3,4 +3,4 @@ dist
 .husky
 jest.config.js
 coverage
-data
+./data

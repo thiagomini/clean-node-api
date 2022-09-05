@@ -1,5 +1,5 @@
 import { ServerError, UnauthorizedError } from '../errors'
-import { badRequest, internalServerError, ok, unauthorized } from './http-responses-factories'
+import { badRequest, forbidden, internalServerError, ok, unauthorized } from './http-responses-factories'
 import { HttpStatusCodes } from '../protocols/http-status-codes'
 
 describe('http responses factories', () => {
@@ -39,6 +39,16 @@ describe('http responses factories', () => {
 
       expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.UNAUTHORIZED)
       expect(badRequestResponse.body).toEqual(new UnauthorizedError())
+    })
+  })
+
+  describe('forbidden', () => {
+    it('should return an object with FORBIDDEN as statusCode and given error as the body', () => {
+      const error = new Error('Something went wrong!')
+      const badRequestResponse = forbidden(error)
+
+      expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.FORBIDDEN)
+      expect(badRequestResponse.body).toBe(error)
     })
   })
 })
