@@ -1,4 +1,4 @@
-import { badRequest } from '../../../utils/http-responses-factories'
+import { badRequest, internalServerError } from '../../../utils/http-responses-factories'
 import { AddSurveyUseCase, HttpRequest, Optional, Validation } from './add-survey-controller.protocols'
 import { AddSurveyController } from './add-survey.controller'
 describe('AddSurveyController', () => {
@@ -39,6 +39,19 @@ describe('AddSurveyController', () => {
 
     // Assert
     expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  it('should return 500 if AddSurveyUseCase fails', async () => {
+    // Arrange
+    const { addSurveyStub, sut } = createSut()
+    jest.spyOn(addSurveyStub, 'add').mockRejectedValueOnce(new Error())
+    const httpRequest = createFakeRequest()
+
+    // Act
+    const httpResponse = await sut.handle(httpRequest)
+
+    // Assert
+    expect(httpResponse).toEqual(internalServerError(new Error()))
   })
 })
 
