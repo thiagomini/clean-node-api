@@ -1,8 +1,8 @@
 import { badRequest } from '../../../utils/http-responses-factories'
-import { Controller, HttpRequest, HttpResponse, Validation } from './add-survey-controller.protocols'
+import { Controller, HttpRequest, HttpResponse, Validation, AddSurveyUseCase } from './add-survey-controller.protocols'
 
 export class AddSurveyController implements Controller {
-  constructor (private readonly validation: Validation) {}
+  constructor (private readonly validation: Validation, private readonly addSurveyUseCase: AddSurveyUseCase) {}
 
   async handle (httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     const errorOrUndefined = this.validation.validate(httpRequest.body)
@@ -10,6 +10,13 @@ export class AddSurveyController implements Controller {
     if (errorOrUndefined) {
       return badRequest(errorOrUndefined)
     }
+
+    const { question, answers } = httpRequest.body
+
+    await this.addSurveyUseCase.add({
+      question,
+      answers
+    })
 
     return {
       body: {},

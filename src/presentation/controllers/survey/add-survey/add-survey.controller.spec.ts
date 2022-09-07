@@ -1,5 +1,5 @@
 import { badRequest } from '../../../utils/http-responses-factories'
-import { HttpRequest, Validation, Optional } from './add-survey-controller.protocols'
+import { AddSurveyUseCase, HttpRequest, Optional, Validation } from './add-survey-controller.protocols'
 import { AddSurveyController } from './add-survey.controller'
 describe('AddSurveyController', () => {
   it('should call Validation with correct values', async () => {
@@ -27,20 +27,36 @@ describe('AddSurveyController', () => {
     // Assert
     expect(httpResponse).toEqual(badRequest(new Error()))
   })
+
+  it('should call AddSurveyUseCase with correct values', async () => {
+    // Arrange
+    const { sut, addSurveyStub } = createSut()
+    const addSpy = jest.spyOn(addSurveyStub, 'add')
+    const httpRequest = createFakeRequest()
+
+    // Act
+    await sut.handle(httpRequest)
+
+    // Assert
+    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
 })
 
 interface SutFactoryResponse {
   sut: AddSurveyController
   validationStub: Validation
+  addSurveyStub: AddSurveyUseCase
 }
 
 const createSut = (): SutFactoryResponse => {
   const validationStub = createValidationStub()
-  const sut = new AddSurveyController(validationStub)
+  const addSurveyStub = createAddSurveyStub()
+  const sut = new AddSurveyController(validationStub, addSurveyStub)
 
   return {
     sut,
-    validationStub
+    validationStub,
+    addSurveyStub
   }
 }
 
@@ -52,6 +68,14 @@ const createValidationStub = (): Validation => {
   }
   const validationStub = new ValidationStub()
   return validationStub
+}
+
+const createAddSurveyStub = (): AddSurveyUseCase => {
+  class AddSurveyStub implements AddSurveyUseCase {
+    async add (): Promise<void> {}
+  }
+
+  return new AddSurveyStub()
 }
 
 const createFakeRequest = (): HttpRequest => ({
