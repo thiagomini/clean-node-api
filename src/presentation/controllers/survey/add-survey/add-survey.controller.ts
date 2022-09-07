@@ -1,4 +1,4 @@
-import { badRequest, internalServerError } from '../../../utils/http-responses-factories'
+import { badRequest, internalServerError, noContent } from '../../../utils/http-responses-factories'
 import { Controller, HttpRequest, HttpResponse, Validation, AddSurveyUseCase } from './add-survey-controller.protocols'
 
 export class AddSurveyController implements Controller {
@@ -26,9 +26,6 @@ export class AddSurveyController implements Controller {
       answers
     })
 
-    return {
-      body: {},
-      statusCode: 200
-    }
+    return noContent()
   }
 }

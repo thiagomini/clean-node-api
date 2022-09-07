@@ -1,4 +1,4 @@
-import { badRequest, internalServerError } from '../../../utils/http-responses-factories'
+import { badRequest, internalServerError, noContent } from '../../../utils/http-responses-factories'
 import { AddSurveyUseCase, HttpRequest, Optional, Validation } from './add-survey-controller.protocols'
 import { AddSurveyController } from './add-survey.controller'
 describe('AddSurveyController', () => {
@@ -52,6 +52,14 @@ describe('AddSurveyController', () => {
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(new Error()))
+  })
+
+  it('should retrun 204 on success', async () => {
+    const { sut } = createSut()
+
+    const httpResponse = await sut.handle(createFakeRequest())
+
+    expect(httpResponse).toEqual(noContent())
   })
 })
 
