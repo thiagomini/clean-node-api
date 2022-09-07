@@ -2,20 +2,43 @@ import { HttpRequest, Validation, Optional } from './add-survey-controller.proto
 import { AddSurveyController } from './add-survey.controller'
 describe('AddSurveyController', () => {
   it('should call Validation with correct values', async () => {
-    class ValidationStub implements Validation {
-      validate (): Optional<Error> {
-        return undefined
-      }
-    }
-    const validationStub = new ValidationStub()
+    // Arrange
+    const { validationStub, sut } = createSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    const sut = new AddSurveyController(validationStub)
     const httpRequest = createFakeRequest()
+
+    // Act
     await sut.handle(httpRequest)
 
+    // Assert
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 })
+
+interface SutFactoryResponse {
+  sut: AddSurveyController
+  validationStub: Validation
+}
+
+const createSut = (): SutFactoryResponse => {
+  const validationStub = createValidationStub()
+  const sut = new AddSurveyController(validationStub)
+
+  return {
+    sut,
+    validationStub
+  }
+}
+
+const createValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (): Optional<Error> {
+      return undefined
+    }
+  }
+  const validationStub = new ValidationStub()
+  return validationStub
+}
 
 const createFakeRequest = (): HttpRequest => ({
   body: {
