@@ -1,8 +1,8 @@
-import { Authentication } from '../../../domain/use-cases/authentication'
-import { Optional } from '../../../utils'
-import { ExistingEmailException, MissingParamException } from '../../errors'
-import { pick } from '../../utils'
-import { badRequest, forbidden, internalServerError, ok } from '../../utils/http-responses-factories'
+import { Authentication } from '../../../../domain/use-cases/authentication'
+import { Optional } from '../../../../utils'
+import { ExistingEmailException, MissingParamException } from '../../../errors'
+import { pick } from '../../../utils'
+import { badRequest, forbidden, internalServerError, ok } from '../../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
 import { AccountModel, AddAccountOutput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
 

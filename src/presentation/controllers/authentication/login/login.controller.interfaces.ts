@@ -1,4 +1,4 @@
-import { HttpRequest } from '../../protocols'
+import { HttpRequest } from '../../../protocols'
 
 export interface LoginControllerRequestBody {
   email: string

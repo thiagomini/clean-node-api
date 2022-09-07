@@ -1,4 +1,4 @@
-import { LoginController } from '../../../../presentation/controllers/login/login.controller'
+import { LoginController } from '../../../../presentation/controllers/authentication/login/login.controller'
 import { Controller } from '../../../../presentation/protocols'
 import { decorateWithLogger } from '../../decorators'
 import { createDbAuthentication } from '../../use-cases/authentication'
