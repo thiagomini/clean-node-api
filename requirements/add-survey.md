@@ -10,5 +10,5 @@
 ## Exceptions:
 1. ⛔ Returns 404 if API does not exist
 1. ⛔ Returns 403 if user is not an admin
-1. ⛔ Returns 400 if **question** or **answers** are not provided
+1. ✅ Returns 400 if **question** or **answers** are not provided
 1. ⛔ Returns 500 if an error is encountered when creating a survey
