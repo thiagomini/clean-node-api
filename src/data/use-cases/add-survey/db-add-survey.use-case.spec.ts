@@ -1,5 +1,6 @@
 import { AddSurveyInput, AddSurveyRepository } from './db-add-survey.use-case.protocols'
 import { DbAddSurveyUseCase } from './db-add-survey.use-case'
+import { AddSurveyUseCaseError } from './add-survey.use-case.error'
 
 describe('DbAddSurveyUseCase', () => {
   it('should call AddSurveyRepository with correct values', async () => {
@@ -11,8 +12,22 @@ describe('DbAddSurveyUseCase', () => {
     // Act
     await sut.add(addSurveyInput)
 
+    // Assert
     expect(addSpy).toHaveBeenCalledWith(addSurveyInput)
   })
+})
+
+it('should throw a AddSurveyUseCaseError if the repository throws', async () => {
+  // Arrange
+  const { sut, addSurveyRepositoryStub } = createSut()
+  jest.spyOn(addSurveyRepositoryStub, 'add').mockRejectedValueOnce(new Error())
+  const addSurveyInput = createFakeSurveyInput()
+
+  // Act
+  const addPromise = sut.add(addSurveyInput)
+
+  // Assert
+  await expect(addPromise).rejects.toThrowError(AddSurveyUseCaseError)
 })
 
 interface SutFactoryResponse {
