@@ -6,7 +6,7 @@ export class DbAddSurveyUseCase implements AddSurveyUseCase {
 
   async add (surveyInput: AddSurveyInput): Promise<void> {
     try {
-      return await this.addSurveyRepository.add(surveyInput)
+      await this.addSurveyRepository.add(surveyInput)
     } catch (error) {
       throw new AddSurveyUseCaseError({
         cause: error as Error,
