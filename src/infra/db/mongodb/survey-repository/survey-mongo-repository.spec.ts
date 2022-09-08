@@ -2,10 +2,15 @@ import { mongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo.repository'
 import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
 import { getSurveysCollection } from '../helpers/collections'
+import { SurveyModel } from '../../../../data/use-cases/add-survey/db-add-survey.use-case.protocols'
+import { Collection, ObjectId } from 'mongodb'
+
+let surveysCollection: Collection
 
 describe('SurveyMongoRepository', () => {
   beforeAll(async () => {
     await mongoHelper.connect()
+    surveysCollection = await getSurveysCollection()
   })
 
   beforeEach(async () => {
@@ -18,8 +23,10 @@ describe('SurveyMongoRepository', () => {
 
   describe('add', () => {
     it('should create a survey on success', async () => {
+      // Arrange
       const sut = await createSut()
 
+      // Act
       const survey = await sut.add({
         question: 'any_question',
         answers: [
@@ -30,6 +37,7 @@ describe('SurveyMongoRepository', () => {
         ]
       })
 
+      // Assert
       expect(survey).toEqual({
         id: expect.any(String),
         question: 'any_question',
@@ -40,11 +48,17 @@ describe('SurveyMongoRepository', () => {
           }
         ]
       })
+
+      await expect(existsInDatabase(survey)).resolves.toBeTruthy()
     })
   })
 })
 
 const createSut = async (): Promise<SurveyMongoRepository> => {
-  const surveysCollection = await getSurveysCollection()
   return new SurveyMongoRepository(surveysCollection)
+}
+
+const existsInDatabase = async (survey: SurveyModel): Promise<boolean> => {
+  const surveyInDatabase = await surveysCollection.findOne({ _id: new ObjectId(survey.id) })
+  return Boolean(surveyInDatabase)
 }

@@ -1,7 +1,7 @@
 
 export interface SurveyAnswerInput {
   answer: string
-  image: string
+  image?: string
 }
 
 export interface AddSurveyInput {

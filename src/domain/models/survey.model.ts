@@ -2,7 +2,7 @@ export interface SurveyModel {
   id: string
   question: string
   answers: Array<{
-    image: string
+    image?: string
     answer: string
   }>
 }
