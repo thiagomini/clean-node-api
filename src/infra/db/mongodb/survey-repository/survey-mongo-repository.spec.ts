@@ -55,7 +55,7 @@ describe('SurveyMongoRepository', () => {
 })
 
 const createSut = async (): Promise<SurveyMongoRepository> => {
-  return new SurveyMongoRepository(surveysCollection)
+  return new SurveyMongoRepository()
 }
 
 const existsInDatabase = async (survey: SurveyModel): Promise<boolean> => {
