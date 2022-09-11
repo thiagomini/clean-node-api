@@ -19,5 +19,18 @@ describe('array utils', () => {
       // Assert
       expect(response).toBe(42)
     })
+
+    it('should return the first undefined if passed function returns undefined for all elements', () => {
+      // Arrange
+      const returnsUndefined = (): undefined => undefined
+
+      const testArray = [true, {}, [], 'string', 42]
+
+      // Act
+      const response = getFirstDefinedResponse(testArray, returnsUndefined)
+
+      // Assert
+      expect(response).toBeUndefined()
+    })
   })
 })
