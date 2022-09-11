@@ -19,6 +19,22 @@ describe('NestedFieldValidation', () => {
         nestedObject: {}
       })).toBeInstanceOf(Error)
     })
+
+    it('should return an error if one of the validations fails', () => {
+      // Arrange
+      const stubValidation1 = createStubValidation()
+      const stubValidation2 = createStubValidation()
+
+      jest.spyOn(stubValidation2, 'validate').mockReturnValueOnce(new Error())
+
+      const sut = new NestedFieldValidation('nestedObject', [
+        stubValidation1,
+        stubValidation2
+      ])
+
+      // Act & Assert
+      expect(sut.validate({ nestedObject: {} })).toBeInstanceOf(Error)
+    })
   })
 })
 
