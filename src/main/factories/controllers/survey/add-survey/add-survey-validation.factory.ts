@@ -1,4 +1,4 @@
-import { RequiredFieldValidation, ValidationComposite } from '../../../../../validation/validators'
+import { EachValidation, NestedFieldValidation, RequiredFieldValidation, ValidationComposite } from '../../../../../validation/validators'
 
 export const createAddSurveyValidation = (): ValidationComposite => {
   const requiredFieldsValidation = new RequiredFieldValidation([
@@ -6,5 +6,11 @@ export const createAddSurveyValidation = (): ValidationComposite => {
     'answers'
   ])
 
-  return new ValidationComposite([requiredFieldsValidation])
+  const nestedFieldValidation = new NestedFieldValidation('answers', [
+    new EachValidation([
+      new RequiredFieldValidation(['answer'])
+    ])
+  ])
+
+  return new ValidationComposite([requiredFieldsValidation, nestedFieldValidation])
 }
