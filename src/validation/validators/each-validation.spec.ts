@@ -1,6 +1,7 @@
 import { Validation } from '../../presentation/protocols'
 import { Optional } from '../../utils'
 import { EachValidation } from './each-validation'
+import { when } from 'jest-when'
 
 describe('EachValidation', () => {
   describe('validate', () => {
@@ -24,6 +25,20 @@ describe('EachValidation', () => {
 
         // Act & Assert
         expect(sut.validate([{}])).toBe(errorThrownByFirstValidator)
+      })
+    })
+
+    describe('when a validation fails for one object', () => {
+      it('should return an error', () => {
+        // Arrange
+        const { sut, stubValidation2 } = createSut()
+
+        const errorThrownBySecondValidator = new Error('Error 2')
+        const validateSpy = jest.spyOn(stubValidation2, 'validate')
+        when(validateSpy).calledWith({ key: 'shouldFail' }).mockReturnValueOnce(errorThrownBySecondValidator)
+
+        // Act & Assert
+        expect(sut.validate([{ }, { key: 'shouldFail' }])).toBe(errorThrownBySecondValidator)
       })
     })
   })
