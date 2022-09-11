@@ -4,10 +4,27 @@ import { EachValidation } from './each-validation'
 
 describe('EachValidation', () => {
   describe('validate', () => {
-    it('should return undefined if all validations pass for all objects', () => {
-      const { sut } = createSut()
+    describe('when all validations pass', () => {
+      it('should return undefined', () => {
+        const { sut } = createSut()
 
-      expect(sut.validate([{}])).toBeUndefined()
+        expect(sut.validate([{}])).toBeUndefined()
+      })
+    })
+
+    describe('when all validations fails', () => {
+      it('should return the first error returned from the validators', () => {
+        // Arrange
+        const { sut, stubValidation1, stubValidation2 } = createSut()
+
+        const errorThrownByFirstValidator = new Error('Error 1')
+        const errorThrownBySecondValidator = new Error('Error 2')
+        jest.spyOn(stubValidation1, 'validate').mockReturnValueOnce(errorThrownByFirstValidator)
+        jest.spyOn(stubValidation2, 'validate').mockReturnValueOnce(errorThrownBySecondValidator)
+
+        // Act & Assert
+        expect(sut.validate([{}])).toBe(errorThrownByFirstValidator)
+      })
     })
   })
 })

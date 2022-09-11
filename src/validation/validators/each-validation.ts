@@ -5,6 +5,11 @@ export class EachValidation implements Validation {
   constructor (private readonly validators: Validation[]) {}
 
   validate (input: unknown): Optional<Error> {
-    return undefined
+    for (const validation of this.validators) {
+      const errorOrUndefined = validation.validate(input)
+      if (errorOrUndefined) {
+        return errorOrUndefined
+      }
+    }
   }
 }
