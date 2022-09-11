@@ -1,5 +1,6 @@
 import { Validation } from '../../presentation/protocols'
 import { Optional } from '../../utils'
+import { getFirstDefinedResponse } from '../../utils/array-utils'
 
 export class EachValidation implements Validation {
   constructor (private readonly validators: Validation[]) {}
@@ -14,11 +15,8 @@ export class EachValidation implements Validation {
   }
 
   private validateEachInputWithValidation (inputs: any[], validation: Validation): Optional<Error> {
-    const errorOrUndefined = inputs.reduce((_, inputToValidate) => {
-      const maybeError = validation.validate(inputToValidate)
-      return maybeError
-    }, undefined)
+    const errorOrUndefined = getFirstDefinedResponse(inputs, validation.validate.bind(validation))
 
-    return errorOrUndefined
+    return errorOrUndefined as Optional<Error>
   }
 }
