@@ -2,6 +2,9 @@ import { Validation } from '../../presentation/protocols'
 import { Optional } from '../../utils'
 import { getFirstDefinedResponse } from '../../utils/array-utils'
 
+/**
+ * Validates each element of the input field with the provided validations
+ */
 export class EachValidation implements Validation {
   constructor (private readonly validators: Validation[]) {}
 
