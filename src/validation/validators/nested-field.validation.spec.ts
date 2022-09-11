@@ -10,6 +10,15 @@ describe('NestedFieldValidation', () => {
         nestedObject: {}
       })).toBeUndefined()
     })
+
+    it('should return an error if passed validation fails', () => {
+      const { sut, stubValidation } = createSut()
+      jest.spyOn(stubValidation, 'validate').mockReturnValueOnce(new Error())
+
+      expect(sut.validate({
+        nestedObject: {}
+      })).toBeInstanceOf(Error)
+    })
   })
 })
 
