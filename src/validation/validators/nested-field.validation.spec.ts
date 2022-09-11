@@ -4,15 +4,7 @@ import { NestedFieldValidation } from './nested-field.validation'
 describe('NestedFieldValidation', () => {
   describe('validate', () => {
     it('should pass if passed validation succeeds', () => {
-      class StubValidation implements Validation {
-        validate (): Optional<Error> {
-          return undefined
-        }
-      }
-
-      const sut = new NestedFieldValidation('nestedObject', [
-        new StubValidation()
-      ])
+      const { sut } = createSut()
 
       expect(sut.validate({
         nestedObject: {}
@@ -20,3 +12,30 @@ describe('NestedFieldValidation', () => {
     })
   })
 })
+
+interface SutFactoryResponse {
+  sut: NestedFieldValidation
+  stubValidation: Validation
+}
+
+const createSut = (): SutFactoryResponse => {
+  const stubValidation = createStubValidation()
+  const sut = new NestedFieldValidation('nestedObject', [
+    stubValidation
+  ])
+
+  return {
+    sut,
+    stubValidation
+  }
+}
+
+const createStubValidation = (): Validation => {
+  class StubValidation implements Validation {
+    validate (): Optional<Error> {
+      return undefined
+    }
+  }
+
+  return new StubValidation()
+}
