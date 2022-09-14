@@ -20,6 +20,7 @@
     "test:integration": "npm test -- -c jest-integration.config.js",
     "test:staged": "npm test -- --onlyChanged",
     "test:ci": "npm test -- --coverage",
+    "test:coveralls": "npm run test:ci && coveralls < coverage/lcov.info",
     "prepare": "husky install"
   },
   "author": "Thiago R. V. Martins",
@@ -35,6 +36,7 @@
     "@types/node": "^18.0.1",
     "@types/supertest": "^2.0.12",
     "@types/validator": "^13.7.4",
+    "coveralls": "^3.1.1",
     "eslint-config-standard-with-typescript": "^21.0.1",
     "git-commit-msg-linter": "^4.1.3",
     "husky": "^8.0.1",
