@@ -1,6 +1,6 @@
-import { Authentication } from '../../../domain/use-cases/authentication'
-import { ExistingEmailException } from '../../errors'
-import { badRequest, forbidden, internalServerError, ok } from '../../utils/http-responses-factories'
+import { Authentication } from '../../../../domain/use-cases/authentication'
+import { ExistingEmailException } from '../../../errors'
+import { badRequest, forbidden, internalServerError, ok } from '../../../utils/http-responses-factories'
 import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.controller.protocols'
 
 export class SignUpController implements Controller {

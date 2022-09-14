@@ -35,3 +35,10 @@ export function forbidden (error: Error): HttpResponse {
     body: error
   }
 }
+
+export function noContent (): HttpResponse {
+  return {
+    statusCode: HttpStatusCodes.NO_CONTENT,
+    body: null
+  }
+}

@@ -1,5 +1,5 @@
 import { ServerError, UnauthorizedError } from '../errors'
-import { badRequest, forbidden, internalServerError, ok, unauthorized } from './http-responses-factories'
+import { badRequest, forbidden, internalServerError, noContent, ok, unauthorized } from './http-responses-factories'
 import { HttpStatusCodes } from '../protocols/http-status-codes'
 
 describe('http responses factories', () => {
@@ -49,6 +49,15 @@ describe('http responses factories', () => {
 
       expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.FORBIDDEN)
       expect(badRequestResponse.body).toBe(error)
+    })
+  })
+
+  describe('noContent', () => {
+    it('should return an object with NO_CONTENT as statusCode and null body', () => {
+      const badRequestResponse = noContent()
+
+      expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.NO_CONTENT)
+      expect(badRequestResponse.body).toBe(null)
     })
   })
 })
