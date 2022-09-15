@@ -7,9 +7,13 @@ import { addIdToDocument } from '../helpers/mongo-document-helper'
 export class SurveyMongoRepository implements AddSurveyRepository {
   async add (addSurveyInput: AddSurveyInput): Promise<SurveyModel> {
     const surveysCollection = await this.getCollection()
-    await surveysCollection.insertOne(addSurveyInput)
+    const surveyInputWithDate = {
+      ...addSurveyInput,
+      createdAt: new Date()
+    }
+    await surveysCollection.insertOne(surveyInputWithDate)
 
-    return addIdToDocument(addSurveyInput) as SurveyModel
+    return addIdToDocument(surveyInputWithDate) as SurveyModel
   }
 
   private async getCollection (): Promise<Collection> {

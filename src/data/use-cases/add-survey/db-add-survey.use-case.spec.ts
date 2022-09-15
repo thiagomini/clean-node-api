@@ -50,7 +50,8 @@ const createAddSurveyRepositoryStub = (): AddSurveyRepository => {
     async add (addSurveyInput: AddSurveyInput): Promise<SurveyModel> {
       return {
         id: 'any_id',
-        ...addSurveyInput
+        ...addSurveyInput,
+        createdAt: new Date()
       }
     }
   }

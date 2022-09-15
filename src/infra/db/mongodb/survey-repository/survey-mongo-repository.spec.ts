@@ -46,7 +46,8 @@ describe('SurveyMongoRepository', () => {
             image: 'any_image',
             answer: 'any_answer'
           }
-        ]
+        ],
+        createdAt: expect.any(Date)
       })
 
       await expect(existsInDatabase(survey)).resolves.toBeTruthy()
