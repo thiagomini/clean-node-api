@@ -1,7 +1,7 @@
 import { AccessDeniedException } from '../errors'
 import { AuthMiddleware } from './auth.middleware'
 import { HttpRequest } from '../protocols'
-import { forbidden, ok } from '../utils/http-responses-factories'
+import { forbidden, internalServerError, ok } from '../utils/http-responses-factories'
 import { AccountModel } from '../../domain/models'
 import { LoadAccountByTokenUseCase } from '../../domain/use-cases/authentication'
 import { Optional } from '../../utils'
@@ -59,6 +59,19 @@ describe('AuthMiddleware', () => {
       expect(response).toEqual(ok({
         accountId
       }))
+    })
+
+    it('should return 500 if loadAccountByTokenUseCase throws', async () => {
+      // Arrange
+      const { sut, loadAccountByTokenStub } = createSut()
+      jest.spyOn(loadAccountByTokenStub, 'load').mockRejectedValueOnce(new Error())
+      const httpRequest = createFakeRequest()
+
+      // Act
+      const response = await sut.handle(httpRequest)
+
+      // Assert
+      expect(response).toEqual(internalServerError(new Error()))
     })
   })
 })
