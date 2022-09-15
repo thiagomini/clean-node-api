@@ -4,6 +4,7 @@ import { HttpRequest } from '../protocols'
 import { forbidden } from '../utils/http-responses-factories'
 import { AccountModel } from '../../domain/models'
 import { LoadAccountByTokenUseCase } from '../../domain/use-cases/authentication'
+import { Optional } from '../../utils'
 
 describe('AuthMiddleware', () => {
   describe('handle', () => {
@@ -22,7 +23,7 @@ describe('AuthMiddleware', () => {
     it('should call loadAccountByToken with correct accessToken', async () => {
       // Arrange
       const { sut, loadAccountByTokenStub } = createSut()
-      const httpRequest: HttpRequest = createFakeRequest()
+      const httpRequest = createFakeRequest()
       const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
 
       // Act
@@ -30,6 +31,19 @@ describe('AuthMiddleware', () => {
 
       // Assert
       expect(loadSpy).toHaveBeenCalledWith('any_token')
+    })
+
+    it('should return 403 if user does not exist', async () => {
+      // Arrange
+      const { sut, loadAccountByTokenStub } = createSut()
+      jest.spyOn(loadAccountByTokenStub, 'load').mockResolvedValueOnce(undefined)
+      const httpRequest = createFakeRequest()
+
+      // Act
+      const response = await sut.handle(httpRequest)
+
+      // Assert
+      expect(response).toEqual(forbidden(new AccessDeniedException()))
     })
   })
 })
@@ -51,7 +65,7 @@ const createSut = (): SutFactoryResponse => {
 
 const createLoadAccountByTokenStub = (): LoadAccountByTokenUseCase => {
   class LoadAccountByTokenStub implements LoadAccountByTokenUseCase {
-    async load (): Promise<AccountModel> {
+    async load (): Promise<Optional<AccountModel>> {
       return {
         id: 'any_id',
         email: 'any_email',
