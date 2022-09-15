@@ -22,11 +22,7 @@ describe('AuthMiddleware', () => {
     it('should call loadAccountByToken with correct accessToken', async () => {
       // Arrange
       const { sut, loadAccountByTokenStub } = createSut()
-      const httpRequest: HttpRequest = {
-        headers: {
-          'x-access-token': 'any_token'
-        }
-      }
+      const httpRequest: HttpRequest = createFakeRequest()
       const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
 
       // Act
@@ -68,3 +64,9 @@ const createLoadAccountByTokenStub = (): LoadAccountByTokenUseCase => {
   const loadAccountByTokenStub = new LoadAccountByTokenStub()
   return loadAccountByTokenStub
 }
+
+const createFakeRequest = (): HttpRequest => ({
+  headers: {
+    'x-access-token': 'any_token'
+  }
+})
