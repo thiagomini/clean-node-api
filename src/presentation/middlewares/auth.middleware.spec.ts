@@ -20,9 +20,9 @@ describe('AuthMiddleware', () => {
       expect(response).toEqual(forbidden(new AccessDeniedException()))
     })
 
-    it('should call loadAccountByToken with correct accessToken', async () => {
+    it('should call loadAccountByToken with correct values', async () => {
       // Arrange
-      const { sut, loadAccountByTokenStub } = createSut()
+      const { sut, loadAccountByTokenStub } = createSut('any_role')
       const httpRequest = createFakeRequest()
       const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
 
@@ -30,7 +30,7 @@ describe('AuthMiddleware', () => {
       await sut.handle(httpRequest)
 
       // Assert
-      expect(loadSpy).toHaveBeenCalledWith('any_token')
+      expect(loadSpy).toHaveBeenCalledWith('any_token', 'any_role')
     })
 
     it('should return 403 if user does not exist', async () => {
@@ -81,9 +81,9 @@ interface SutFactoryResponse {
   loadAccountByTokenStub: LoadAccountByTokenUseCase
 }
 
-const createSut = (): SutFactoryResponse => {
+const createSut = (role = 'user'): SutFactoryResponse => {
   const loadAccountByTokenStub = createLoadAccountByTokenStub()
-  const sut = new AuthMiddleware(loadAccountByTokenStub)
+  const sut = new AuthMiddleware(loadAccountByTokenStub, role)
 
   return {
     loadAccountByTokenStub,

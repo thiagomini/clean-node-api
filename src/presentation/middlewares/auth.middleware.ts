@@ -4,8 +4,9 @@ import { HttpRequest, HttpResponse, Middleware } from '../protocols'
 import { forbidden, internalServerError, ok } from '../utils/http-responses-factories'
 
 export class AuthMiddleware implements Middleware {
-  constructor (private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase) {
-
+  constructor (
+    private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase,
+    private readonly role: string) {
   }
 
   async handle (httpRequest: HttpRequest<any>): Promise<HttpResponse> {
@@ -23,7 +24,7 @@ export class AuthMiddleware implements Middleware {
       return forbidden(new AccessDeniedException())
     }
 
-    const existingUser = await this.loadAccountByTokenUseCase.load(accessToken)
+    const existingUser = await this.loadAccountByTokenUseCase.load(accessToken, this.role)
     if (existingUser) {
       return ok({
         accountId: existingUser.id
