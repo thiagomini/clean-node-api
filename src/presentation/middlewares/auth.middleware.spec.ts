@@ -1,10 +1,13 @@
-import { AccessDeniedException } from '../errors'
-import { AuthMiddleware } from './auth.middleware'
-import { HttpRequest } from '../protocols'
-import { forbidden, internalServerError, ok } from '../utils/http-responses-factories'
-import { AccountModel } from '../../domain/models'
-import { LoadAccountByTokenUseCase } from '../../domain/use-cases/authentication'
 import { Optional } from '../../utils'
+import { AuthMiddleware } from './auth.middleware'
+import {
+  AccessDeniedException, forbidden,
+  HttpRequest,
+  internalServerError,
+  LoadAccountByTokenUseCase,
+  ok,
+  AccountModel
+} from './auth.middleware.protocols'
 
 describe('AuthMiddleware', () => {
   describe('handle', () => {
