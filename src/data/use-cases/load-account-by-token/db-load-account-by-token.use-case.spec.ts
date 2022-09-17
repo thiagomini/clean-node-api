@@ -5,6 +5,7 @@ import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case
 import { LoadAccountByTokenRepository } from '../../protocols/db/account-repository'
 
 const TOKEN = 'any_token'
+const ROLE = 'user'
 
 describe('DbLoadAccountByTokenUseCase', () => {
   it('should call Decrypter with correct values', async () => {
@@ -42,9 +43,9 @@ describe('DbLoadAccountByTokenUseCase', () => {
     const { sut, loadAccountByTokenRepositoryStub } = createSut()
     const loadSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
 
-    await sut.load(TOKEN)
+    await sut.load(TOKEN, ROLE)
 
-    expect(loadSpy).toHaveBeenCalledWith(TOKEN)
+    expect(loadSpy).toHaveBeenCalledWith(TOKEN, ROLE)
   })
 
   it('should throw a LoadAccountByTokenUseCaseError when DbLoadAccountByTokenUseCase throws', async () => {

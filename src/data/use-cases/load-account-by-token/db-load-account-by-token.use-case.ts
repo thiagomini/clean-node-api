@@ -23,7 +23,10 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
         return undefined
       }
 
-      return await this.loadAccountByTokenRepository.loadByToken(accessToken)
+      return await this.loadAccountByTokenRepository.loadByToken(
+        accessToken,
+        role
+      )
     } catch (error) {
       throw new LoadAccountByTokenUseCaseError({
         cause: error as Error,
