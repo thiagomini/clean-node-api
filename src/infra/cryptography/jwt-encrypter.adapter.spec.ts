@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { EncryptionError } from './encryption.error'
 import { JwtEcnrypterAdapter } from './jwt-encrypter.adapter'
+import { InvalidTokenError } from '../../data/use-cases/load-account-by-token/errors'
 
 const TOKEN = 'any_token'
 const DECRYPTED_ID = 'decrypted_id'
@@ -49,6 +50,17 @@ describe('JwtEcnrypterAdapter', () => {
       await sut.decrypt(TOKEN)
 
       expect(signSpy).toHaveBeenCalledWith(TOKEN, 'secret')
+    })
+
+    it('should throw InvalidTokenError when jwt.verify throws', async () => {
+      const sut = new JwtEcnrypterAdapter('secret')
+      jest.spyOn(jwt, 'verify').mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      const decryptPromise = sut.decrypt(TOKEN)
+
+      await expect(decryptPromise).rejects.toThrowError(InvalidTokenError)
     })
   })
 })
