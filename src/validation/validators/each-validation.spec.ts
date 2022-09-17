@@ -20,8 +20,12 @@ describe('EachValidation', () => {
 
         const errorThrownByFirstValidator = new Error('Error 1')
         const errorThrownBySecondValidator = new Error('Error 2')
-        jest.spyOn(stubValidation1, 'validate').mockReturnValueOnce(errorThrownByFirstValidator)
-        jest.spyOn(stubValidation2, 'validate').mockReturnValueOnce(errorThrownBySecondValidator)
+        jest
+          .spyOn(stubValidation1, 'validate')
+          .mockReturnValueOnce(errorThrownByFirstValidator)
+        jest
+          .spyOn(stubValidation2, 'validate')
+          .mockReturnValueOnce(errorThrownBySecondValidator)
 
         // Act & Assert
         expect(sut.validate([{}])).toBe(errorThrownByFirstValidator)
@@ -35,10 +39,14 @@ describe('EachValidation', () => {
 
         const errorThrownBySecondValidator = new Error('Error 2')
         const validateSpy = jest.spyOn(stubValidation2, 'validate')
-        when(validateSpy).calledWith({ key: 'shouldFail' }).mockReturnValueOnce(errorThrownBySecondValidator)
+        when(validateSpy)
+          .calledWith({ key: 'shouldFail' })
+          .mockReturnValueOnce(errorThrownBySecondValidator)
 
         // Act & Assert
-        expect(sut.validate([{ }, { key: 'shouldFail' }])).toBe(errorThrownBySecondValidator)
+        expect(sut.validate([{}, { key: 'shouldFail' }])).toBe(
+          errorThrownBySecondValidator
+        )
       })
     })
   })
@@ -53,21 +61,18 @@ interface SutFactoryResponse {
 const createSut = (): SutFactoryResponse => {
   const stubValidation1 = createStubValidation()
   const stubValidation2 = createStubValidation()
-  const sut = new EachValidation([
-    stubValidation1,
-    stubValidation2
-  ])
+  const sut = new EachValidation([stubValidation1, stubValidation2])
 
   return {
     sut,
     stubValidation1,
-    stubValidation2
+    stubValidation2,
   }
 }
 
 const createStubValidation = (): Validation => {
   class StubValidation implements Validation {
-    validate (): Optional<Error> {
+    validate(): Optional<Error> {
       return undefined
     }
   }

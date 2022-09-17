@@ -25,11 +25,11 @@ describe('AuthDSL', () => {
       await authDSL.signupUser({
         email: 'mail@mail.com',
         password: '123',
-        name: 'any_name'
+        name: 'any_name',
       })
 
       const accountInDb = await accountsCollection.findOne({
-        email: 'mail@mail.com'
+        email: 'mail@mail.com',
       })
 
       expect(accountInDb).toBeDefined()

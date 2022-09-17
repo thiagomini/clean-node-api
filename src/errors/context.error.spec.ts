@@ -6,7 +6,7 @@ describe('ContextError', () => {
 
     const contextError = new ContextError({
       cause: new SomeError(),
-      message: 'Error'
+      message: 'Error',
     })
 
     expect(contextError.cause).toBeInstanceOf(SomeError)
@@ -14,7 +14,7 @@ describe('ContextError', () => {
 
   it('should expose an error message', () => {
     const contextError = new ContextError({
-      message: 'some error message'
+      message: 'some error message',
     })
 
     expect(contextError.message).toBe('some error message')
@@ -23,20 +23,20 @@ describe('ContextError', () => {
   it('should expose a given context', () => {
     const contextError = new ContextError({
       context: {
-        foo: 'bar'
+        foo: 'bar',
       },
-      message: 'Error'
+      message: 'Error',
     })
 
     expect(contextError.context).toEqual({
-      foo: 'bar'
+      foo: 'bar',
     })
   })
 
   it('should expose a given name', () => {
     const contextError = new ContextError({
       errorName: 'CustomError',
-      message: 'Error'
+      message: 'Error',
     })
 
     expect(contextError.name).toBe('CustomError')

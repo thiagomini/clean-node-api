@@ -1,5 +1,5 @@
 export class AccessDeniedException extends Error {
-  constructor () {
+  constructor() {
     super('Access denied')
     this.name = AccessDeniedException.name
   }

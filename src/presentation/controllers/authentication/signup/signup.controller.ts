@@ -1,16 +1,27 @@
 import { Authentication } from '../../../../domain/use-cases/authentication'
 import { ExistingEmailException } from '../../../errors'
-import { badRequest, forbidden, internalServerError, ok } from '../../../utils/http-responses-factories'
-import { AddAccountUseCase, Controller, HttpRequest, HttpResponse, Validation } from './signup.controller.protocols'
+import {
+  badRequest,
+  forbidden,
+  internalServerError,
+  ok,
+} from '../../../utils/http-responses-factories'
+import {
+  AddAccountUseCase,
+  Controller,
+  HttpRequest,
+  HttpResponse,
+  Validation,
+} from './signup.controller.protocols'
 
 export class SignUpController implements Controller {
-  constructor (
+  constructor(
     private readonly addAccountUseCase: AddAccountUseCase,
     private readonly validation: Validation,
     private readonly authentication: Authentication
   ) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       return await this.signUp(httpRequest)
     } catch (error) {
@@ -19,7 +30,7 @@ export class SignUpController implements Controller {
     }
   }
 
-  private async signUp (httpRequest: HttpRequest): Promise<HttpResponse> {
+  private async signUp(httpRequest: HttpRequest): Promise<HttpResponse> {
     const { body } = httpRequest
     const errorOrUndefined = this.validation.validate(body)
 
@@ -32,7 +43,7 @@ export class SignUpController implements Controller {
     const account = await this.addAccountUseCase.findOrCreate({
       name,
       email,
-      password
+      password,
     })
 
     if (!account.isNew) {
@@ -41,7 +52,7 @@ export class SignUpController implements Controller {
 
     const accessToken = await this.authentication.authenticate({
       email,
-      password
+      password,
     })
 
     return ok({ accessToken })

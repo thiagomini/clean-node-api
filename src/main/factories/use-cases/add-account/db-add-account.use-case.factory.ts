@@ -6,5 +6,9 @@ export const createDbAddAccount = (): DbAddAccountUseCase => {
   const encrypter = new BCryptHasherAdapter()
   const mongoAccountRepository = new AccountMongoRepository()
 
-  return new DbAddAccountUseCase(encrypter, mongoAccountRepository, mongoAccountRepository)
+  return new DbAddAccountUseCase(
+    encrypter,
+    mongoAccountRepository,
+    mongoAccountRepository
+  )
 }

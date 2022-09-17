@@ -5,7 +5,7 @@ describe('Object utils', () => {
     it('should pick a single attribute', () => {
       const object = {
         key: 'value',
-        key2: 'value2'
+        key2: 'value2',
       }
 
       expect(pick(object, 'key')).toEqual({ key: 'value' })
@@ -14,7 +14,7 @@ describe('Object utils', () => {
     it('should pick multiple attributes', () => {
       const object = {
         key: 'value',
-        key2: 'value2'
+        key2: 'value2',
       }
 
       expect(pick(object, 'key', 'key2')).toEqual(object)
@@ -26,12 +26,14 @@ describe('Object utils', () => {
       it('should return the missing attribute', () => {
         const object = {
           name: 'any_name',
-          email: 'any_mail@mail.com'
+          email: 'any_mail@mail.com',
         }
 
         const requiredAttributes = ['name', 'email', 'password']
 
-        expect(firstMissingAttributeOf(object, requiredAttributes)).toBe('password')
+        expect(firstMissingAttributeOf(object, requiredAttributes)).toBe(
+          'password'
+        )
       })
     })
 
@@ -40,12 +42,14 @@ describe('Object utils', () => {
         const object = {
           name: 'any_name',
           email: 'any_mail@mail.com',
-          password: undefined
+          password: undefined,
         }
 
         const requiredAttributes = ['name', 'email', 'password']
 
-        expect(firstMissingAttributeOf(object, requiredAttributes)).toBe('password')
+        expect(firstMissingAttributeOf(object, requiredAttributes)).toBe(
+          'password'
+        )
       })
     })
 
@@ -54,24 +58,26 @@ describe('Object utils', () => {
         const object = {
           name: 'any_name',
           email: 'any_mail@mail.com',
-          password: 'any_password'
+          password: 'any_password',
         }
 
         const requiredAttributes = ['name', 'email', 'password']
 
-        expect(firstMissingAttributeOf(object, requiredAttributes)).toBeUndefined()
+        expect(
+          firstMissingAttributeOf(object, requiredAttributes)
+        ).toBeUndefined()
       })
     })
 
     describe('when the object and required attributes are empty', () => {
       it('should return the missing attribute', () => {
-        const object = {
-
-        }
+        const object = {}
 
         const requiredAttributes: string[] = []
 
-        expect(firstMissingAttributeOf(object, requiredAttributes)).toBeUndefined()
+        expect(
+          firstMissingAttributeOf(object, requiredAttributes)
+        ).toBeUndefined()
       })
     })
   })

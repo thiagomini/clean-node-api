@@ -6,7 +6,7 @@ import {
   AddAccountRepository,
   Hasher,
   LoadAccountByEmailRepository,
-  Optional
+  Optional,
 } from './db-add-account.protocols'
 
 import { DbAddAccountUseCase } from './db-add-account.use-case'
@@ -14,10 +14,7 @@ import { DbAddAccountUseCase } from './db-add-account.use-case'
 describe('DbAddAccountUseCase', () => {
   it('should call Hasher with correct password', async () => {
     // Arrange
-    const {
-      sut,
-      hasherStub: encrypterStub
-    } = createSut()
+    const { sut, hasherStub: encrypterStub } = createSut()
     const encryptSpy = jest.spyOn(encrypterStub, 'hash')
     const accountData = createDefaultAddAccountInput()
 
@@ -30,10 +27,7 @@ describe('DbAddAccountUseCase', () => {
 
   it('should throw a AddAccountUseCaseError if the encrypter throws', async () => {
     // Arrange
-    const {
-      sut,
-      hasherStub
-    } = createSut()
+    const { sut, hasherStub } = createSut()
 
     const innerError = new Error('EncrypterError')
     jest.spyOn(hasherStub, 'hash').mockImplementationOnce(async () => {
@@ -51,10 +45,7 @@ describe('DbAddAccountUseCase', () => {
 
   it('should call AddAccountRepository with correct values', async () => {
     // Arrange
-    const {
-      sut,
-      addAccountRepository
-    } = createSut()
+    const { sut, addAccountRepository } = createSut()
     const repositorySpy = jest.spyOn(addAccountRepository, 'add')
     const accountData = createDefaultAddAccountInput()
 
@@ -65,16 +56,13 @@ describe('DbAddAccountUseCase', () => {
     expect(repositorySpy).toHaveBeenCalledWith({
       name: accountData.name,
       email: accountData.email,
-      password: 'hashed_password'
+      password: 'hashed_password',
     })
   })
 
   it('should throw a AddAccountUseCaseError if the repository throws', async () => {
     // Arrange
-    const {
-      sut,
-      addAccountRepository
-    } = createSut()
+    const { sut, addAccountRepository } = createSut()
 
     const innerError = new Error('RepositoryError')
     jest.spyOn(addAccountRepository, 'add').mockImplementationOnce(async () => {
@@ -92,9 +80,7 @@ describe('DbAddAccountUseCase', () => {
 
   it('should create a new account if it did not exist', async () => {
     // Arrange
-    const {
-      sut
-    } = createSut()
+    const { sut } = createSut()
     const accountData = createDefaultAddAccountInput()
 
     // Act
@@ -106,12 +92,11 @@ describe('DbAddAccountUseCase', () => {
 
   it('should return an existing account if it exists', async () => {
     // Arrange
-    const {
-      sut,
-      loadAccountByEmailRepository
-    } = createSut()
+    const { sut, loadAccountByEmailRepository } = createSut()
     const existingAccount = getExistingAccount()
-    jest.spyOn(loadAccountByEmailRepository, 'loadByEmail').mockResolvedValueOnce(existingAccount)
+    jest
+      .spyOn(loadAccountByEmailRepository, 'loadByEmail')
+      .mockResolvedValueOnce(existingAccount)
     const accountData = createDefaultAddAccountInput()
 
     // Act
@@ -120,7 +105,7 @@ describe('DbAddAccountUseCase', () => {
     // Assert
     expect(account).toEqual<AddAccountOutput>({
       ...existingAccount,
-      isNew: false
+      isNew: false,
     })
   })
 })
@@ -136,19 +121,23 @@ const createSut = (): SutFactoryResponse => {
   const hasherStub = createHasherStub()
   const addAccountRepository = createAddAccountRepositoryStub()
   const loadAccountByEmailRepository = createLoadAccountByEmailRepositoryStub()
-  const sut = new DbAddAccountUseCase(hasherStub, addAccountRepository, loadAccountByEmailRepository)
+  const sut = new DbAddAccountUseCase(
+    hasherStub,
+    addAccountRepository,
+    loadAccountByEmailRepository
+  )
 
   return {
     sut,
     hasherStub,
     addAccountRepository,
-    loadAccountByEmailRepository
+    loadAccountByEmailRepository,
   }
 }
 
 const createHasherStub = (): Hasher => {
   class EncrypterStub implements Hasher {
-    async hash (): Promise<string> {
+    async hash(): Promise<string> {
       return 'hashed_password'
     }
   }
@@ -157,7 +146,7 @@ const createHasherStub = (): Hasher => {
 
 const createAddAccountRepositoryStub = (): any => {
   class RepositoryStub implements AddAccountRepository {
-    public async add (): Promise<AccountModel> {
+    public async add(): Promise<AccountModel> {
       return getDefaultSavedAccountData()
     }
   }
@@ -167,7 +156,7 @@ const createAddAccountRepositoryStub = (): any => {
 
 const createLoadAccountByEmailRepositoryStub = (): any => {
   class RepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail (): Promise<Optional<AccountModel>> {
+    async loadByEmail(): Promise<Optional<AccountModel>> {
       return undefined
     }
   }
@@ -180,18 +169,18 @@ const getDefaultSavedAccountData = (): AddAccountOutput => ({
   email: 'valid_email@mail.com',
   name: 'valid_name',
   password: 'hashed_password',
-  isNew: true
+  isNew: true,
 })
 
 const getExistingAccount = (): AccountModel => ({
   id: 'existing_id',
   email: 'existing@mail.com',
   name: 'existing_name',
-  password: 'existing_hashed_password'
+  password: 'existing_hashed_password',
 })
 
 const createDefaultAddAccountInput = (): AddAccountInput => ({
   name: 'valid_name',
   email: 'valid_email',
-  password: 'valid_password'
+  password: 'valid_password',
 })

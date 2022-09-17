@@ -2,9 +2,20 @@ import { Authentication } from '../../../../domain/use-cases/authentication'
 import { Optional } from '../../../../utils'
 import { ExistingEmailException, MissingParamException } from '../../../errors'
 import { pick } from '../../../utils'
-import { badRequest, forbidden, internalServerError, ok } from '../../../utils/http-responses-factories'
+import {
+  badRequest,
+  forbidden,
+  internalServerError,
+  ok,
+} from '../../../utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
-import { AccountModel, AddAccountOutput, AddAccountUseCase, HttpRequest, Validation } from './signup.controller.protocols'
+import {
+  AccountModel,
+  AddAccountOutput,
+  AddAccountUseCase,
+  HttpRequest,
+  Validation,
+} from './signup.controller.protocols'
 
 describe('SignupController', () => {
   it('should call AddAccountUseCase with correct values', async () => {
@@ -18,7 +29,9 @@ describe('SignupController', () => {
     await sut.handle(httpRequest)
 
     // Assert
-    expect(addSpy).toHaveBeenCalledWith(pick(httpRequest.body, 'name', 'email', 'password'))
+    expect(addSpy).toHaveBeenCalledWith(
+      pick(httpRequest.body, 'name', 'email', 'password')
+    )
   })
 
   it('should call Authentication with correct values', async () => {
@@ -33,7 +46,7 @@ describe('SignupController', () => {
     // Assert
     expect(authenticateSpy).toHaveBeenCalledWith({
       email: 'any_email@mail.com',
-      password: 'any_password'
+      password: 'any_password',
     })
   })
 
@@ -60,9 +73,11 @@ describe('SignupController', () => {
     const { sut, authenticationStub } = createSut()
     const errorThrown = new Error('error')
 
-    jest.spyOn(authenticationStub, 'authenticate').mockImplementationOnce(() => {
-      throw errorThrown
-    })
+    jest
+      .spyOn(authenticationStub, 'authenticate')
+      .mockImplementationOnce(() => {
+        throw errorThrown
+      })
 
     const httpRequest = createDefaultRequest()
 
@@ -82,9 +97,11 @@ describe('SignupController', () => {
     const response = await sut.handle(httpRequest)
 
     // Assert
-    expect(response).toEqual(ok({
-      accessToken: 'valid_token'
-    }))
+    expect(response).toEqual(
+      ok({
+        accessToken: 'valid_token',
+      })
+    )
   })
 
   it('should call Validation with correct value', async () => {
@@ -104,7 +121,9 @@ describe('SignupController', () => {
   it('should return badRequest if Validation returns an error', async () => {
     // Arrange
     const { sut, validationStub } = createSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamException('any_field'))
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamException('any_field'))
 
     const httpRequest = createDefaultRequest()
 
@@ -112,7 +131,9 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse).toEqual(badRequest(new MissingParamException('any_field')))
+    expect(httpResponse).toEqual(
+      badRequest(new MissingParamException('any_field'))
+    )
   })
 
   it('should return forbidden if email already exists', async () => {
@@ -120,7 +141,7 @@ describe('SignupController', () => {
     const { sut, addAccountUseCase } = createSut()
     jest.spyOn(addAccountUseCase, 'findOrCreate').mockResolvedValueOnce({
       ...getDefaultAccount(),
-      isNew: false
+      isNew: false,
     })
 
     const httpRequest = createDefaultRequest()
@@ -129,7 +150,9 @@ describe('SignupController', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     // Assert
-    expect(httpResponse).toEqual(forbidden(new ExistingEmailException('any_email@mail.com')))
+    expect(httpResponse).toEqual(
+      forbidden(new ExistingEmailException('any_email@mail.com'))
+    )
   })
 })
 
@@ -144,21 +167,25 @@ const createSut = (): SutFactoryResponse => {
   const addAccountUseCase = createAddAccountUseCaseStub()
   const validationStub = createValidationStub()
   const authenticationStub = createAuthenticationStub()
-  const sut = new SignUpController(addAccountUseCase, validationStub, authenticationStub)
+  const sut = new SignUpController(
+    addAccountUseCase,
+    validationStub,
+    authenticationStub
+  )
   return {
     sut,
     addAccountUseCase,
     validationStub,
-    authenticationStub
+    authenticationStub,
   }
 }
 
 const createAddAccountUseCaseStub = (): AddAccountUseCase => {
   class AddAccountStub implements AddAccountUseCase {
-    async findOrCreate (): Promise<AddAccountOutput> {
+    async findOrCreate(): Promise<AddAccountOutput> {
       return {
         ...getDefaultAccount(),
-        isNew: true
+        isNew: true,
       }
     }
   }
@@ -169,12 +196,12 @@ const getDefaultAccount = (): AccountModel => ({
   id: 'valid_id',
   name: 'valid_name',
   email: 'valid_email@mail.com',
-  password: 'valid_password'
+  password: 'valid_password',
 })
 
 const createValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    validate (): Optional<Error> {
+    validate(): Optional<Error> {
       return undefined
     }
   }
@@ -184,7 +211,7 @@ const createValidationStub = (): Validation => {
 
 const createAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async authenticate (): Promise<string> {
+    async authenticate(): Promise<string> {
       return 'valid_token'
     }
   }
@@ -199,17 +226,17 @@ type RequestBody = Partial<{
   passwordConfirmation: string
 }>
 
-function createDefaultRequestBody (): RequestBody {
+function createDefaultRequestBody(): RequestBody {
   return {
     name: 'any_namy',
     email: 'any_email@mail.com',
     password: 'any_password',
-    passwordConfirmation: 'any_password'
+    passwordConfirmation: 'any_password',
   }
 }
 
-function createDefaultRequest (): HttpRequest {
+function createDefaultRequest(): HttpRequest {
   return {
-    body: createDefaultRequestBody()
+    body: createDefaultRequestBody(),
   }
 }

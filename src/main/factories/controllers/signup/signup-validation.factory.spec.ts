@@ -1,5 +1,10 @@
 import { EmailValidator } from '../../../../presentation/protocols'
-import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation, ValidationComposite } from '../../../../validation/validators'
+import {
+  CompareFieldsValidation,
+  EmailValidation,
+  RequiredFieldValidation,
+  ValidationComposite,
+} from '../../../../validation/validators'
 import { createSignupValidation } from './signup-validation.factory'
 
 jest.mock('../../../../validation/validators/validation-composite')
@@ -9,16 +14,21 @@ describe('SignupValidationFactory', () => {
     createSignupValidation()
 
     expect(ValidationComposite).toHaveBeenCalledWith([
-      new RequiredFieldValidation(['name', 'email', 'password', 'passwordConfirmation']),
+      new RequiredFieldValidation([
+        'name',
+        'email',
+        'password',
+        'passwordConfirmation',
+      ]),
       new CompareFieldsValidation('password', 'passwordConfirmation'),
-      new EmailValidation('email', createEmailValidatorStub())
+      new EmailValidation('email', createEmailValidatorStub()),
     ])
   })
 })
 
 const createEmailValidatorStub = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
-    isValid (): boolean {
+    isValid(): boolean {
       return true
     }
   }

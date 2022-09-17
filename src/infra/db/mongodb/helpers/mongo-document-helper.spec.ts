@@ -6,12 +6,12 @@ describe('addIdToDocument', () => {
   it('should add the id attribute from the _id', () => {
     const objectFromMongo = {
       _id: 'valid_id',
-      otherProp: 'any_value'
+      otherProp: 'any_value',
     }
 
     expect(addIdToDocument(objectFromMongo)).toEqual({
       id: 'valid_id',
-      otherProp: 'any_value'
+      otherProp: 'any_value',
     })
   })
 
@@ -19,13 +19,15 @@ describe('addIdToDocument', () => {
     const objectFromMongo = {}
 
     expect(addIdToDocument(objectFromMongo)).toEqual({
-      id: undefined
+      id: undefined,
     })
   })
 
   it('should return throw an error if the object is undefined', () => {
     const objectFromMongo = undefined
 
-    expect(() => addIdToDocument(objectFromMongo as unknown as Document)).toThrowError(NullDocumentError)
+    expect(() =>
+      addIdToDocument(objectFromMongo as unknown as Document)
+    ).toThrowError(NullDocumentError)
   })
 })

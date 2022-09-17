@@ -4,13 +4,13 @@ import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 
 jest.mock('bcrypt', () => ({
-  async hash (): Promise<string> {
+  async hash(): Promise<string> {
     return 'hased_value'
   },
 
-  async compare (): Promise<boolean> {
+  async compare(): Promise<boolean> {
     return true
-  }
+  },
 }))
 
 describe('BCryptHasherAdapter', () => {

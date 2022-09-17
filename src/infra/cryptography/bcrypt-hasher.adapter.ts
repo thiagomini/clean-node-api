@@ -4,7 +4,7 @@ import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 
 export class BCryptHasherAdapter implements Hasher, HashComparer {
-  public async hash (password: string): Promise<string> {
+  public async hash(password: string): Promise<string> {
     try {
       const hashedValue = await bcrypt.hash(password, 12)
       return hashedValue
@@ -12,13 +12,13 @@ export class BCryptHasherAdapter implements Hasher, HashComparer {
       throw new HashingError({
         cause: err as Error,
         context: {
-          password
-        }
+          password,
+        },
       })
     }
   }
 
-  async compare (value: string, hash: string): Promise<boolean> {
+  async compare(value: string, hash: string): Promise<boolean> {
     try {
       return await bcrypt.compare(value, hash)
     } catch (err) {
@@ -26,8 +26,8 @@ export class BCryptHasherAdapter implements Hasher, HashComparer {
         cause: err as Error,
         context: {
           value,
-          hash
-        }
+          hash,
+        },
       })
     }
   }

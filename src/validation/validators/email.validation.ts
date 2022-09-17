@@ -5,9 +5,12 @@ import { Validation } from '../../presentation/protocols/validation'
 import { InvalidParamException } from '../../presentation/errors'
 
 export class EmailValidation implements Validation {
-  constructor (private readonly fieldName: string, private readonly emailValidator: EmailValidator) {}
+  constructor(
+    private readonly fieldName: string,
+    private readonly emailValidator: EmailValidator
+  ) {}
 
-  validate (input: Record<string, any>): Optional<Error> {
+  validate(input: Record<string, any>): Optional<Error> {
     try {
       return this.validateEmail(input)
     } catch (err) {
@@ -17,13 +20,13 @@ export class EmailValidation implements Validation {
         cause: err as Error,
         context: {
           email,
-          fieldName: this.fieldName
-        }
+          fieldName: this.fieldName,
+        },
       })
     }
   }
 
-  private validateEmail (input: Record<string, any>): Optional<Error> {
+  private validateEmail(input: Record<string, any>): Optional<Error> {
     const isValid = this.emailValidator.isValid(input[this.fieldName])
     if (!isValid) {
       return new InvalidParamException(this.fieldName)

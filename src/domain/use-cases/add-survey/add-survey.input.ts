@@ -1,4 +1,3 @@
-
 export interface SurveyAnswerInput {
   answer: string
   image?: string

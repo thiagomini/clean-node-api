@@ -1,4 +1,8 @@
-import { AddSurveyInput, AddSurveyRepository, SurveyModel } from './db-add-survey.use-case.protocols'
+import {
+  AddSurveyInput,
+  AddSurveyRepository,
+  SurveyModel,
+} from './db-add-survey.use-case.protocols'
 import { DbAddSurveyUseCase } from './db-add-survey.use-case'
 import { AddSurveyUseCaseError } from './add-survey.use-case.error'
 
@@ -41,17 +45,17 @@ const createSut = (): SutFactoryResponse => {
 
   return {
     sut,
-    addSurveyRepositoryStub
+    addSurveyRepositoryStub,
   }
 }
 
 const createAddSurveyRepositoryStub = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (addSurveyInput: AddSurveyInput): Promise<SurveyModel> {
+    async add(addSurveyInput: AddSurveyInput): Promise<SurveyModel> {
       return {
         id: 'any_id',
         ...addSurveyInput,
-        createdAt: new Date()
+        createdAt: new Date(),
       }
     }
   }
@@ -61,8 +65,10 @@ const createAddSurveyRepositoryStub = (): AddSurveyRepository => {
 
 const createFakeSurveyInput = (): AddSurveyInput => ({
   question: 'any_question',
-  answers: [{
-    image: 'any_image',
-    answer: 'any_answer'
-  }]
+  answers: [
+    {
+      image: 'any_image',
+      answer: 'any_answer',
+    },
+  ],
 })

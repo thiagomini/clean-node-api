@@ -18,12 +18,15 @@ describe('auth routes', () => {
 
   describe('[POST] /signup', () => {
     it('should return 200 on signup', async () => {
-      await request(app).post('/api/signup').send({
-        name: 'Thiago',
-        email: 'thiago@mail.com',
-        password: '123',
-        passwordConfirmation: '123'
-      }).expect(HttpStatusCodes.OK)
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'Thiago',
+          email: 'thiago@mail.com',
+          password: '123',
+          passwordConfirmation: '123',
+        })
+        .expect(HttpStatusCodes.OK)
     })
   })
 
@@ -32,20 +35,26 @@ describe('auth routes', () => {
       await authDSL.signupUser({
         name: 'thiago',
         email: 'thiago@mail.com',
-        password: '123'
+        password: '123',
       })
 
-      await request(app).post('/api/login').send({
-        email: 'thiago@mail.com',
-        password: '123'
-      }).expect(HttpStatusCodes.OK)
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'thiago@mail.com',
+          password: '123',
+        })
+        .expect(HttpStatusCodes.OK)
     })
 
     it('should return 401 when user email does not exist', async () => {
-      await request(app).post('/api/login').send({
-        email: 'thiago@mail.com',
-        password: '123'
-      }).expect(HttpStatusCodes.UNAUTHORIZED)
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'thiago@mail.com',
+          password: '123',
+        })
+        .expect(HttpStatusCodes.UNAUTHORIZED)
     })
   })
 })

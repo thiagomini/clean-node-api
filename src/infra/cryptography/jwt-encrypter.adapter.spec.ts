@@ -3,7 +3,7 @@ import { EncryptionError } from './encryption.error'
 import { JwtEcnrypterAdapter } from './jwt-encrypter.adapter'
 
 jest.mock('jsonwebtoken', () => ({
-  sign: (): string => 'encrypted_id'
+  sign: (): string => 'encrypted_id',
 }))
 
 describe('JwtEcnrypterAdapter', () => {

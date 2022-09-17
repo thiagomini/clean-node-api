@@ -11,16 +11,16 @@ export class ContextError extends Error {
   public readonly cause?: ErrorCause
   public readonly context?: unknown
 
-  constructor (errorInput: ContextErrorInput) {
+  constructor(errorInput: ContextErrorInput) {
     super(errorInput.message)
     this.cause = errorInput.cause
     this.context = errorInput.context
     this.name = errorInput.errorName ?? ContextError.name
   }
 
-  toJSON (): Pick<this, 'message'> {
+  toJSON(): Pick<this, 'message'> {
     return {
-      message: this.message
+      message: this.message,
     }
   }
 }

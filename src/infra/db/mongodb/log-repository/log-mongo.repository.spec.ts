@@ -37,7 +37,7 @@ describe('LogMongoRepository', () => {
       stack: error.stack,
       cause: null,
       context: null,
-      createdAt: expect.any(Date)
+      createdAt: expect.any(Date),
     })
   })
 
@@ -47,9 +47,9 @@ describe('LogMongoRepository', () => {
     const error = new ContextError({
       message: 'Some error occurred',
       context: {
-        key: 'value'
+        key: 'value',
       },
-      errorName: 'CustomName'
+      errorName: 'CustomName',
     })
 
     // Act
@@ -63,7 +63,7 @@ describe('LogMongoRepository', () => {
       stack: error.stack,
       cause: null,
       context: error.context,
-      createdAt: expect.any(Date)
+      createdAt: expect.any(Date),
     })
   })
 
@@ -73,7 +73,7 @@ describe('LogMongoRepository', () => {
     const error = new ContextError({
       message: 'Some error occurred',
       cause: new Error('Some inner error cause'),
-      errorName: 'CustomName'
+      errorName: 'CustomName',
     })
 
     // Act
@@ -87,7 +87,7 @@ describe('LogMongoRepository', () => {
       stack: error.stack,
       cause: error.cause?.toString(),
       context: null,
-      createdAt: expect.any(Date)
+      createdAt: expect.any(Date),
     })
   })
 })

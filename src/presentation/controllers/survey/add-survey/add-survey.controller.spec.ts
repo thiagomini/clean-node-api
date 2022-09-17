@@ -1,5 +1,14 @@
-import { badRequest, internalServerError, noContent } from '../../../utils/http-responses-factories'
-import { AddSurveyUseCase, HttpRequest, Optional, Validation } from './add-survey-controller.protocols'
+import {
+  badRequest,
+  internalServerError,
+  noContent,
+} from '../../../utils/http-responses-factories'
+import {
+  AddSurveyUseCase,
+  HttpRequest,
+  Optional,
+  Validation,
+} from './add-survey-controller.protocols'
 import { AddSurveyController } from './add-survey.controller'
 describe('AddSurveyController', () => {
   it('should call Validation with correct values', async () => {
@@ -77,13 +86,13 @@ const createSut = (): SutFactoryResponse => {
   return {
     sut,
     validationStub,
-    addSurveyStub
+    addSurveyStub,
   }
 }
 
 const createValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    validate (): Optional<Error> {
+    validate(): Optional<Error> {
       return undefined
     }
   }
@@ -93,7 +102,7 @@ const createValidationStub = (): Validation => {
 
 const createAddSurveyStub = (): AddSurveyUseCase => {
   class AddSurveyStub implements AddSurveyUseCase {
-    async add (): Promise<void> {}
+    async add(): Promise<void> {}
   }
 
   return new AddSurveyStub()
@@ -102,9 +111,11 @@ const createAddSurveyStub = (): AddSurveyUseCase => {
 const createFakeRequest = (): HttpRequest => ({
   body: {
     question: 'any_question',
-    answers: [{
-      image: 'any_image',
-      answer: 'any_answer'
-    }]
-  }
+    answers: [
+      {
+        image: 'any_image',
+        answer: 'any_answer',
+      },
+    ],
+  },
 })

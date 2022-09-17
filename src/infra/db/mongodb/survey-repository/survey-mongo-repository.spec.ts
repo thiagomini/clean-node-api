@@ -32,9 +32,9 @@ describe('SurveyMongoRepository', () => {
         answers: [
           {
             image: 'any_image',
-            answer: 'any_answer'
-          }
-        ]
+            answer: 'any_answer',
+          },
+        ],
       })
 
       // Assert
@@ -44,10 +44,10 @@ describe('SurveyMongoRepository', () => {
         answers: [
           {
             image: 'any_image',
-            answer: 'any_answer'
-          }
+            answer: 'any_answer',
+          },
         ],
-        createdAt: expect.any(Date)
+        createdAt: expect.any(Date),
       })
 
       await expect(existsInDatabase(survey)).resolves.toBeTruthy()
@@ -60,6 +60,8 @@ const createSut = async (): Promise<SurveyMongoRepository> => {
 }
 
 const existsInDatabase = async (survey: SurveyModel): Promise<boolean> => {
-  const surveyInDatabase = await surveysCollection.findOne({ _id: new ObjectId(survey.id) })
+  const surveyInDatabase = await surveysCollection.findOne({
+    _id: new ObjectId(survey.id),
+  })
   return Boolean(surveyInDatabase)
 }

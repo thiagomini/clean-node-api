@@ -6,19 +6,28 @@ import { getFirstDefinedResponse } from '../../utils/array-utils'
  * Validates each element of the input field with the provided validations
  */
 export class EachValidation implements Validation {
-  constructor (private readonly validators: Validation[]) {}
+  constructor(private readonly validators: Validation[]) {}
 
-  validate (inputs: any[]): Optional<Error> {
+  validate(inputs: any[]): Optional<Error> {
     for (const validation of this.validators) {
-      const errorOrUndefined = this.validateEachInputWithValidation(inputs, validation)
+      const errorOrUndefined = this.validateEachInputWithValidation(
+        inputs,
+        validation
+      )
       if (errorOrUndefined) {
         return errorOrUndefined
       }
     }
   }
 
-  private validateEachInputWithValidation (inputs: any[], validation: Validation): Optional<Error> {
-    const errorOrUndefined = getFirstDefinedResponse(inputs, validation.validate.bind(validation))
+  private validateEachInputWithValidation(
+    inputs: any[],
+    validation: Validation
+  ): Optional<Error> {
+    const errorOrUndefined = getFirstDefinedResponse(
+      inputs,
+      validation.validate.bind(validation)
+    )
 
     return errorOrUndefined as Optional<Error>
   }

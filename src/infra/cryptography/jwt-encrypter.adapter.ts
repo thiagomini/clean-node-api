@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken'
 import { EncryptionError } from './encryption.error'
 
 export class JwtEcnrypterAdapter implements Encrypter {
-  constructor (private readonly secret: string) {}
+  constructor(private readonly secret: string) {}
 
-  async encrypt (value: string): Promise<string> {
+  async encrypt(value: string): Promise<string> {
     try {
       return jwt.sign({ id: value }, this.secret)
     } catch (err) {
@@ -13,8 +13,8 @@ export class JwtEcnrypterAdapter implements Encrypter {
         sourceValue: value,
         cause: err as Error,
         context: {
-          value
-        }
+          value,
+        },
       })
     }
   }

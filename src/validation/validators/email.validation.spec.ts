@@ -10,7 +10,7 @@ describe('EmaiLValidation', () => {
       const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
 
       sut.validate({
-        email: 'any_mail@mail.com'
+        email: 'any_mail@mail.com',
       })
 
       expect(isValidSpy).toHaveBeenCalledWith('any_mail@mail.com')
@@ -22,7 +22,7 @@ describe('EmaiLValidation', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
 
     const response = sut.validate({
-      email: 'any_mail@mail.com'
+      email: 'any_mail@mail.com',
     })
 
     expect(response).toEqual(new InvalidParamException('email'))
@@ -32,7 +32,7 @@ describe('EmaiLValidation', () => {
     const { sut } = createSut()
 
     const response = sut.validate({
-      email: 'any_mail@mail.com'
+      email: 'any_mail@mail.com',
     })
 
     expect(response).toBeUndefined()
@@ -44,9 +44,11 @@ describe('EmaiLValidation', () => {
       throw new Error()
     })
 
-    expect(() => sut.validate({
-      email: 'any_mail@mail.com'
-    })).toThrowError(EmailValidationError)
+    expect(() =>
+      sut.validate({
+        email: 'any_mail@mail.com',
+      })
+    ).toThrowError(EmailValidationError)
   })
 })
 
@@ -61,13 +63,13 @@ const createSut = (): SutFactoryResponse => {
 
   return {
     emailValidatorStub,
-    sut
+    sut,
   }
 }
 
 const createEmailValidatorStub = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
-    isValid (): boolean {
+    isValid(): boolean {
       return true
     }
   }

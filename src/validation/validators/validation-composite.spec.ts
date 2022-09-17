@@ -8,7 +8,9 @@ describe('ValidationComposite', () => {
     it('should return an error if one validation fails', () => {
       const { sut, validations } = createSut()
 
-      jest.spyOn(validations[1], 'validate').mockReturnValueOnce(new Error('some error'))
+      jest
+        .spyOn(validations[1], 'validate')
+        .mockReturnValueOnce(new Error('some error'))
 
       const response = sut.validate({})
 
@@ -18,8 +20,12 @@ describe('ValidationComposite', () => {
     it('should return the first error if more than one validation fails', () => {
       // Arrange
       const { sut, validations } = createSut()
-      jest.spyOn(validations[0], 'validate').mockReturnValueOnce(new Error('first error'))
-      jest.spyOn(validations[1], 'validate').mockReturnValueOnce(new Error('second error'))
+      jest
+        .spyOn(validations[0], 'validate')
+        .mockReturnValueOnce(new Error('first error'))
+      jest
+        .spyOn(validations[1], 'validate')
+        .mockReturnValueOnce(new Error('second error'))
 
       // Act
       const response = sut.validate({})
@@ -74,19 +80,16 @@ const createSut = (): SutFactoryResponse => {
 
   return {
     sut,
-    validations
+    validations,
   }
 }
 
 const createValidationStubs = (): [Validation, Validation] => {
   class ValidationStub implements Validation {
-    validate (input: unknown): Optional<Error> {
+    validate(input: unknown): Optional<Error> {
       return undefined
     }
   }
 
-  return [
-    new ValidationStub(),
-    new ValidationStub()
-  ]
+  return [new ValidationStub(), new ValidationStub()]
 }

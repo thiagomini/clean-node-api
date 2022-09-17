@@ -6,18 +6,22 @@ describe('NestedFieldValidation', () => {
     it('should pass if passed validation succeeds', () => {
       const { sut } = createSut()
 
-      expect(sut.validate({
-        nestedObject: {}
-      })).toBeUndefined()
+      expect(
+        sut.validate({
+          nestedObject: {},
+        })
+      ).toBeUndefined()
     })
 
     it('should return an error if passed validation fails', () => {
       const { sut, stubValidation } = createSut()
       jest.spyOn(stubValidation, 'validate').mockReturnValueOnce(new Error())
 
-      expect(sut.validate({
-        nestedObject: {}
-      })).toBeInstanceOf(Error)
+      expect(
+        sut.validate({
+          nestedObject: {},
+        })
+      ).toBeInstanceOf(Error)
     })
 
     it('should return an error if one of the validations fails', () => {
@@ -29,7 +33,7 @@ describe('NestedFieldValidation', () => {
 
       const sut = new NestedFieldValidation('nestedObject', [
         stubValidation1,
-        stubValidation2
+        stubValidation2,
       ])
 
       // Act & Assert
@@ -45,19 +49,17 @@ interface SutFactoryResponse {
 
 const createSut = (): SutFactoryResponse => {
   const stubValidation = createStubValidation()
-  const sut = new NestedFieldValidation('nestedObject', [
-    stubValidation
-  ])
+  const sut = new NestedFieldValidation('nestedObject', [stubValidation])
 
   return {
     sut,
-    stubValidation
+    stubValidation,
   }
 }
 
 const createStubValidation = (): Validation => {
   class StubValidation implements Validation {
-    validate (): Optional<Error> {
+    validate(): Optional<Error> {
       return undefined
     }
   }

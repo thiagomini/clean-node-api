@@ -6,18 +6,20 @@ import {
   Optional,
   HashComparer,
   Encrypter,
-  AuthenticationError
+  AuthenticationError,
 } from './db-authentication-protocols'
 
 export class DbAuthenticationUseCase implements Authentication {
-  constructor (
+  constructor(
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
     private readonly encrypter: Encrypter,
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
   ) {}
 
-  async authenticate (authenticationInput: AuthenticationInput): Promise<Optional<string>> {
+  async authenticate(
+    authenticationInput: AuthenticationInput
+  ): Promise<Optional<string>> {
     try {
       return await this.authenticateUser(authenticationInput)
     } catch (err) {
@@ -25,19 +27,25 @@ export class DbAuthenticationUseCase implements Authentication {
         email: authenticationInput.email,
         cause: err as Error,
         context: {
-          email: authenticationInput.email
-        }
+          email: authenticationInput.email,
+        },
       })
     }
   }
 
-  private async authenticateUser ({ email, password }: AuthenticationInput): Promise<Optional<string>> {
+  private async authenticateUser({
+    email,
+    password,
+  }: AuthenticationInput): Promise<Optional<string>> {
     const account = await this.loadAccountByEmailRepository.loadByEmail(email)
     if (!account) {
       return undefined
     }
 
-    const passwordIsCorrect = await this.hashComparer.compare(password, account.password)
+    const passwordIsCorrect = await this.hashComparer.compare(
+      password,
+      account.password
+    )
     if (!passwordIsCorrect) {
       return undefined
     }

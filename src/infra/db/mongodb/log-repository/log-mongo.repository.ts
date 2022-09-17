@@ -3,7 +3,7 @@ import { ContextError } from '../../../../errors'
 import { mongoHelper } from '../helpers/mongo-helper'
 
 export class LogMongoRepository implements LogErrorRepository {
-  async error (error: ContextError | Error): Promise<void> {
+  async error(error: ContextError | Error): Promise<void> {
     const errorLogCollection = await mongoHelper.getCollection('errors')
 
     let context: unknown
@@ -19,7 +19,7 @@ export class LogMongoRepository implements LogErrorRepository {
       stack: error.stack,
       context,
       cause,
-      createdAt: new Date()
+      createdAt: new Date(),
     })
   }
 }

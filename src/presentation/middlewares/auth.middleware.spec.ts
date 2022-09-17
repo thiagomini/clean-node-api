@@ -1,12 +1,13 @@
 import { Optional } from '../../utils'
 import { AuthMiddleware } from './auth.middleware'
 import {
-  AccessDeniedException, forbidden,
+  AccessDeniedException,
+  forbidden,
   HttpRequest,
   internalServerError,
   LoadAccountByTokenUseCase,
   ok,
-  AccountModel
+  AccountModel,
 } from './auth.middleware.protocols'
 
 describe('AuthMiddleware', () => {
@@ -14,7 +15,7 @@ describe('AuthMiddleware', () => {
     it('should return 403 if no x-access-token header is provided', async () => {
       // Arrange
       const { sut } = createSut()
-      const httpRequest: HttpRequest = { }
+      const httpRequest: HttpRequest = {}
 
       // Act
       const response = await sut.handle(httpRequest)
@@ -39,7 +40,9 @@ describe('AuthMiddleware', () => {
     it('should return 403 if user does not exist', async () => {
       // Arrange
       const { sut, loadAccountByTokenStub } = createSut()
-      jest.spyOn(loadAccountByTokenStub, 'load').mockResolvedValueOnce(undefined)
+      jest
+        .spyOn(loadAccountByTokenStub, 'load')
+        .mockResolvedValueOnce(undefined)
       const httpRequest = createFakeRequest()
 
       // Act
@@ -59,15 +62,19 @@ describe('AuthMiddleware', () => {
 
       // Assert
       const accountId = getAccountModel().id
-      expect(response).toEqual(ok({
-        accountId
-      }))
+      expect(response).toEqual(
+        ok({
+          accountId,
+        })
+      )
     })
 
     it('should return 500 if loadAccountByTokenUseCase throws', async () => {
       // Arrange
       const { sut, loadAccountByTokenStub } = createSut()
-      jest.spyOn(loadAccountByTokenStub, 'load').mockRejectedValueOnce(new Error())
+      jest
+        .spyOn(loadAccountByTokenStub, 'load')
+        .mockRejectedValueOnce(new Error())
       const httpRequest = createFakeRequest()
 
       // Act
@@ -90,13 +97,13 @@ const createSut = (role = 'user'): SutFactoryResponse => {
 
   return {
     loadAccountByTokenStub,
-    sut
+    sut,
   }
 }
 
 const createLoadAccountByTokenStub = (): LoadAccountByTokenUseCase => {
   class LoadAccountByTokenStub implements LoadAccountByTokenUseCase {
-    async load (): Promise<Optional<AccountModel>> {
+    async load(): Promise<Optional<AccountModel>> {
       return getAccountModel()
     }
   }
@@ -109,11 +116,11 @@ const getAccountModel = (): AccountModel => ({
   email: 'any_email',
   name: 'any_name',
   password: 'any_password',
-  accessToken: 'any_access_token'
+  accessToken: 'any_access_token',
 })
 
 const createFakeRequest = (): HttpRequest => ({
   headers: {
-    'x-access-token': 'any_token'
-  }
+    'x-access-token': 'any_token',
+  },
 })

@@ -14,6 +14,10 @@ const createRawSignupController = (): SignUpController => {
   const dbAddAccountUseCase = createDbAddAccount()
   const validation = createLoginValidation()
   const authentication = createDbAuthentication()
-  const signupController = new SignUpController(dbAddAccountUseCase, validation, authentication)
+  const signupController = new SignUpController(
+    dbAddAccountUseCase,
+    validation,
+    authentication
+  )
   return signupController
 }

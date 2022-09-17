@@ -1,11 +1,24 @@
 import { Authentication } from '../../../../domain/use-cases/authentication'
-import { Controller, HttpRequest, HttpResponse, HttpStatusCodes, Validation } from '../../../protocols'
-import { badRequest, internalServerError, unauthorized } from '../../../utils/http-responses-factories'
+import {
+  Controller,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusCodes,
+  Validation,
+} from '../../../protocols'
+import {
+  badRequest,
+  internalServerError,
+  unauthorized,
+} from '../../../utils/http-responses-factories'
 
 export class LoginController implements Controller {
-  constructor (private readonly authentication: Authentication, private readonly validation: Validation) { }
+  constructor(
+    private readonly authentication: Authentication,
+    private readonly validation: Validation
+  ) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       return await this.loginUser(httpRequest)
     } catch (error) {
@@ -14,7 +27,7 @@ export class LoginController implements Controller {
     }
   }
 
-  private async loginUser (httpRequest: HttpRequest): Promise<HttpResponse> {
+  private async loginUser(httpRequest: HttpRequest): Promise<HttpResponse> {
     const errorOrUndefined = this.validation.validate(httpRequest.body)
 
     if (errorOrUndefined) {
@@ -23,7 +36,10 @@ export class LoginController implements Controller {
 
     const { email, password } = httpRequest.body
 
-    const accessToken = await this.authentication.authenticate({ email, password })
+    const accessToken = await this.authentication.authenticate({
+      email,
+      password,
+    })
     if (!accessToken) {
       return unauthorized()
     }
@@ -31,8 +47,8 @@ export class LoginController implements Controller {
     return {
       statusCode: HttpStatusCodes.OK,
       body: {
-        accessToken
-      }
+        accessToken,
+      },
     }
   }
 }

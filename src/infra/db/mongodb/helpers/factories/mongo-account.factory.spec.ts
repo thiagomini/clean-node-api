@@ -35,7 +35,7 @@ describe('MongoAccountFactory', () => {
         accessToken: 'some_token',
         email: 'some_email',
         name: 'some_name',
-        password: 'some_password'
+        password: 'some_password',
       }
 
       // Act
@@ -58,7 +58,7 @@ describe('MongoAccountFactory', () => {
         email: expect.any(String),
         name: expect.any(String),
         password: expect.any(String),
-        accessToken: expect.any(String)
+        accessToken: expect.any(String),
       })
     })
 
@@ -69,7 +69,7 @@ describe('MongoAccountFactory', () => {
         accessToken: 'some_token',
         email: 'some_email',
         name: 'some_name',
-        password: 'some_password'
+        password: 'some_password',
       }
 
       // Act
@@ -78,7 +78,7 @@ describe('MongoAccountFactory', () => {
       // Assert
       expect(createdAccount).toEqual({
         ...accountData,
-        id: expect.any(String)
+        id: expect.any(String),
       })
     })
 
@@ -90,7 +90,7 @@ describe('MongoAccountFactory', () => {
         accessToken: 'some_token',
         email: 'some_email',
         name: 'some_name',
-        password: 'some_password'
+        password: 'some_password',
       }
 
       // Act
@@ -98,7 +98,7 @@ describe('MongoAccountFactory', () => {
 
       // Assert
       const accountInDatabase = await accountCollection.findOne({
-        _id: new ObjectId(accountData.id)
+        _id: new ObjectId(accountData.id),
       })
       expect(createdAccount.id).toEqual(accountInDatabase?._id.toString())
     })

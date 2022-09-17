@@ -25,7 +25,9 @@ describe('MongoHelper', () => {
         })
 
         it('should return a collection', async () => {
-          expect(await mongoHelper.getCollection('some-collection')).toBeDefined()
+          expect(
+            await mongoHelper.getCollection('some-collection')
+          ).toBeDefined()
         })
       })
     })

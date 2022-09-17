@@ -6,16 +6,16 @@ import {
   LoadAccountByTokenUseCase,
   internalServerError,
   forbidden,
-  ok
+  ok,
 } from './auth.middleware.protocols'
 
 export class AuthMiddleware implements Middleware {
-  constructor (
+  constructor(
     private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase,
-    private readonly role: string) {
-  }
+    private readonly role: string
+  ) {}
 
-  async handle (httpRequest: HttpRequest<any>): Promise<HttpResponse> {
+  async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     try {
       return await this.verifyAccessTokenFrom(httpRequest)
     } catch (error) {
@@ -23,17 +23,22 @@ export class AuthMiddleware implements Middleware {
     }
   }
 
-  private async verifyAccessTokenFrom (httpRequest: HttpRequest): Promise<HttpResponse> {
+  private async verifyAccessTokenFrom(
+    httpRequest: HttpRequest
+  ): Promise<HttpResponse> {
     const accessToken = httpRequest?.headers?.['x-access-token']
 
     if (!accessToken) {
       return forbidden(new AccessDeniedException())
     }
 
-    const existingUser = await this.loadAccountByTokenUseCase.load(accessToken, this.role)
+    const existingUser = await this.loadAccountByTokenUseCase.load(
+      accessToken,
+      this.role
+    )
     if (existingUser) {
       return ok({
-        accountId: existingUser.id
+        accountId: existingUser.id,
       })
     }
 

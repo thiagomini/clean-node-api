@@ -1,5 +1,12 @@
 import { ServerError, UnauthorizedError } from '../errors'
-import { badRequest, forbidden, internalServerError, noContent, ok, unauthorized } from './http-responses-factories'
+import {
+  badRequest,
+  forbidden,
+  internalServerError,
+  noContent,
+  ok,
+  unauthorized,
+} from './http-responses-factories'
 import { HttpStatusCodes } from '../protocols/http-status-codes'
 
 describe('http responses factories', () => {
@@ -18,7 +25,9 @@ describe('http responses factories', () => {
       const error = new Error('Something went wrong!')
       const badRequestResponse = internalServerError(error)
 
-      expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      expect(badRequestResponse.statusCode).toBe(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR
+      )
       expect(badRequestResponse.body).toEqual(new ServerError(error))
     })
   })
