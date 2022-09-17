@@ -4,11 +4,11 @@ import { JwtEcnrypterAdapter } from './jwt-encrypter.adapter'
 import { InvalidTokenError } from '../../data/use-cases/load-account-by-token/errors'
 
 const TOKEN = 'any_token'
-const DECRYPTED_ID = 'decrypted_id'
+const DECRYPTED_TOKEN = 'decrypted_id'
 
 jest.mock('jsonwebtoken', () => ({
   sign: (): string => 'encrypted_id',
-  verify: (): string => DECRYPTED_ID,
+  verify: (): string => DECRYPTED_TOKEN,
 }))
 
 describe('JwtEcnrypterAdapter', () => {
@@ -61,6 +61,14 @@ describe('JwtEcnrypterAdapter', () => {
       const decryptPromise = sut.decrypt(TOKEN)
 
       await expect(decryptPromise).rejects.toThrowError(InvalidTokenError)
+    })
+
+    it('should return decrypted token on success', async () => {
+      const sut = new JwtEcnrypterAdapter('secret')
+
+      const response = await sut.decrypt(TOKEN)
+
+      expect(response).toBe(DECRYPTED_TOKEN)
     })
   })
 })
