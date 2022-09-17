@@ -4,6 +4,7 @@ import { DbLoadAccountByTokenUseCase } from './db-load-account-by-token.use-case
 import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case.error'
 import { LoadAccountByTokenRepository } from '../../protocols/db/account-repository'
 import { InvalidTokenError } from './invalid-token.error'
+import { AccountByTokenNotFoundError } from './account-by-token-not-found.error'
 
 const TOKEN = 'any_token'
 const ROLE = 'user'
@@ -61,6 +62,17 @@ describe('DbLoadAccountByTokenUseCase', () => {
     await expect(loadPromise).rejects.toThrowError(
       LoadAccountByTokenUseCaseError
     )
+  })
+
+  it('should return undefined when account does not exist', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = createSut()
+    jest
+      .spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
+      .mockRejectedValueOnce(new AccountByTokenNotFoundError(TOKEN))
+
+    const response = await sut.load(TOKEN)
+
+    expect(response).toBeUndefined()
   })
 
   it('should return an accont on success', async () => {

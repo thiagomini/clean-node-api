@@ -5,6 +5,7 @@ import {
   Optional,
 } from '../add-account/db-add-account.protocols'
 import { LoadAccountByTokenUseCase } from '../authentication/db-authentication-protocols'
+import { AccountByTokenNotFoundError } from './account-by-token-not-found.error'
 import { InvalidTokenError } from './invalid-token.error'
 import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case.error'
 
@@ -26,6 +27,10 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
       )
     } catch (error) {
       if (error instanceof InvalidTokenError) {
+        return undefined
+      }
+
+      if (error instanceof AccountByTokenNotFoundError) {
         return undefined
       }
 
