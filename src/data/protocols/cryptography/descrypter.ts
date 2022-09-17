@@ -1,3 +1,5 @@
+import { Optional } from '../../../utils'
+
 export interface Decrypter {
-  decrypt(token: string): Promise<string>
+  decrypt(token: string): Promise<Optional<string>>
 }

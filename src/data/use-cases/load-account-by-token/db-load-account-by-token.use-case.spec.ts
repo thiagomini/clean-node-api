@@ -27,6 +27,17 @@ describe('DbLoadAccountByTokenUseCase', () => {
     )
   })
 
+  it('should return undefined when accessToken is invalid', async () => {
+    const { sut, decrypterStub } = createSut()
+    const decryptSpy = jest
+      .spyOn(decrypterStub, 'decrypt')
+      .mockResolvedValueOnce(undefined)
+
+    const response = await sut.load(TOKEN)
+
+    expect(response).toBeUndefined()
+  })
+
   it('should call LoadAccountByTokenRepository with correct values', async () => {
     const { sut, loadAccountByTokenRepositoryStub } = createSut()
     const loadSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'load')
