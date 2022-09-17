@@ -3,6 +3,7 @@ import { Decrypter } from '../../protocols/cryptography'
 import { DbLoadAccountByTokenUseCase } from './db-load-account-by-token.use-case'
 import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case.error'
 import { LoadAccountByTokenRepository } from '../../protocols/db/account-repository'
+import { InvalidTokenError } from './invalid-token.error'
 
 const TOKEN = 'any_token'
 const ROLE = 'user'
@@ -31,7 +32,9 @@ describe('DbLoadAccountByTokenUseCase', () => {
   it('should return undefined when accessToken is invalid', async () => {
     const { sut, decrypterStub } = createSut()
 
-    jest.spyOn(decrypterStub, 'decrypt').mockResolvedValueOnce(undefined)
+    jest
+      .spyOn(decrypterStub, 'decrypt')
+      .mockRejectedValueOnce(new InvalidTokenError(TOKEN))
 
     const response = await sut.load(TOKEN)
 
