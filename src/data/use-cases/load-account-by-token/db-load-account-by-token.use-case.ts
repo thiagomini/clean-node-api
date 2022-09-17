@@ -17,27 +17,38 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
 
   async load(
     accessToken: string,
-    role?: string | undefined
+    role?: string
   ): Promise<Optional<AccountModel>> {
     try {
-      await this.decrypter.decrypt(accessToken)
-      return await this.loadAccountByTokenRepository.loadByToken(
-        accessToken,
-        role
-      )
+      return await this.decryptTokenAndGetAccount(accessToken, role)
     } catch (error) {
-      if (error instanceof InvalidTokenError) {
-        return undefined
-      }
-
-      if (error instanceof AccountByTokenNotFoundError) {
-        return undefined
-      }
-
-      throw new LoadAccountByTokenUseCaseError({
-        cause: error as Error,
-        accessToken,
-      })
+      return this.handleError(error as Error, accessToken)
     }
+  }
+
+  private async decryptTokenAndGetAccount(
+    accessToken: string,
+    role?: string
+  ): Promise<AccountModel> {
+    await this.decrypter.decrypt(accessToken)
+    return await this.loadAccountByTokenRepository.loadByToken(
+      accessToken,
+      role
+    )
+  }
+
+  private handleError(error: Error, accessToken: string): never | undefined {
+    if (error instanceof InvalidTokenError) {
+      return undefined
+    }
+
+    if (error instanceof AccountByTokenNotFoundError) {
+      return undefined
+    }
+
+    throw new LoadAccountByTokenUseCaseError({
+      cause: error as Error,
+      accessToken,
+    })
   }
 }
