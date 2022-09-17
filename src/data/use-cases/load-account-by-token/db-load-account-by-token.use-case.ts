@@ -4,6 +4,7 @@ import {
   Optional,
 } from '../add-account/db-add-account.protocols'
 import { LoadAccountByTokenUseCase } from '../authentication/db-authentication-protocols'
+import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case.error'
 
 export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
   constructor(private readonly decrypter: Decrypter) {}
@@ -11,7 +12,14 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
     accessToken: string,
     role?: string | undefined
   ): Promise<Optional<AccountModel>> {
-    this.decrypter.decrypt(accessToken)
-    return undefined
+    try {
+      await this.decrypter.decrypt(accessToken)
+      return undefined
+    } catch (error) {
+      throw new LoadAccountByTokenUseCaseError({
+        cause: error as Error,
+        accessToken,
+      })
+    }
   }
 }
