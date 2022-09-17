@@ -35,6 +35,19 @@ describe('DbLoadAccountByTokenUseCase', () => {
 
     expect(loadSpy).toHaveBeenCalledWith(TOKEN)
   })
+
+  it('should throw a LoadAccountByTokenUseCaseError when DbLoadAccountByTokenUseCase throws', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = createSut()
+    jest
+      .spyOn(loadAccountByTokenRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+
+    const loadPromise = sut.load(TOKEN)
+
+    await expect(loadPromise).rejects.toThrowError(
+      LoadAccountByTokenUseCaseError
+    )
+  })
 })
 
 interface SutFactoryResponse {
