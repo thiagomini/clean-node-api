@@ -3,6 +3,7 @@ import { EncryptionError } from './encryption.error'
 import { JwtEcnrypterAdapter } from './jwt-encrypter.adapter'
 import { InvalidTokenError } from '../../data/use-cases/load-account-by-token/errors'
 
+const SECRET = 'secret'
 const TOKEN = 'any_token'
 const ENCRYPTED_TOKEN = 'encrypted_id'
 const DECRYPTED_TOKEN = 'decrypted_id'
@@ -15,16 +16,16 @@ jest.mock('jsonwebtoken', () => ({
 describe('JwtEcnrypterAdapter', () => {
   describe('encrypt', () => {
     it('should call jwt.sign with correct values', async () => {
-      const sut = new JwtEcnrypterAdapter('secret')
+      const sut = createSut()
       const signSpy = jest.spyOn(jwt, 'sign')
 
       await sut.encrypt('any_id')
 
-      expect(signSpy).toHaveBeenCalledWith({ id: 'any_id' }, 'secret')
+      expect(signSpy).toHaveBeenCalledWith({ id: 'any_id' }, SECRET)
     })
 
     it('should return encrypted_id on sign success', async () => {
-      const sut = new JwtEcnrypterAdapter('secret')
+      const sut = createSut()
 
       const accessToken = await sut.encrypt('any_id')
 
@@ -32,7 +33,7 @@ describe('JwtEcnrypterAdapter', () => {
     })
 
     it('should throw an EncryptionError if jwt.sign throws an error', async () => {
-      const sut = new JwtEcnrypterAdapter('secret')
+      const sut = createSut()
       jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
         throw new Error()
       })
@@ -45,12 +46,12 @@ describe('JwtEcnrypterAdapter', () => {
 
   describe('decrypt', () => {
     it('should call jwt.verify with correct values', async () => {
-      const sut = new JwtEcnrypterAdapter('secret')
+      const sut = createSut()
       const signSpy = jest.spyOn(jwt, 'verify')
 
       await sut.decrypt(TOKEN)
 
-      expect(signSpy).toHaveBeenCalledWith(TOKEN, 'secret')
+      expect(signSpy).toHaveBeenCalledWith(TOKEN, SECRET)
     })
 
     it('should throw InvalidTokenError when jwt.verify throws', async () => {
@@ -65,7 +66,7 @@ describe('JwtEcnrypterAdapter', () => {
     })
 
     it('should return decrypted token on success', async () => {
-      const sut = new JwtEcnrypterAdapter('secret')
+      const sut = createSut()
 
       const response = await sut.decrypt(TOKEN)
 
@@ -73,3 +74,5 @@ describe('JwtEcnrypterAdapter', () => {
     })
   })
 })
+
+const createSut = (): JwtEcnrypterAdapter => new JwtEcnrypterAdapter(SECRET)
