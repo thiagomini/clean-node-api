@@ -40,7 +40,7 @@ describe('DbLoadAccountByTokenUseCase', () => {
 
   it('should call LoadAccountByTokenRepository with correct values', async () => {
     const { sut, loadAccountByTokenRepositoryStub } = createSut()
-    const loadSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'load')
+    const loadSpy = jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
 
     await sut.load(TOKEN)
 
@@ -50,7 +50,7 @@ describe('DbLoadAccountByTokenUseCase', () => {
   it('should throw a LoadAccountByTokenUseCaseError when DbLoadAccountByTokenUseCase throws', async () => {
     const { sut, loadAccountByTokenRepositoryStub } = createSut()
     jest
-      .spyOn(loadAccountByTokenRepositoryStub, 'load')
+      .spyOn(loadAccountByTokenRepositoryStub, 'loadByToken')
       .mockRejectedValueOnce(new Error())
 
     const loadPromise = sut.load(TOKEN)
@@ -58,6 +58,14 @@ describe('DbLoadAccountByTokenUseCase', () => {
     await expect(loadPromise).rejects.toThrowError(
       LoadAccountByTokenUseCaseError
     )
+  })
+
+  it('should return an accont on success', async () => {
+    const { sut } = createSut()
+
+    const response = await sut.load(TOKEN)
+
+    expect(response).toEqual(accountModel())
   })
 })
 
@@ -98,7 +106,7 @@ const createLoadAccountByTokenRepositoryStub =
     class LoadAccountByTokenRepositoryStub
       implements LoadAccountByTokenRepository
     {
-      public async load(): Promise<AccountModel> {
+      public async loadByToken(): Promise<AccountModel> {
         return accountModel()
       }
     }

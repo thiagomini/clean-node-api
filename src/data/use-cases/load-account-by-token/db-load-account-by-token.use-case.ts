@@ -18,9 +18,12 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
     role?: string | undefined
   ): Promise<Optional<AccountModel>> {
     try {
-      await this.decrypter.decrypt(accessToken)
-      await this.loadAccountByTokenRepository.load(accessToken)
-      return undefined
+      const tokenOrUdefined = await this.decrypter.decrypt(accessToken)
+      if (!tokenOrUdefined) {
+        return undefined
+      }
+
+      return await this.loadAccountByTokenRepository.loadByToken(accessToken)
     } catch (error) {
       throw new LoadAccountByTokenUseCaseError({
         cause: error as Error,
