@@ -5,9 +5,11 @@ import {
   Optional,
 } from '../add-account/db-add-account.protocols'
 import { LoadAccountByTokenUseCase } from '../authentication/db-authentication-protocols'
-import { AccountByTokenNotFoundError } from './account-by-token-not-found.error'
-import { InvalidTokenError } from './invalid-token.error'
-import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case.error'
+import {
+  AccountByTokenNotFoundError,
+  InvalidTokenError,
+  LoadAccountByTokenUseCaseError,
+} from './errors'
 
 export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
   constructor(
