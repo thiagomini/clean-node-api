@@ -1,19 +1,25 @@
 import {
   AccountModel,
   Decrypter,
+  LoadAccountByTokenRepository,
   Optional,
 } from '../add-account/db-add-account.protocols'
 import { LoadAccountByTokenUseCase } from '../authentication/db-authentication-protocols'
 import { LoadAccountByTokenUseCaseError } from './load-account-by-token.use-case.error'
 
 export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
-  constructor(private readonly decrypter: Decrypter) {}
+  constructor(
+    private readonly decrypter: Decrypter,
+    private readonly loadAccountByTokenRepository: LoadAccountByTokenRepository
+  ) {}
+
   async load(
     accessToken: string,
     role?: string | undefined
   ): Promise<Optional<AccountModel>> {
     try {
       await this.decrypter.decrypt(accessToken)
+      await this.loadAccountByTokenRepository.load(accessToken)
       return undefined
     } catch (error) {
       throw new LoadAccountByTokenUseCaseError({
