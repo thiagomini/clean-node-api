@@ -3,13 +3,11 @@ import {
   Decrypter,
   LoadAccountByTokenRepository,
   Optional,
-} from '../add-account/db-add-account.protocols'
-import { LoadAccountByTokenUseCase } from '../authentication/db-authentication-protocols'
-import {
+  LoadAccountByTokenUseCase,
   AccountByTokenNotFoundError,
   InvalidTokenError,
   LoadAccountByTokenUseCaseError,
-} from './errors'
+} from './db-load-account-by-token.protocols'
 
 export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
   constructor(

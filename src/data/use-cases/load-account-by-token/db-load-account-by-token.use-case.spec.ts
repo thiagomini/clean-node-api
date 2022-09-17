@@ -1,12 +1,12 @@
-import { AccountModel } from '../../../domain/models'
-import { Decrypter } from '../../protocols/cryptography'
 import { DbLoadAccountByTokenUseCase } from './db-load-account-by-token.use-case'
-import { LoadAccountByTokenRepository } from '../../protocols/db/account-repository'
 import {
+  AccountModel,
+  Decrypter,
+  LoadAccountByTokenRepository,
+  AccountByTokenNotFoundError,
   InvalidTokenError,
   LoadAccountByTokenUseCaseError,
-  AccountByTokenNotFoundError,
-} from './errors'
+} from './db-load-account-by-token.protocols'
 
 const TOKEN = 'any_token'
 const ROLE = 'user'
