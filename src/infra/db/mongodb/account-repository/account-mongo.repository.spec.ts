@@ -7,6 +7,7 @@ import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
 import { AccountNotFoundError } from './account-not-found.error'
+import { getAccountsCollection } from '../helpers/collections'
 
 describe('AccountMongoRepository', () => {
   let mongoAccountFactory: MongoAccountFactory
@@ -15,7 +16,7 @@ describe('AccountMongoRepository', () => {
   beforeAll(async () => {
     await mongoHelper.connect()
     mongoAccountFactory = await MongoAccountFactory.createFactory()
-    accountsCollection = await mongoHelper.getCollection('accounts')
+    accountsCollection = await getAccountsCollection()
   })
 
   beforeEach(async () => {
