@@ -1,2 +1,3 @@
 export * from './authentication'
-export * from './add-account'
+export * from './account'
+export * from './survey'
