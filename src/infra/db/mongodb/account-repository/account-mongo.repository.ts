@@ -23,6 +23,7 @@ export class AccountMongoRepository
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository
 {
+  // TODO: Add the Role as an input
   async add(addAccountInput: AddAccountInput): Promise<AccountModel> {
     const accountCollection = await getAccountsCollection()
 
