@@ -50,23 +50,13 @@ describe('AccountMongoRepository', () => {
     it('should return an account by email on success', async () => {
       // Arrange
       const sut = new AccountMongoRepository()
-      const accountsCollection = await mongoHelper.getCollection('accounts')
-      await accountsCollection.insertOne({
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-      })
+      const savedAccount = await mongoAccountFactory.createAccount()
 
       // Act
-      const account = await sut.loadByEmail('valid_email@mail.com')
+      const loadedAccount = await sut.loadByEmail(savedAccount.email)
 
       // Assert
-      expect(account).toEqual({
-        id: expect.any(String),
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-      })
+      expect(loadedAccount?.id).toEqual(savedAccount.id)
     })
 
     it('should return an undefined if account does not exist', async () => {
