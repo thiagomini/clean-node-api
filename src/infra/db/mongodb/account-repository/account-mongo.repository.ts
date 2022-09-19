@@ -1,4 +1,4 @@
-import { Filter, ObjectId } from 'mongodb'
+import { Collection, Filter, ObjectId } from 'mongodb'
 import { Role } from '../../../../auth'
 import {
   AddAccountRepository,
@@ -24,7 +24,7 @@ export class AccountMongoRepository
     LoadAccountByTokenRepository
 {
   async add(addAccountInput: AddAccountInput): Promise<AccountModel> {
-    const accountCollection = await mongoHelper.getCollection('accounts')
+    const accountCollection = await this.getAccountsCollection()
 
     await accountCollection.insertOne(addAccountInput)
 
@@ -32,7 +32,7 @@ export class AccountMongoRepository
   }
 
   async loadByEmail(email: string): Promise<Optional<AccountModel>> {
-    const accountCollection = await mongoHelper.getCollection('accounts')
+    const accountCollection = await this.getAccountsCollection()
 
     const accountByEmail = await accountCollection.findOne({
       email,
@@ -44,7 +44,7 @@ export class AccountMongoRepository
   }
 
   async updateAccessToken(id: string, accessToken: string): Promise<void> {
-    const accountCollection = await mongoHelper.getCollection('accounts')
+    const accountCollection = await this.getAccountsCollection()
     const idAsMongoObjectId = this.transformToMongoObjectId(id)
 
     const updateResult = await accountCollection.updateOne(
@@ -72,7 +72,7 @@ export class AccountMongoRepository
   }
 
   public async loadByToken(token: string, role?: Role): Promise<AccountModel> {
-    const accountCollection = await mongoHelper.getCollection('accounts')
+    const accountCollection = await this.getAccountsCollection()
 
     const accountByEmailFilter: Filter<AccountModel> = {
       accessToken: token,
@@ -88,5 +88,9 @@ export class AccountMongoRepository
       return addIdToDocument(accountByEmail) as AccountModel
     }
     throw new AccountByTokenNotFoundError(token)
+  }
+
+  private async getAccountsCollection(): Promise<Collection> {
+    return await mongoHelper.getCollection('accounts')
   }
 }
