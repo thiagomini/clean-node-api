@@ -160,5 +160,17 @@ describe('AccountMongoRepository', () => {
 
       expect(accountByToken.id).toEqual(account.id)
     })
+
+    it('should return an account when role and token match', async () => {
+      const sut = new AccountMongoRepository()
+      const account = await mongoAccountFactory.createAccount({
+        accessToken: 'existing_token',
+        role: Role.Admin,
+      })
+
+      const accountByToken = await sut.loadByToken('existing_token', Role.Admin)
+
+      expect(accountByToken.id).toEqual(account.id)
+    })
   })
 })
