@@ -149,5 +149,16 @@ describe('AccountMongoRepository', () => {
         sut.loadByToken('existing_token', Role.User)
       ).rejects.toThrowError(AccountByTokenNotFoundError)
     })
+
+    it('should return an account when no role is provided and token matches', async () => {
+      const sut = new AccountMongoRepository()
+      const account = await mongoAccountFactory.createAccount({
+        accessToken: 'existing_token',
+      })
+
+      const accountByToken = await sut.loadByToken('existing_token')
+
+      expect(accountByToken.id).toEqual(account.id)
+    })
   })
 })

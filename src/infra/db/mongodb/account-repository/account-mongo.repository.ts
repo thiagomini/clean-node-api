@@ -1,20 +1,20 @@
-import { ObjectId } from 'mongodb'
+import { Filter, ObjectId } from 'mongodb'
+import { Role } from '../../../../auth'
 import {
   AddAccountRepository,
-  LoadAccountByTokenRepository,
   LoadAccountByEmailRepository,
+  LoadAccountByTokenRepository,
   UpdateAccessTokenRepository,
 } from '../../../../data/protocols/db/account-repository'
 import {
-  AddAccountInput,
   AccountModel,
+  AddAccountInput,
 } from '../../../../data/use-cases/add-account/db-add-account.protocols'
+import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
 import { Optional } from '../../../../utils'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { AccountNotFoundError } from './account-not-found.error'
-import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
-import { Role } from '../../../../auth'
 
 export class AccountMongoRepository
   implements
@@ -72,6 +72,21 @@ export class AccountMongoRepository
   }
 
   public async loadByToken(token: string, role?: Role): Promise<AccountModel> {
+    const accountCollection = await mongoHelper.getCollection('accounts')
+
+    const accountByEmailFilter: Filter<AccountModel> = {
+      accessToken: token,
+    }
+
+    if (role) {
+      accountByEmailFilter.role = role
+    }
+
+    const accountByEmail = await accountCollection.findOne(accountByEmailFilter)
+
+    if (accountByEmail) {
+      return addIdToDocument(accountByEmail) as AccountModel
+    }
     throw new AccountByTokenNotFoundError(token)
   }
 }
