@@ -1,3 +1,4 @@
+import { Role } from '../../auth'
 import {
   HttpRequest,
   HttpResponse,
@@ -12,7 +13,7 @@ import {
 export class AuthMiddleware implements Middleware {
   constructor(
     private readonly loadAccountByTokenUseCase: LoadAccountByTokenUseCase,
-    private readonly role: string
+    private readonly role: Role
   ) {}
 
   async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {

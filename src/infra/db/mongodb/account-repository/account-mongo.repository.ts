@@ -1,9 +1,10 @@
 import { ObjectId } from 'mongodb'
 import {
+  AddAccountRepository,
+  LoadAccountByTokenRepository,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
-} from '../../../../data/protocols/db/log-repository'
-import { AddAccountRepository } from '../../../../data/protocols/db/account-repository'
+} from '../../../../data/protocols/db/account-repository'
 import {
   AddAccountInput,
   AccountModel,
@@ -12,12 +13,15 @@ import { Optional } from '../../../../utils'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { AccountNotFoundError } from './account-not-found.error'
+import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
+import { Role } from '../../../../auth'
 
 export class AccountMongoRepository
   implements
     AddAccountRepository,
     LoadAccountByEmailRepository,
-    UpdateAccessTokenRepository
+    UpdateAccessTokenRepository,
+    LoadAccountByTokenRepository
 {
   async add(addAccountInput: AddAccountInput): Promise<AccountModel> {
     const accountCollection = await mongoHelper.getCollection('accounts')
@@ -65,5 +69,9 @@ export class AccountMongoRepository
     } catch (err) {
       throw new AccountNotFoundError(id)
     }
+  }
+
+  public async loadByToken(token: string, role?: Role): Promise<AccountModel> {
+    throw new AccountByTokenNotFoundError(token)
   }
 }

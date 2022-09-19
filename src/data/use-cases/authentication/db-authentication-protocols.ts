@@ -1,6 +1,6 @@
 export * from './../../../domain/models/account.model'
 export * from './../../../domain/use-cases/authentication'
-export * from '../../protocols/db/log-repository'
+export * from '../../protocols/db/account-repository'
 export * from './authentication.error'
 export * from '../../../utils'
 export * from '../../protocols/cryptography'

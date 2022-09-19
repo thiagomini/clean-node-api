@@ -1,10 +1,9 @@
-import { mongoHelper } from '../helpers/mongo-helper'
-import { SurveyMongoRepository } from './survey-mongo.repository'
-import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
-import { getSurveysCollection } from '../helpers/collections'
-import { SurveyModel } from '../../../../data/use-cases/add-survey/db-add-survey.use-case.protocols'
 import { Collection, ObjectId } from 'mongodb'
-import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
+import { SurveyModel } from '../../../../data/use-cases/add-survey/db-add-survey.use-case.protocols'
+import { getSurveysCollection } from '../helpers/collections'
+import { mongoHelper } from '../helpers/mongo-helper'
+import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
+import { SurveyMongoRepository } from './survey-mongo.repository'
 
 let surveysCollection: Collection
 
@@ -52,16 +51,6 @@ describe('SurveyMongoRepository', () => {
       })
 
       await expect(existsInDatabase(survey)).resolves.toBeTruthy()
-    })
-  })
-
-  describe('loadByToken()', () => {
-    it('should throw an AccountByTokenNotFoundError when account does not exist', async () => {
-      const sut = await createSut()
-
-      await expect(sut.loadByToken('nonexistent')).rejects.toThrowError(
-        AccountByTokenNotFoundError
-      )
     })
   })
 })

@@ -1,5 +1,7 @@
 import { Collection, ObjectId } from 'mongodb'
+import { Role } from '../../../../auth'
 import { AccountModel } from '../../../../data/use-cases/add-account/db-add-account.protocols'
+import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
 import { MongoAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
@@ -124,6 +126,28 @@ describe('AccountMongoRepository', () => {
       await expect(updateAccessTokenPromise).rejects.toThrowError(
         AccountNotFoundError
       )
+    })
+  })
+
+  describe('loadByToken()', () => {
+    it('should throw an AccountByTokenNotFoundError when account does not exist', async () => {
+      const sut = new AccountMongoRepository()
+
+      await expect(sut.loadByToken('nonexistent')).rejects.toThrowError(
+        AccountByTokenNotFoundError
+      )
+    })
+
+    it('should throw an AccountByTokenNotFoundError when role does not match', async () => {
+      const sut = new AccountMongoRepository()
+      await mongoAccountFactory.createAccount({
+        role: Role.Admin,
+        accessToken: 'existing_token',
+      })
+
+      await expect(
+        sut.loadByToken('existing_token', Role.User)
+      ).rejects.toThrowError(AccountByTokenNotFoundError)
     })
   })
 })

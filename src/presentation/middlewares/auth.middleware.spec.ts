@@ -1,3 +1,4 @@
+import { Role } from '../../auth'
 import { Optional } from '../../utils'
 import { AuthMiddleware } from './auth.middleware'
 import {
@@ -26,7 +27,7 @@ describe('AuthMiddleware', () => {
 
     it('should call loadAccountByToken with correct values', async () => {
       // Arrange
-      const { sut, loadAccountByTokenStub } = createSut('any_role')
+      const { sut, loadAccountByTokenStub } = createSut(Role.Admin)
       const httpRequest = createFakeRequest()
       const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
 
@@ -34,7 +35,7 @@ describe('AuthMiddleware', () => {
       await sut.handle(httpRequest)
 
       // Assert
-      expect(loadSpy).toHaveBeenCalledWith('any_token', 'any_role')
+      expect(loadSpy).toHaveBeenCalledWith('any_token', Role.Admin)
     })
 
     it('should return 403 if user does not exist', async () => {
@@ -91,7 +92,7 @@ interface SutFactoryResponse {
   loadAccountByTokenStub: LoadAccountByTokenUseCase
 }
 
-const createSut = (role = 'user'): SutFactoryResponse => {
+const createSut = (role: Role = Role.User): SutFactoryResponse => {
   const loadAccountByTokenStub = createLoadAccountByTokenStub()
   const sut = new AuthMiddleware(loadAccountByTokenStub, role)
 
@@ -117,6 +118,7 @@ const getAccountModel = (): AccountModel => ({
   name: 'any_name',
   password: 'any_password',
   accessToken: 'any_access_token',
+  role: Role.User,
 })
 
 const createFakeRequest = (): HttpRequest => ({

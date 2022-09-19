@@ -1,3 +1,4 @@
+import { Role } from '../../../auth'
 import {
   AccountModel,
   Decrypter,
@@ -17,7 +18,7 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
 
   async load(
     accessToken: string,
-    role?: string
+    role?: Role
   ): Promise<Optional<AccountModel>> {
     try {
       return await this.decryptTokenAndGetAccount(accessToken, role)
@@ -28,7 +29,7 @@ export class DbLoadAccountByTokenUseCase implements LoadAccountByTokenUseCase {
 
   private async decryptTokenAndGetAccount(
     accessToken: string,
-    role?: string
+    role?: Role
   ): Promise<AccountModel> {
     await this.decrypter.decrypt(accessToken)
     return await this.loadAccountByTokenRepository.loadByToken(

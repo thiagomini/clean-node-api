@@ -7,9 +7,10 @@ import {
   InvalidTokenError,
   LoadAccountByTokenUseCaseError,
 } from './db-load-account-by-token.protocols'
+import { Role } from '../../../auth'
 
 const TOKEN = 'any_token'
-const ROLE = 'user'
+const ROLE = Role.User
 
 describe('DbLoadAccountByTokenUseCase', () => {
   it('should call Decrypter with correct values', async () => {
@@ -137,4 +138,5 @@ const accountModel = (): AccountModel => ({
   name: 'any_name',
   accessToken: TOKEN,
   password: 'any_hashed_password',
+  role: Role.User,
 })
