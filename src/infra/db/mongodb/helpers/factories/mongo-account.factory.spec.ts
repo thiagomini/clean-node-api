@@ -1,4 +1,5 @@
 import { Collection, ObjectId } from 'mongodb'
+import { Role } from '../../../../../auth'
 import { AccountModel } from '../../../../../domain/models'
 import { DocumentWithMongoId } from '../mongo-document-helper'
 import { mongoHelper } from '../mongo-helper'
@@ -36,6 +37,7 @@ describe('MongoAccountFactory', () => {
         email: 'some_email',
         name: 'some_name',
         password: 'some_password',
+        role: Role.User,
       }
 
       // Act
@@ -59,6 +61,7 @@ describe('MongoAccountFactory', () => {
         name: expect.any(String),
         password: expect.any(String),
         accessToken: expect.any(String),
+        role: Role.User,
       })
     })
 
@@ -70,6 +73,7 @@ describe('MongoAccountFactory', () => {
         email: 'some_email',
         name: 'some_name',
         password: 'some_password',
+        role: Role.User,
       }
 
       // Act
@@ -91,6 +95,7 @@ describe('MongoAccountFactory', () => {
         email: 'some_email',
         name: 'some_name',
         password: 'some_password',
+        role: Role.User,
       }
 
       // Act

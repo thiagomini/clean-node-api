@@ -1,3 +1,4 @@
+import { Role } from '../../../auth'
 import {
   AddAccountInput,
   AddAccountOutput,
@@ -170,6 +171,7 @@ const getDefaultSavedAccountData = (): AddAccountOutput => ({
   name: 'valid_name',
   password: 'hashed_password',
   isNew: true,
+  role: Role.User,
 })
 
 const getExistingAccount = (): AccountModel => ({
@@ -177,6 +179,7 @@ const getExistingAccount = (): AccountModel => ({
   email: 'existing@mail.com',
   name: 'existing_name',
   password: 'existing_hashed_password',
+  role: Role.User,
 })
 
 const createDefaultAddAccountInput = (): AddAccountInput => ({

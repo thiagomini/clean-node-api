@@ -1,3 +1,4 @@
+import { Role } from '../../../../auth'
 import { Authentication } from '../../../../domain/use-cases/authentication'
 import { Optional } from '../../../../utils'
 import { ExistingEmailException, MissingParamException } from '../../../errors'
@@ -197,6 +198,7 @@ const getDefaultAccount = (): AccountModel => ({
   name: 'valid_name',
   email: 'valid_email@mail.com',
   password: 'valid_password',
+  role: Role.User,
 })
 
 const createValidationStub = (): Validation => {

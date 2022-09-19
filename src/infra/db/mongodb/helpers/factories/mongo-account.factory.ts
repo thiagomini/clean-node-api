@@ -1,4 +1,5 @@
 import { Collection, ObjectId, OptionalId } from 'mongodb'
+import { Role } from '../../../../../auth'
 import { AccountModel } from '../../../../../domain/models'
 import { ModelAttributes } from '../../../../../domain/models/model-attributes'
 import { addIdToDocument } from '../mongo-document-helper'
@@ -41,6 +42,7 @@ export class MongoAccountFactory {
       email: 'valid_email',
       accessToken: 'valid_access_token',
       password: 'hashed_password',
+      role: Role.User,
     }
   }
 

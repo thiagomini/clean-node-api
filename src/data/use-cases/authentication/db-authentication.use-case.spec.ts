@@ -1,3 +1,4 @@
+import { Role } from '../../../auth'
 import {
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
@@ -176,6 +177,7 @@ const getFakeAccount = (): AccountModel => ({
   id: 'valid_id',
   name: 'any_name',
   password: 'hashed_password',
+  role: Role.User,
 })
 
 const createHashComparerStub = (): HashComparer => {
