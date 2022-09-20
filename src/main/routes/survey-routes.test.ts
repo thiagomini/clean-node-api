@@ -100,5 +100,42 @@ describe('survey routes', () => {
         })
         .expect(HttpStatusCodes.FORBIDDEN)
     })
+
+    it('should return 200 when user is authenticated as an Admin', async () => {
+      const user = await accountsCollection.insertOne({
+        name: 'Thiago',
+        email: 'thiago@mail.com',
+        password: 'password',
+        role: Role.Admin,
+      })
+      const accessToken = sign(user.insertedId.toString(), env.jwtSecret)
+      await accountsCollection.updateOne(
+        {
+          _id: user.insertedId,
+        },
+        {
+          $set: {
+            accessToken,
+          },
+        }
+      )
+
+      await request(app)
+        .post('/api/surveys')
+        .set(AUTH_HEADER, accessToken)
+        .send({
+          question: 'any_question',
+          answers: [
+            {
+              image: 'https://loremflickr.com/640/480/cats',
+              answer: 'any_answer',
+            },
+            {
+              answer: 'any_answer_2',
+            },
+          ],
+        })
+        .expect(HttpStatusCodes.NO_CONTENT)
+    })
   })
 })
