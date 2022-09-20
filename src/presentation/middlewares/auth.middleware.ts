@@ -1,4 +1,5 @@
 import { Role } from '../../auth'
+import { AUTH_HEADER } from './auth-header-key'
 import {
   HttpRequest,
   HttpResponse,
@@ -27,7 +28,7 @@ export class AuthMiddleware implements Middleware {
   private async verifyAccessTokenFrom(
     httpRequest: HttpRequest
   ): Promise<HttpResponse> {
-    const accessToken = httpRequest?.headers?.['x-access-token']
+    const accessToken = httpRequest?.headers?.[AUTH_HEADER]
 
     if (!accessToken) {
       return forbidden(new AccessDeniedException())
