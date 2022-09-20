@@ -11,7 +11,7 @@ describe('survey routes', () => {
   })
 
   describe('[POST] /surveys', () => {
-    it('should return 204 on success', async () => {
+    it('should return 403 when user is not authenticated', async () => {
       await request(app)
         .post('/api/surveys')
         .send({
@@ -26,7 +26,7 @@ describe('survey routes', () => {
             },
           ],
         })
-        .expect(HttpStatusCodes.NO_CONTENT)
+        .expect(HttpStatusCodes.FORBIDDEN)
     })
   })
 })
