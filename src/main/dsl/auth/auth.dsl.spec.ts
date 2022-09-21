@@ -34,5 +34,17 @@ describe('AuthDSL', () => {
 
       expect(accountInDb).toBeDefined()
     })
+
+    it('should create an accessToken for the user', async () => {
+      const authDSL = AuthDSL.create()
+
+      const createdUser = await authDSL.signupUser({
+        email: 'mail@mail.com',
+        password: '123',
+        name: 'any_name',
+      })
+
+      expect(createdUser.accessToken).toBeDefined()
+    })
   })
 })

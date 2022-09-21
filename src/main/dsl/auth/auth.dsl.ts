@@ -1,27 +1,37 @@
-import { DbAddAccountUseCase } from '../../../data/use-cases/add-account/db-add-account.use-case'
+import { buildAccountInput } from '../../../data/test-data-builders'
 import {
   AddAccountInput,
   AddAccountOutput,
   AddAccountUseCase,
 } from '../../../domain/use-cases/add-account'
-import { BCryptHasherAdapter } from '../../../infra/cryptography/bcrypt-hasher.adapter'
-import { AccountMongoRepository } from '../../../infra/db/mongodb/account-repository/account-mongo.repository'
+import { Authentication } from '../../../domain/use-cases/authentication'
+import { createDbAddAccount, createDbAuthentication } from '../../factories'
 
 export class AuthDSL {
-  constructor(private readonly addAccountUseCase: AddAccountUseCase) {}
+  constructor(
+    private readonly addAccountUseCase: AddAccountUseCase,
+    private readonly authentication: Authentication
+  ) {}
 
   async signupUser(
-    signupUserInput: AddAccountInput
+    signupUserInput?: AddAccountInput
   ): Promise<AddAccountOutput> {
-    return await this.addAccountUseCase.findOrCreate(signupUserInput)
+    if (!signupUserInput) {
+      signupUserInput = buildAccountInput()
+    }
+    const newAccount = await this.addAccountUseCase.findOrCreate(
+      signupUserInput
+    )
+
+    newAccount.accessToken = await this.authentication.authenticate({
+      email: newAccount.email,
+      password: signupUserInput.password,
+    })
+
+    return newAccount
   }
 
   public static create(): AuthDSL {
-    const encrypter = new BCryptHasherAdapter()
-    const mongoRepository = new AccountMongoRepository()
-
-    return new AuthDSL(
-      new DbAddAccountUseCase(encrypter, mongoRepository, mongoRepository)
-    )
+    return new AuthDSL(createDbAddAccount(), createDbAuthentication())
   }
 }
