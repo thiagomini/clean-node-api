@@ -12,9 +12,11 @@ import { getAccountsCollection } from '../../infra/db/mongodb/helpers/collection
 import { sign } from 'jsonwebtoken'
 import env from '../config/env'
 import { Role } from '../../auth'
+import { AuthDSL } from '../dsl/auth/auth.dsl'
 
 describe('survey routes', () => {
   let accountsCollection: Collection
+  const authDSL = AuthDSL.create()
 
   beforeAll(async () => {
     accountsCollection = await getAccountsCollection()
@@ -101,24 +103,11 @@ describe('survey routes', () => {
         .expect(HttpStatusCodes.FORBIDDEN)
     })
 
-    it('should return 200 when user is authenticated as an Admin', async () => {
-      const user = await accountsCollection.insertOne({
-        name: 'Thiago',
-        email: 'thiago@mail.com',
-        password: 'password',
+    it('should return 204 when user is authenticated as an Admin', async () => {
+      const user = await authDSL.signupUser({
         role: Role.Admin,
       })
-      const accessToken = sign(user.insertedId.toString(), env.jwtSecret)
-      await accountsCollection.updateOne(
-        {
-          _id: user.insertedId,
-        },
-        {
-          $set: {
-            accessToken,
-          },
-        }
-      )
+      const accessToken = user.accessToken as string
 
       await request(app)
         .post('/api/surveys')

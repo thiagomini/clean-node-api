@@ -14,18 +14,15 @@ export class AuthDSL {
   ) {}
 
   async signupUser(
-    signupUserInput?: AddAccountInput
+    signupUserInput?: Partial<AddAccountInput>
   ): Promise<AddAccountOutput> {
-    if (!signupUserInput) {
-      signupUserInput = buildAccountInput()
-    }
-    const newAccount = await this.addAccountUseCase.findOrCreate(
-      signupUserInput
-    )
+    const finalInput = buildAccountInput(signupUserInput)
+
+    const newAccount = await this.addAccountUseCase.findOrCreate(finalInput)
 
     newAccount.accessToken = await this.authentication.authenticate({
       email: newAccount.email,
-      password: signupUserInput.password,
+      password: finalInput.password,
     })
 
     return newAccount
