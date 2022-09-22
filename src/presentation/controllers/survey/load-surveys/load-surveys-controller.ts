@@ -1,4 +1,5 @@
 import { LoadSurveysUseCase } from '../../../../domain/use-cases/load-surveys'
+import { internalServerError } from '../../../utils/http-responses-factories'
 import {
   Controller,
   HttpRequest,
@@ -10,10 +11,14 @@ export class LoadSurveysController implements Controller {
   constructor(private readonly loadSurveysUseCase: LoadSurveysUseCase) {}
 
   async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
-    await this.loadSurveysUseCase.load()
-    return {
-      body: {},
-      statusCode: HttpStatusCodes.OK,
+    try {
+      await this.loadSurveysUseCase.load()
+      return {
+        body: {},
+        statusCode: HttpStatusCodes.OK,
+      }
+    } catch (error) {
+      return internalServerError(error as Error)
     }
   }
 }

@@ -1,3 +1,4 @@
+import { internalServerError } from '../../../utils/http-responses-factories'
 import { LoadSurveysController } from './load-surveys-controller'
 import {
   HttpRequest,
@@ -11,9 +12,23 @@ describe('LoadSurveysController', () => {
     const { sut, loadSurveysStub } = createSut()
     const loadSpy = jest.spyOn(loadSurveysStub, 'load')
 
+    // Act
     await sut.handle(fakeRequest())
 
+    // Assert
     expect(loadSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return 500 if LoadSurveysUseCase fails', async () => {
+    // Arrange
+    const { sut, loadSurveysStub } = createSut()
+    jest.spyOn(loadSurveysStub, 'load').mockRejectedValueOnce(new Error())
+
+    // Act
+    const httpResponse = await sut.handle(fakeRequest())
+
+    // Assert
+    expect(httpResponse).toEqual(internalServerError(new Error()))
   })
 })
 
