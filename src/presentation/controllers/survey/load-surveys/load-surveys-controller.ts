@@ -12,9 +12,11 @@ export class LoadSurveysController implements Controller {
 
   async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     try {
-      await this.loadSurveysUseCase.load()
+      const surveys = await this.loadSurveysUseCase.load()
       return {
-        body: {},
+        body: {
+          surveys,
+        },
         statusCode: HttpStatusCodes.OK,
       }
     } catch (error) {

@@ -1,9 +1,10 @@
-import { internalServerError } from '../../../utils/http-responses-factories'
 import { LoadSurveysController } from './load-surveys-controller'
 import {
   HttpRequest,
   LoadSurveysUseCase,
   SurveyModel,
+  internalServerError,
+  ok,
 } from './load-surveys.protocols'
 
 describe('LoadSurveysController', () => {
@@ -29,6 +30,21 @@ describe('LoadSurveysController', () => {
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(new Error()))
+  })
+
+  it('return 200 with surveys data on success', async () => {
+    // Arrange
+    const { sut } = createSut()
+
+    // Act
+    const httpResponse = await sut.handle(fakeRequest())
+
+    // Assert
+    expect(httpResponse).toEqual(
+      ok({
+        surveys: [fakeSurvey()],
+      })
+    )
   })
 })
 
