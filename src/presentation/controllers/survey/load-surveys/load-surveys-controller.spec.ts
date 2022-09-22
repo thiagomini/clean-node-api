@@ -1,7 +1,9 @@
-import { SurveyModel } from '../../../../domain/models'
-import { LoadSurveysUseCase } from '../../../../domain/use-cases/load-surveys'
-import { HttpRequest } from '../../../protocols'
 import { LoadSurveysController } from './load-surveys-controller'
+import {
+  HttpRequest,
+  LoadSurveysUseCase,
+  SurveyModel,
+} from './load-surveys.protocols'
 
 describe('LoadSurveysController', () => {
   it('should call LoadSurveysUseCase', async () => {

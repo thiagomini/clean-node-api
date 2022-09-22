@@ -4,7 +4,7 @@ import {
   HttpRequest,
   HttpResponse,
   HttpStatusCodes,
-} from '../../../protocols'
+} from './load-surveys.protocols'
 
 export class LoadSurveysController implements Controller {
   constructor(private readonly loadSurveysUseCase: LoadSurveysUseCase) {}
