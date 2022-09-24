@@ -11,7 +11,7 @@ describe('LoadSurveysController', () => {
   it('should call LoadSurveysUseCase', async () => {
     // Arrange
     const { sut, loadSurveysStub } = createSut()
-    const loadSpy = jest.spyOn(loadSurveysStub, 'load')
+    const loadSpy = jest.spyOn(loadSurveysStub, 'list')
 
     // Act
     await sut.handle(fakeRequest())
@@ -23,7 +23,7 @@ describe('LoadSurveysController', () => {
   it('should return 500 if LoadSurveysUseCase fails', async () => {
     // Arrange
     const { sut, loadSurveysStub } = createSut()
-    jest.spyOn(loadSurveysStub, 'load').mockRejectedValueOnce(new Error())
+    jest.spyOn(loadSurveysStub, 'list').mockRejectedValueOnce(new Error())
 
     // Act
     const httpResponse = await sut.handle(fakeRequest())
@@ -65,7 +65,7 @@ const createSut = (): SutFactoryResponse => {
 
 const createLoadSurveysStub = (): LoadSurveysUseCase => {
   class LoadSurveysStub implements LoadSurveysUseCase {
-    public async load(): Promise<SurveyModel[]> {
+    public async list(): Promise<SurveyModel[]> {
       return [fakeSurvey()]
     }
   }

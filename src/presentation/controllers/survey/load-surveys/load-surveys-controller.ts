@@ -1,10 +1,10 @@
-import { LoadSurveysUseCase } from '../../../../domain/use-cases/load-surveys'
-import { internalServerError } from '../../../utils/http-responses-factories'
 import {
   Controller,
   HttpRequest,
   HttpResponse,
   HttpStatusCodes,
+  LoadSurveysUseCase,
+  internalServerError,
 } from './load-surveys.protocols'
 
 export class LoadSurveysController implements Controller {
@@ -12,7 +12,7 @@ export class LoadSurveysController implements Controller {
 
   async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     try {
-      const surveys = await this.loadSurveysUseCase.load()
+      const surveys = await this.loadSurveysUseCase.list()
       return {
         body: {
           surveys,

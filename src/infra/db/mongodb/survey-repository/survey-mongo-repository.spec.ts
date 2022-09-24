@@ -53,6 +53,19 @@ describe('SurveyMongoRepository', () => {
       await expect(existsInDatabase(survey)).resolves.toBeTruthy()
     })
   })
+
+  describe('list', () => {
+    it('should return an empty array when there is not survey', async () => {
+      // Arrange
+      const sut = await createSut()
+
+      // Act
+      const surveysList = await sut.list()
+
+      // Assert
+      expect(surveysList).toEqual([])
+    })
+  })
 })
 
 const createSut = async (): Promise<SurveyMongoRepository> => {
