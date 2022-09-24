@@ -13,7 +13,9 @@ export class SurveyMongoRepository
   implements AddSurveyRepository, LoadSurveysUseCase
 {
   async list(): Promise<SurveyModel[]> {
-    return []
+    const surveysCollection = await this.getCollection()
+    const surveysInDb = await surveysCollection.find().toArray()
+    return surveysInDb.map(addIdToDocument) as SurveyModel[]
   }
 
   async add(addSurveyInput: AddSurveyInput): Promise<SurveyModel> {
