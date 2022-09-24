@@ -65,6 +65,17 @@ describe('SurveyMongoRepository', () => {
       // Assert
       expect(surveysList).toEqual([])
     })
+
+    it('should return an array of surveys on success', async () => {
+      // Arrange
+      const sut = await createSut()
+
+      // Act
+      const surveysList = await sut.list()
+
+      // Assert
+      expect(surveysList).toEqual([])
+    })
   })
 })
 

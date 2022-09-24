@@ -4,7 +4,8 @@ import { AccountModel } from '../../../../../domain/models'
 import { DocumentWithMongoId } from '../mongo-document-helper'
 import { mongoHelper } from '../mongo-helper'
 import { clearAccountsCollection } from '../test-teardown-helpers'
-import { MongoAccountFactory } from './mongo-account.factory'
+import { MongoEntityFactory } from './mongo-entity.factory'
+import { createAccountFactory } from './mongo-account.factory'
 
 describe('MongoAccountFactory', () => {
   let accountCollection: Collection<DocumentWithMongoId<AccountModel>>
@@ -19,18 +20,18 @@ describe('MongoAccountFactory', () => {
     await mongoHelper.disconnect()
   })
 
-  describe('createFactory', () => {
-    it('should return a new MongoAccountFactory', async () => {
-      const factory = await MongoAccountFactory.createFactory()
+  describe('createAccountFactory', () => {
+    it('should return a new MongoEntityFactory', async () => {
+      const factory = await createAccountFactory()
 
-      expect(factory).toBeInstanceOf(MongoAccountFactory)
+      expect(factory).toBeInstanceOf(MongoEntityFactory)
     })
   })
 
   describe('createAccount', () => {
     it('should return an account with all given properties', async () => {
       // Arrange
-      const sut = await MongoAccountFactory.createFactory()
+      const sut = await createAccountFactory()
       const accountData: AccountModel = {
         id: new ObjectId().toString(),
         accessToken: 'some_token',
@@ -41,7 +42,7 @@ describe('MongoAccountFactory', () => {
       }
 
       // Act
-      const createdAccount = await sut.createAccount(accountData)
+      const createdAccount = await sut.create(accountData)
 
       // Assert
       expect(createdAccount).toEqual(accountData)
@@ -49,10 +50,10 @@ describe('MongoAccountFactory', () => {
 
     it('should return an account with all default properties', async () => {
       // Arrange
-      const sut = await MongoAccountFactory.createFactory()
+      const sut = await createAccountFactory()
 
       // Act
-      const createdAccount = await sut.createAccount()
+      const createdAccount = await sut.create()
 
       // Assert
       expect(createdAccount).toEqual<AccountModel>({
@@ -67,7 +68,7 @@ describe('MongoAccountFactory', () => {
 
     it('should return an account with all properties but id', async () => {
       // Arrange
-      const sut = await MongoAccountFactory.createFactory()
+      const sut = await createAccountFactory()
       const accountData: Partial<AccountModel> = {
         accessToken: 'some_token',
         email: 'some_email',
@@ -77,7 +78,7 @@ describe('MongoAccountFactory', () => {
       }
 
       // Act
-      const createdAccount = await sut.createAccount(accountData)
+      const createdAccount = await sut.create(accountData)
 
       // Assert
       expect(createdAccount).toEqual({
@@ -88,7 +89,7 @@ describe('MongoAccountFactory', () => {
 
     it('should be able to create the account in the database', async () => {
       // Arrange
-      const sut = await MongoAccountFactory.createFactory()
+      const sut = await createAccountFactory()
       const accountData: AccountModel = {
         id: new ObjectId().toString(),
         accessToken: 'some_token',
@@ -99,7 +100,7 @@ describe('MongoAccountFactory', () => {
       }
 
       // Act
-      const createdAccount = await sut.createAccount(accountData)
+      const createdAccount = await sut.create(accountData)
 
       // Assert
       const accountInDatabase = await accountCollection.findOne({
