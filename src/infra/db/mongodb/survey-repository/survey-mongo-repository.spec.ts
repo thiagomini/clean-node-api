@@ -1,11 +1,12 @@
 import { Collection, ObjectId } from 'mongodb'
 import { SurveyModel } from '../../../../data/use-cases/add-survey/db-add-survey.use-case.protocols'
+import { ModelAttributes } from '../../../../domain/models'
 import { getSurveysCollection } from '../helpers/collections'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
 import { SurveyMongoRepository } from './survey-mongo.repository'
 
-let surveysCollection: Collection
+let surveysCollection: Collection<ModelAttributes<SurveyModel>>
 
 describe('SurveyMongoRepository', () => {
   beforeAll(async () => {

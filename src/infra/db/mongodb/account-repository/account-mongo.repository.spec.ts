@@ -2,20 +2,21 @@ import { Collection, ObjectId } from 'mongodb'
 import { Role } from '../../../../auth'
 import { AccountModel } from '../../../../data/use-cases/add-account/db-add-account.protocols'
 import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
-import { MongoAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
 import { AccountNotFoundError } from './account-not-found.error'
 import { getAccountsCollection } from '../helpers/collections'
+import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
+import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
 
 describe('AccountMongoRepository', () => {
-  let mongoAccountFactory: MongoAccountFactory
+  let mongoAccountFactory: MongoEntityFactory<AccountModel>
   let accountsCollection: Collection
 
   beforeAll(async () => {
     await mongoHelper.connect()
-    mongoAccountFactory = await MongoAccountFactory.createFactory()
+    mongoAccountFactory = await createAccountFactory()
     accountsCollection = await getAccountsCollection()
   })
 
@@ -50,7 +51,7 @@ describe('AccountMongoRepository', () => {
     it('should return an account by email on success', async () => {
       // Arrange
       const sut = new AccountMongoRepository()
-      const savedAccount = await mongoAccountFactory.createAccount()
+      const savedAccount = await mongoAccountFactory.create()
 
       // Act
       const loadedAccount = await sut.loadByEmail(savedAccount.email)
@@ -75,7 +76,7 @@ describe('AccountMongoRepository', () => {
     it('should update an account access token on success', async () => {
       // Arrange
       const sut = new AccountMongoRepository()
-      const existingAccount = await mongoAccountFactory.createAccount()
+      const existingAccount = await mongoAccountFactory.create()
 
       // Act
       await sut.updateAccessToken(existingAccount.id, 'valid_token')
@@ -131,7 +132,7 @@ describe('AccountMongoRepository', () => {
 
     it('should throw an AccountByTokenNotFoundError when role does not match', async () => {
       const sut = new AccountMongoRepository()
-      await mongoAccountFactory.createAccount({
+      await mongoAccountFactory.create({
         role: Role.Admin,
         accessToken: 'existing_token',
       })
@@ -143,7 +144,7 @@ describe('AccountMongoRepository', () => {
 
     it('should return an account when no role is provided and token matches', async () => {
       const sut = new AccountMongoRepository()
-      const account = await mongoAccountFactory.createAccount({
+      const account = await mongoAccountFactory.create({
         accessToken: 'existing_token',
       })
 
@@ -154,7 +155,7 @@ describe('AccountMongoRepository', () => {
 
     it('should return an account when role and token match', async () => {
       const sut = new AccountMongoRepository()
-      const account = await mongoAccountFactory.createAccount({
+      const account = await mongoAccountFactory.create({
         accessToken: 'existing_token',
         role: Role.Admin,
       })

@@ -4,6 +4,7 @@ import {
   AddSurveyInput,
   SurveyModel,
 } from '../../../../data/use-cases/add-survey/db-add-survey.use-case.protocols'
+import { ModelAttributes } from '../../../../domain/models'
 import { LoadSurveysUseCase } from '../../../../domain/use-cases/list-surveys'
 import { getSurveysCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
@@ -26,7 +27,9 @@ export class SurveyMongoRepository
     return addIdToDocument(surveyInputWithDate) as SurveyModel
   }
 
-  private async getCollection(): Promise<Collection> {
+  private async getCollection(): Promise<
+    Collection<ModelAttributes<SurveyModel>>
+  > {
     return await getSurveysCollection()
   }
 }
