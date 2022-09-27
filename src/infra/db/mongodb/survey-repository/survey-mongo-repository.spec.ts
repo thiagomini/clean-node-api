@@ -60,7 +60,7 @@ describe('SurveyMongoRepository', () => {
   })
 
   describe('list', () => {
-    it('should return an empty array when there is not survey', async () => {
+    it('should return an empty array when there is no survey', async () => {
       // Arrange
       const sut = await createSut()
 
