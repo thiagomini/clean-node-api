@@ -155,5 +155,18 @@ describe('survey routes', () => {
         .send()
         .expect(HttpStatusCodes.OK)
     })
+
+    it('should return 200 when user is authenticated as a normal User', async () => {
+      const user = await authDSL.signupUser({
+        role: Role.User,
+      })
+      const accessToken = user.accessToken as string
+
+      await request(app)
+        .get('/api/surveys')
+        .set(AUTH_HEADER, accessToken)
+        .send()
+        .expect(HttpStatusCodes.OK)
+    })
   })
 })
