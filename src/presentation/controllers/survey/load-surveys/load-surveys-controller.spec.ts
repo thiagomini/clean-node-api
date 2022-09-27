@@ -1,10 +1,9 @@
 import { LoadSurveysController } from './load-surveys-controller'
 import {
-  HttpRequest,
-  LoadSurveysUseCase,
-  SurveyModel,
   internalServerError,
+  LoadSurveysUseCase,
   ok,
+  SurveyModel,
 } from './load-surveys.protocols'
 
 describe('LoadSurveysController', () => {
@@ -14,7 +13,7 @@ describe('LoadSurveysController', () => {
     const loadSpy = jest.spyOn(loadSurveysStub, 'list')
 
     // Act
-    await sut.handle(fakeRequest())
+    await sut.handle()
 
     // Assert
     expect(loadSpy).toHaveBeenCalledTimes(1)
@@ -26,7 +25,7 @@ describe('LoadSurveysController', () => {
     jest.spyOn(loadSurveysStub, 'list').mockRejectedValueOnce(new Error())
 
     // Act
-    const httpResponse = await sut.handle(fakeRequest())
+    const httpResponse = await sut.handle()
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(new Error()))
@@ -37,7 +36,7 @@ describe('LoadSurveysController', () => {
     const { sut } = createSut()
 
     // Act
-    const httpResponse = await sut.handle(fakeRequest())
+    const httpResponse = await sut.handle()
 
     // Assert
     expect(httpResponse).toEqual(
@@ -83,16 +82,4 @@ const fakeSurvey = (): SurveyModel => ({
     },
   ],
   createdAt: new Date(),
-})
-
-const fakeRequest = (): HttpRequest => ({
-  body: {
-    question: 'any_question',
-    answers: [
-      {
-        image: 'any_image',
-        answer: 'any_answer',
-      },
-    ],
-  },
 })
