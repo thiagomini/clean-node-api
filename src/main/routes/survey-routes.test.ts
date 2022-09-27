@@ -127,4 +127,20 @@ describe('survey routes', () => {
         .expect(HttpStatusCodes.NO_CONTENT)
     })
   })
+
+  describe('[GET] /surveys', () => {
+    it('should return 403 when user is not authenticated', async () => {
+      await request(app)
+        .get('/api/surveys')
+        .send()
+        .expect(HttpStatusCodes.FORBIDDEN)
+    })
+
+    it('should return 403 when user token is invalid', async () => {
+      await request(app)
+        .get('/api/surveys')
+        .set(AUTH_HEADER, 'invalid_token')
+        .expect(HttpStatusCodes.FORBIDDEN)
+    })
+  })
 })
