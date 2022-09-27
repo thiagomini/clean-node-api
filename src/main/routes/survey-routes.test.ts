@@ -142,5 +142,18 @@ describe('survey routes', () => {
         .set(AUTH_HEADER, 'invalid_token')
         .expect(HttpStatusCodes.FORBIDDEN)
     })
+
+    it('should return 200 when user is authenticated as an Admin', async () => {
+      const user = await authDSL.signupUser({
+        role: Role.Admin,
+      })
+      const accessToken = user.accessToken as string
+
+      await request(app)
+        .get('/api/surveys')
+        .set(AUTH_HEADER, accessToken)
+        .send()
+        .expect(HttpStatusCodes.OK)
+    })
   })
 })
