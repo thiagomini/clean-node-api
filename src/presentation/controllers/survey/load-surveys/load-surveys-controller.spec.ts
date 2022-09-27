@@ -71,6 +71,7 @@ const createLoadSurveysStub = (): LoadSurveysUseCase => {
   const loadSurveyStub = new LoadSurveysStub()
   return loadSurveyStub
 }
+const fakeDate = new Date()
 
 const fakeSurvey = (): SurveyModel => ({
   id: 'valid_id',
@@ -81,5 +82,5 @@ const fakeSurvey = (): SurveyModel => ({
       answer: 'any_answer',
     },
   ],
-  createdAt: new Date(),
+  createdAt: new Date(fakeDate),
 })
