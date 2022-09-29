@@ -1,7 +1,7 @@
-import { Authentication } from '../../../../domain/use-cases/authentication'
-import { Optional } from '../../../../utils'
-import { MissingParamException } from '../../../errors'
-import { HttpRequest, Validation } from '../../../protocols'
+import { Authentication } from '@/domain/use-cases/authentication'
+import { Optional } from '@/utils'
+import { MissingParamException } from '@/presentation/errors'
+import { HttpRequest, Validation } from '@/presentation/protocols'
 import {
   badRequest,
   internalServerError,

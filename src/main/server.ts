@@ -1,3 +1,4 @@
+import 'module-alias/register'
 import 'dotenv/config'
 import env from './config/env'
 import { mongoHelper } from '../infra/db/mongodb/helpers/mongo-helper'

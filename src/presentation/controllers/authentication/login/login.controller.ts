@@ -1,4 +1,4 @@
-import { Authentication } from '../../../../domain/use-cases/authentication'
+import { Authentication } from '@/domain/use-cases/authentication'
 import {
   Controller,
   HttpRequest,
@@ -10,7 +10,7 @@ import {
   badRequest,
   internalServerError,
   unauthorized,
-} from '../../../utils/http-responses-factories'
+} from '@/presentation/utils/http-responses-factories'
 
 export class LoginController implements Controller {
   constructor(

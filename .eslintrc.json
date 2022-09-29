@@ -1,10 +1,7 @@
 {
-  "extends": [
-    "standard-with-typescript",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["standard-with-typescript", "plugin:prettier/recommended"],
   "parserOptions": {
-    "project": "./tsconfig.eslint.json"
+    "project": "./tsconfig.json"
   },
   "rules": {
     "@typescript-eslint/strict-boolean-expressions": "off",
