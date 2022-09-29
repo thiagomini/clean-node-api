@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt'
-import { HashComparer, Hasher } from '../../data/protocols/cryptography'
+import { HashComparer, Hasher } from '@/data/protocols/cryptography'
 import { HashComparisonError } from './hash-comparison.error'
 import { HashingError } from './hashing.error'
 

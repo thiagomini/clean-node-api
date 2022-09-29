@@ -1,6 +1,6 @@
-import { Validation } from '../../presentation/protocols'
-import { Optional } from '../../utils'
-import { getFirstDefinedResponse } from '../../utils/array-utils'
+import { Validation } from '@/presentation/protocols'
+import { Optional } from '@/utils'
+import { getFirstDefinedResponse } from '@/utils/array-utils'
 
 /**
  * Validates each element of the input field with the provided validations

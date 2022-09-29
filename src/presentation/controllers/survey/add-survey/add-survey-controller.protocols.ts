@@ -4,5 +4,5 @@ export {
   HttpResponse,
   Validation,
 } from '../../../protocols'
-export { Optional } from '../../../../utils'
-export * from '../../../../domain/use-cases/add-survey'
+export { Optional } from '@/utils'
+export * from '@/domain/use-cases/add-survey'

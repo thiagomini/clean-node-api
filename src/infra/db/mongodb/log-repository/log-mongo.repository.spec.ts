@@ -1,5 +1,5 @@
 import { Collection, ObjectId } from 'mongodb'
-import { ContextError } from '../../../../errors'
+import { ContextError } from '@/errors'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearErrorLogsCollection } from '../helpers/test-teardown-helpers'
 import { LogMongoRepository } from './log-mongo.repository'

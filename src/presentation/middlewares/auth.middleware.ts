@@ -1,4 +1,4 @@
-import { Role } from '../../auth'
+import { Role } from '@/auth'
 import { AUTH_HEADER } from './auth-header-key'
 import {
   HttpRequest,

@@ -1,17 +1,17 @@
 import request from 'supertest'
-import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
+import { mongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import {
   clearAccountsCollection,
   clearSurveysCollection,
-} from '../../infra/db/mongodb/helpers/test-teardown-helpers'
-import { HttpStatusCodes } from '../../presentation/protocols'
+} from '@/infra/db/mongodb/helpers/test-teardown-helpers'
+import { HttpStatusCodes } from '@/presentation/protocols'
 import app from '../config/app'
-import { AUTH_HEADER } from '../../presentation/middlewares/auth-header-key'
+import { AUTH_HEADER } from '@/presentation/middlewares/auth-header-key'
 import { Collection } from 'mongodb'
-import { getAccountsCollection } from '../../infra/db/mongodb/helpers/collections'
+import { getAccountsCollection } from '@/infra/db/mongodb/helpers/collections'
 import { sign } from 'jsonwebtoken'
 import env from '../config/env'
-import { Role } from '../../auth'
+import { Role } from '@/auth'
 import { AuthDSL } from '../dsl/auth/auth.dsl'
 
 describe('survey routes', () => {

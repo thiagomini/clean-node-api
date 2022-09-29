@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb'
-import { Role } from '../../../../../auth'
-import { AccountModel } from '../../../../../domain/models'
+import { Role } from '@/auth'
+import { AccountModel } from '@/domain/models'
 import { DocumentWithMongoId } from '../mongo-document-helper'
 import { mongoHelper } from '../mongo-helper'
 import { clearAccountsCollection } from '../test-teardown-helpers'

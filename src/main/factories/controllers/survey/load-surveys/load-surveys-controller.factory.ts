@@ -1,5 +1,5 @@
-import { LoadSurveysController } from '../../../../../presentation/controllers/survey/load-surveys/load-surveys-controller'
-import { Controller } from '../../../../../presentation/protocols'
+import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys/load-surveys-controller'
+import { Controller } from '@/presentation/protocols'
 import { decorateWithLogger } from '../../../decorators'
 import { createLoadAccountUseCase } from '../../../use-cases'
 

@@ -1,5 +1,5 @@
-import { LogMongoRepository } from '../../../infra/db/mongodb/log-repository/log-mongo.repository'
-import { Controller } from '../../../presentation/protocols'
+import { LogMongoRepository } from '@/infra/db/mongodb/log-repository/log-mongo.repository'
+import { Controller } from '@/presentation/protocols'
 import { LogDecoratorController } from '../../decorators/log.decorator'
 
 export const decorateWithLogger = (

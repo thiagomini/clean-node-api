@@ -1,4 +1,4 @@
-import { ContextError } from '../../errors'
+import { ContextError } from '@/errors'
 
 export class ServerError extends ContextError {
   constructor(cause: Error) {

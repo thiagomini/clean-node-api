@@ -1,6 +1,6 @@
 import { Collection } from 'mongodb'
-import { mongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
-import { clearAccountsCollection } from '../../../infra/db/mongodb/helpers/test-teardown-helpers'
+import { mongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { clearAccountsCollection } from '@/infra/db/mongodb/helpers/test-teardown-helpers'
 import { AuthDSL } from './auth.dsl'
 
 describe('AuthDSL', () => {

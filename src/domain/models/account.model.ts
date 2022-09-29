@@ -1,4 +1,4 @@
-import { Role } from '../../auth'
+import { Role } from '@/auth'
 
 export interface AccountModel {
   id: string

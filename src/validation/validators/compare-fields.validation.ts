@@ -1,6 +1,6 @@
-import { Optional } from '../../utils'
-import { InvalidParamException } from '../../presentation/errors'
-import { Validation } from '../../presentation/protocols'
+import { Optional } from '@/utils'
+import { InvalidParamException } from '@/presentation/errors'
+import { Validation } from '@/presentation/protocols'
 
 export class CompareFieldsValidation implements Validation {
   constructor(

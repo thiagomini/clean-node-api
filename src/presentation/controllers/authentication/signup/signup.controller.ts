@@ -1,4 +1,4 @@
-import { Authentication } from '../../../../domain/use-cases/authentication'
+import { Authentication } from '@/domain/use-cases/authentication'
 import { ExistingEmailException } from '../../../errors'
 import {
   badRequest,

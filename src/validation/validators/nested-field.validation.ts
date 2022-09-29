@@ -1,5 +1,5 @@
-import { Validation } from '../../presentation/protocols'
-import { Optional } from '../../utils'
+import { Validation } from '@/presentation/protocols'
+import { Optional } from '@/utils'
 
 export class NestedFieldValidation implements Validation {
   constructor(

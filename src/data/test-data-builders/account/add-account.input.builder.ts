@@ -1,4 +1,4 @@
-import { AddAccountInput } from '../../use-cases/add-account/db-add-account.protocols'
+import { AddAccountInput } from '@/data/use-cases/add-account/db-add-account.protocols'
 import { faker } from '@faker-js/faker'
 
 export function buildAccountInput(

@@ -1,4 +1,4 @@
-import { Optional } from '../../../utils'
+import { Optional } from '@/utils'
 import { AuthenticationInput } from './authentication.input'
 
 export interface Authentication {

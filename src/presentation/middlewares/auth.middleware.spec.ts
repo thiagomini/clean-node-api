@@ -1,4 +1,4 @@
-import { Role } from '../../auth'
+import { Role } from '@/auth'
 import { Optional } from '../../utils'
 import { AuthMiddleware } from './auth.middleware'
 import {

@@ -4,7 +4,7 @@ import {
   OptionalUnlessRequiredId,
   Document,
 } from 'mongodb'
-import { ModelAttributes } from '../../../../../domain/models'
+import { ModelAttributes } from '@/domain/models'
 import { addIdToDocument } from '../mongo-document-helper'
 
 export interface ModelWithOptionalId {

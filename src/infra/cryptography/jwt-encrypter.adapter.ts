@@ -1,7 +1,7 @@
-import { Decrypter, Encrypter } from '../../data/protocols/cryptography'
+import { Decrypter, Encrypter } from '@/data/protocols/cryptography'
 import jwt from 'jsonwebtoken'
 import { EncryptionError } from './encryption.error'
-import { InvalidTokenError } from '../../data/use-cases/load-account-by-token/errors'
+import { InvalidTokenError } from '@/data/use-cases/load-account-by-token/errors'
 
 export class JwtEcnrypterAdapter implements Encrypter, Decrypter {
   constructor(private readonly secret: string) {}

@@ -1,5 +1,5 @@
-import { Validation } from '../../presentation/protocols'
-import { Optional } from '../../utils'
+import { Validation } from '@/presentation/protocols'
+import { Optional } from '@/utils'
 import { EachValidation } from './each-validation'
 import { when } from 'jest-when'
 

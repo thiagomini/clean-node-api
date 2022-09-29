@@ -7,7 +7,7 @@ import {
   InvalidTokenError,
   LoadAccountByTokenUseCaseError,
 } from './db-load-account-by-token.protocols'
-import { Role } from '../../../auth'
+import { Role } from '@/auth'
 
 const TOKEN = 'any_token'
 const ROLE = Role.User

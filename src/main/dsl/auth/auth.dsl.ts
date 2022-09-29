@@ -1,10 +1,10 @@
-import { buildAccountInput } from '../../../data/test-data-builders'
+import { buildAccountInput } from '@/data/test-data-builders'
 import {
   AddAccountInput,
   AddAccountOutput,
   AddAccountUseCase,
-} from '../../../domain/use-cases/add-account'
-import { Authentication } from '../../../domain/use-cases/authentication'
+} from '@/domain/use-cases/add-account'
+import { Authentication } from '@/domain/use-cases/authentication'
 import { createDbAddAccount, createDbAuthentication } from '../../factories'
 
 export class AuthDSL {

@@ -3,10 +3,10 @@ import {
   RequiredFieldValidation,
   NestedFieldValidation,
   EachValidation,
-} from '../../../../../validation/validators'
+} from '@/validation/validators'
 import { createAddSurveyValidation } from './add-survey-validation.factory'
 
-jest.mock('../../../../../validation/validators/validation-composite')
+jest.mock('@/validation/validators/validation-composite')
 
 describe('AddSurveyValidationFactory', () => {
   it('should call validation composite with all validations', () => {

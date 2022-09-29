@@ -1,4 +1,4 @@
-import { ContextError } from '../../errors'
+import { ContextError } from '@/errors'
 
 export class MissingParamException extends ContextError {
   constructor(paramName: string) {

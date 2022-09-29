@@ -1,4 +1,4 @@
-import { ContextError } from '../../../../../errors'
+import { ContextError } from '@/errors'
 
 export class NullDocumentError extends ContextError {
   constructor(object: null | undefined) {

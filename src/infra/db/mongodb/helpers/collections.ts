@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb'
-import { ModelAttributes, SurveyModel } from '../../../../domain/models'
+import { ModelAttributes, SurveyModel } from '@/domain/models'
 import { mongoHelper } from './mongo-helper'
 
 export async function getSurveysCollection(): Promise<

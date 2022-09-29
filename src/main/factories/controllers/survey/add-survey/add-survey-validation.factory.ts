@@ -3,7 +3,7 @@ import {
   NestedFieldValidation,
   RequiredFieldValidation,
   ValidationComposite,
-} from '../../../../../validation/validators'
+} from '@/validation/validators'
 
 export const createAddSurveyValidation = (): ValidationComposite => {
   const requiredFieldsValidation = new RequiredFieldValidation([

@@ -1,6 +1,6 @@
-import { Role } from '../../../../auth'
-import { Authentication } from '../../../../domain/use-cases/authentication'
-import { Optional } from '../../../../utils'
+import { Role } from '@/auth'
+import { Authentication } from '@/domain/use-cases/authentication'
+import { Optional } from '@/utils'
 import { ExistingEmailException, MissingParamException } from '../../../errors'
 import { pick } from '../../../utils'
 import {

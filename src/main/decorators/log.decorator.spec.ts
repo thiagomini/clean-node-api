@@ -1,11 +1,11 @@
-import { LogErrorRepository } from '../../data/protocols/db/log-repository'
+import { LogErrorRepository } from '@/data/protocols/db/log-repository'
 import {
   Controller,
   HttpRequest,
   HttpResponse,
   HttpStatusCodes,
-} from '../../presentation/protocols'
-import { internalServerError } from '../../presentation/utils/http-responses-factories'
+} from '@/presentation/protocols'
+import { internalServerError } from '@/presentation/utils/http-responses-factories'
 import { LogDecoratorController } from './log.decorator'
 
 describe('LogDecorator', () => {

@@ -1,4 +1,4 @@
-import { ContextError, ContextErrorInput } from '../../errors'
+import { ContextError, ContextErrorInput } from '@/errors'
 
 export interface EncryptionErrorInput
   extends Omit<ContextErrorInput, 'message'> {

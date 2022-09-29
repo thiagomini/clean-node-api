@@ -1,4 +1,4 @@
-import { SurveyModel } from '../../../../../domain/models'
+import { SurveyModel } from '@/domain/models'
 import { mongoHelper } from '../mongo-helper'
 import { MongoEntityFactory } from './mongo-entity.factory'
 import { MongoSurveyDefaultAttributesFactory } from './mongo-surveys-default-attributes.factory'

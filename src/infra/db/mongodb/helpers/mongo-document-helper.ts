@@ -1,5 +1,5 @@
 import { Document, ObjectId } from 'mongodb'
-import { ModelAttributes } from '../../../../domain/models/model-attributes'
+import { ModelAttributes } from '@/domain/models/model-attributes'
 import { NullDocumentError } from './errors'
 
 export type DocumentWithId<T> = Omit<T, '_id'> & { id: string | undefined }

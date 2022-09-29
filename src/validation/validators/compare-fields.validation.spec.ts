@@ -1,4 +1,4 @@
-import { InvalidParamException } from '../../presentation/errors'
+import { InvalidParamException } from '@/presentation/errors'
 import { CompareFieldsValidation } from './compare-fields.validation'
 
 describe('CompareFieldsValidation', () => {

@@ -1,5 +1,5 @@
-import { SignUpController } from '../../../../presentation/controllers/authentication/signup/signup.controller'
-import { Controller } from '../../../../presentation/protocols'
+import { SignUpController } from '@/presentation/controllers/authentication/signup/signup.controller'
+import { Controller } from '@/presentation/protocols'
 import { decorateWithLogger } from '../../decorators'
 import { createDbAddAccount } from '../../use-cases'
 import { createDbAuthentication } from '../../use-cases/authentication'

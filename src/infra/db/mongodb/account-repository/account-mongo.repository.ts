@@ -1,17 +1,17 @@
 import { Filter, ObjectId } from 'mongodb'
-import { Role } from '../../../../auth'
+import { Role } from '@/auth'
 import {
   AddAccountRepository,
   LoadAccountByEmailRepository,
   LoadAccountByTokenRepository,
   UpdateAccessTokenRepository,
-} from '../../../../data/protocols/db/account-repository'
+} from '@/data/protocols/db/account-repository'
 import {
   AccountModel,
   AddAccountInput,
-} from '../../../../data/use-cases/add-account/db-add-account.protocols'
-import { AccountByTokenNotFoundError } from '../../../../data/use-cases/load-account-by-token/errors'
-import { Optional } from '../../../../utils'
+} from '@/data/use-cases/add-account/db-add-account.protocols'
+import { AccountByTokenNotFoundError } from '@/data/use-cases/load-account-by-token/errors'
+import { Optional } from '@/utils'
 import { getAccountsCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { AccountNotFoundError } from './account-not-found.error'

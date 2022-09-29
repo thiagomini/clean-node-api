@@ -1,5 +1,5 @@
-import { Validation } from '../../presentation/protocols'
-import { Optional } from '../../utils'
+import { Validation } from '@/presentation/protocols'
+import { Optional } from '@/utils'
 import { NestedFieldValidation } from './nested-field.validation'
 describe('NestedFieldValidation', () => {
   describe('validate', () => {

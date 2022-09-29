@@ -1,7 +1,7 @@
 import request from 'supertest'
-import { mongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
-import { clearAccountsCollection } from '../../infra/db/mongodb/helpers/test-teardown-helpers'
-import { HttpStatusCodes } from '../../presentation/protocols'
+import { mongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import { clearAccountsCollection } from '@/infra/db/mongodb/helpers/test-teardown-helpers'
+import { HttpStatusCodes } from '@/presentation/protocols'
 import app from '../config/app'
 import { AuthDSL } from '../dsl/auth/auth.dsl'
 

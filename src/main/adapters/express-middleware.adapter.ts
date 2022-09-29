@@ -3,7 +3,7 @@ import {
   HttpRequest,
   HttpStatusCodes,
   Middleware,
-} from '../../presentation/protocols'
+} from '@/presentation/protocols'
 
 export const adaptMiddleware = (middleware: Middleware): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {

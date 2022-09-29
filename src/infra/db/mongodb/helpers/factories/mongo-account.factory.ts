@@ -1,4 +1,4 @@
-import { AccountModel } from '../../../../../domain/models'
+import { AccountModel } from '@/domain/models'
 import { mongoHelper } from '../mongo-helper'
 import { MongoAccountDefaultAttributesFactory } from './mongo-account-default-attributes.factory'
 import { MongoEntityFactory } from './mongo-entity.factory'

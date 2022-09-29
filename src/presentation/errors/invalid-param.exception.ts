@@ -1,4 +1,4 @@
-import { ContextError } from '../../errors'
+import { ContextError } from '@/errors'
 
 export class InvalidParamException extends ContextError {
   constructor(paramName: string) {
