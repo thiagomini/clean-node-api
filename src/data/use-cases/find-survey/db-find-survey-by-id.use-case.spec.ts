@@ -2,6 +2,7 @@ import { FindSurveyByIdRepository } from '../../protocols/db/survey-repository/f
 import { SurveyModel } from '../add-survey/db-add-survey.use-case.protocols'
 import { DbFindSurveyByIdUseCase } from './db-find-survey-by-id.use-case'
 import { FindSurveyByIdUseCaseError } from './find-survey-by-id.use-case.error'
+import { SurveyNotFoundError } from './survey-not-found.error'
 
 describe('DbFindSurveyByIdUseCase', () => {
   const FAKE_ID = 'fake_id'
@@ -33,6 +34,20 @@ describe('DbFindSurveyByIdUseCase', () => {
       await expect(surveyPromise).rejects.toThrowError(
         FindSurveyByIdUseCaseError
       )
+    })
+
+    it('should throw a SurveyNotFoundError when FindSurveyByIdRepository returns undefined', async () => {
+      // Arrange
+      const { sut, findSurveyByIdRepositoryStub } = createSut()
+      jest
+        .spyOn(findSurveyByIdRepositoryStub, 'findById')
+        .mockResolvedValueOnce(undefined)
+
+      // Act
+      const surveyPromise = sut.findById(FAKE_ID)
+
+      // Assert
+      await expect(surveyPromise).rejects.toThrowError(SurveyNotFoundError)
     })
   })
 })
