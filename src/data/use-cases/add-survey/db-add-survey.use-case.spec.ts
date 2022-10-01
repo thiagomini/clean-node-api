@@ -34,7 +34,7 @@ it('should throw a AddSurveyUseCaseError if the repository throws', async () => 
   await expect(addPromise).rejects.toThrowError(AddSurveyUseCaseError)
 })
 
-interface SutFactoryResponse {
+type SutFactoryResponse = {
   sut: DbAddSurveyUseCase
   addSurveyRepositoryStub: AddSurveyRepository
 }

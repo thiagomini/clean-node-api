@@ -87,7 +87,7 @@ describe('DbLoadAccountByTokenUseCase', () => {
   })
 })
 
-interface SutFactoryResponse {
+type SutFactoryResponse = {
   sut: DbLoadAccountByTokenUseCase
   decrypterStub: Decrypter
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository

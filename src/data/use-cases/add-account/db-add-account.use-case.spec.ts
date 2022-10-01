@@ -111,7 +111,7 @@ describe('DbAddAccountUseCase', () => {
   })
 })
 
-interface SutFactoryResponse {
+type SutFactoryResponse = {
   sut: DbAddAccountUseCase
   hasherStub: Hasher
   addAccountRepository: AddAccountRepository

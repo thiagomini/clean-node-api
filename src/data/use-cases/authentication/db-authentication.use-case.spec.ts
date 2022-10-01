@@ -130,7 +130,7 @@ describe('DbAuthenticationUseCase', () => {
   })
 })
 
-interface SutFactoryResponse {
+type SutFactoryResponse = {
   sut: DbAuthenticationUseCase
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashComparerStub: HashComparer
