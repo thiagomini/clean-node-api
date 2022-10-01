@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   mongo:
     container_name: mongo_container
@@ -7,17 +7,19 @@ services:
     volumes:
       - ./data:/data/db
     ports:
-      - "27017:27017"
+      - '27017:27017'
+
   api:
     container_name: api-container
     build: .
     ports:
-      - "5050:5050"
-      - "9222:9222"
+      - '5050:5050'
+      - '9222:9222'
     restart: always
     command: npm run debug
     volumes:
       - ./dist/:/app/dist/
     depends_on:
       - mongo
-
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/clean-node-api
