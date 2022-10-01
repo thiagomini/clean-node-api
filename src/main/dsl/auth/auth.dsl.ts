@@ -1,11 +1,13 @@
 import { buildAccountInput } from '@/data/test-data-builders'
 import {
-  AddAccountInput,
   AddAccountOutput,
   AddAccountUseCase,
 } from '@/domain/use-cases/add-account'
 import { Authentication } from '@/domain/use-cases/authentication'
+import { AccountModel } from '@/domain/models'
 import { createDbAddAccount, createDbAuthentication } from '../../factories'
+
+export interface SignupUserInput extends Partial<Omit<AccountModel, 'id'>> {}
 
 export class AuthDSL {
   constructor(
@@ -14,7 +16,7 @@ export class AuthDSL {
   ) {}
 
   async signupUser(
-    signupUserInput?: Partial<AddAccountInput>
+    signupUserInput?: SignupUserInput
   ): Promise<AddAccountOutput> {
     const finalInput = buildAccountInput(signupUserInput)
 
