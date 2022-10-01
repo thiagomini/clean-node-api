@@ -1,8 +1,4 @@
-import { Role } from '@/auth'
+import { AccountModel } from '../../models'
 
-export interface AddAccountInput {
-  name: string
-  email: string
-  password: string
-  role?: Role
-}
+export interface AddAccountInput
+  extends Pick<AccountModel, 'name' | 'email' | 'password'> {}
