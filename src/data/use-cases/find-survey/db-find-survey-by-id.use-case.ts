@@ -3,23 +3,23 @@ import { FindSurveyByIdRepository } from '@/data/protocols/db/survey-repository/
 import { SurveyModel } from '../add-survey/db-add-survey.use-case.protocols'
 import { FindSurveyByIdUseCaseError } from './find-survey-by-id.use-case.error'
 import { SurveyNotFoundError } from './survey-not-found.error'
+import { Optional } from '@/utils'
 
 export class DbFindSurveyByIdUseCase implements FindSurveyByIdUseCase {
   constructor(
     private readonly findSurveyByIdRepository: FindSurveyByIdRepository
   ) {}
   async findById(id: string): Promise<SurveyModel> {
-    try {
-      const surveyOrUndefined = await this.findSurveyByIdRepository.findById(id)
-      if (!surveyOrUndefined) {
-        throw new SurveyNotFoundError(id)
-      }
-    } catch (err) {
-      if (err instanceof SurveyNotFoundError) {
-        throw err
-      }
+    let surveyOrUndefined: Optional<SurveyModel>
 
+    try {
+      surveyOrUndefined = await this.findSurveyByIdRepository.findById(id)
+    } catch (err) {
       throw new FindSurveyByIdUseCaseError(id)
+    }
+
+    if (!surveyOrUndefined) {
+      throw new SurveyNotFoundError(id)
     }
 
     return {
