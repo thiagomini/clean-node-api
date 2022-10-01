@@ -1,9 +1,5 @@
+import { HttpRequest, Middleware } from '@/presentation/protocols'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import {
-  HttpRequest,
-  HttpStatusCodes,
-  Middleware,
-} from '@/presentation/protocols'
 
 export const adaptMiddleware = (middleware: Middleware): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -15,7 +11,7 @@ export const adaptMiddleware = (middleware: Middleware): RequestHandler => {
 
     res.status(response.statusCode)
 
-    if (response.statusCode === HttpStatusCodes.OK) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       Object.assign(req, response.body)
       next()
     } else {

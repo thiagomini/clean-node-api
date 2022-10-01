@@ -18,9 +18,9 @@ export class ContextError extends Error {
     this.name = errorInput.errorName ?? ContextError.name
   }
 
-  toJSON(): Pick<this, 'message'> {
+  public toJSON(): Record<string, string> {
     return {
-      message: this.message,
+      error: this.message,
     }
   }
 }

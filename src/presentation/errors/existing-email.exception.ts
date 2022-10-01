@@ -1,6 +1,13 @@
-export class ExistingEmailException extends Error {
+import { ContextError } from '../../errors'
+
+export class ExistingEmailException extends ContextError {
   constructor(email: string) {
-    super(`The received email ${email} is already in use`)
-    this.name = ExistingEmailException.name
+    super({
+      message: `The received email ${email} is already in use`,
+      errorName: ExistingEmailException.name,
+      context: {
+        email,
+      },
+    })
   }
 }

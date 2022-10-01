@@ -41,4 +41,17 @@ describe('ContextError', () => {
 
     expect(contextError.name).toBe('CustomError')
   })
+
+  describe('toJSON()', () => {
+    it('should return an object with error message', () => {
+      const contextError = new ContextError({
+        errorName: 'CustomError',
+        message: 'Error',
+      })
+
+      expect(contextError.toJSON()).toEqual({
+        error: contextError.message,
+      })
+    })
+  })
 })
