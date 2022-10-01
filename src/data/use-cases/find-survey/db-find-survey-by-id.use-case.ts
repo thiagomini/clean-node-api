@@ -22,11 +22,6 @@ export class DbFindSurveyByIdUseCase implements FindSurveyByIdUseCase {
       throw new SurveyNotFoundError(id)
     }
 
-    return {
-      answers: [],
-      createdAt: new Date(),
-      id: '',
-      question: '',
-    }
+    return surveyOrUndefined
   }
 }

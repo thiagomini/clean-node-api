@@ -49,6 +49,17 @@ describe('DbFindSurveyByIdUseCase', () => {
       // Assert
       await expect(surveyPromise).rejects.toThrowError(SurveyNotFoundError)
     })
+
+    it('should return a SurveyModel on success', async () => {
+      // Arrange
+      const { sut } = createSut()
+
+      // Act
+      const survey = await sut.findById(FAKE_ID)
+
+      // Assert
+      expect(survey).toEqual(fakeSurvey())
+    })
   })
 })
 
