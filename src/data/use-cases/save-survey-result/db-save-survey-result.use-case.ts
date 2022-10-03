@@ -1,8 +1,8 @@
 import {
+  CreateOrUpdateSurveyResultRepository,
   SaveSurveyResultInput,
   SaveSurveyResultUseCase,
-} from '../../../domain/use-cases/save-survey-result'
-import { CreateOrUpdateSurveyResultRepository } from '../../protocols/db/survey-result-repository'
+} from './db-save-survey-result.protocols'
 
 export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
   constructor(
