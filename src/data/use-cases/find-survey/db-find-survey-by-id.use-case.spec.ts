@@ -1,8 +1,10 @@
-import { FindSurveyByIdRepository } from '../../protocols/db/survey-repository/find-survey-by-id.repository'
-import { SurveyModel } from '../add-survey/db-add-survey.use-case.protocols'
 import { DbFindSurveyByIdUseCase } from './db-find-survey-by-id.use-case'
-import { FindSurveyByIdUseCaseError } from './find-survey-by-id.use-case.error'
-import { SurveyNotFoundError } from './survey-not-found.error'
+import {
+  FindSurveyByIdRepository,
+  FindSurveyByIdUseCaseError,
+  SurveyModel,
+  SurveyNotFoundError,
+} from './find-survey-by-id.protocols'
 
 describe('DbFindSurveyByIdUseCase', () => {
   const FAKE_ID = 'fake_id'
