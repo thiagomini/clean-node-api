@@ -1,5 +1,5 @@
 import { SaveSurveyResultInput } from './save-survey-result.input'
 
-export interface SaveSurveyResult {
+export interface SaveSurveyResultUseCase {
   save(surveyResultInput: SaveSurveyResultInput): Promise<void>
 }
