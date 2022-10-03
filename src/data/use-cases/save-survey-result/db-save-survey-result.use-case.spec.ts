@@ -1,6 +1,7 @@
 import { SaveSurveyResultInput } from '@/domain/use-cases/save-survey-result'
 import { CreateOrUpdateSurveyResultRepository } from '../../protocols/db/survey-result-repository'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
+import { SaveSurveyResultUseCaseError } from './save-survey-result.use-case.error'
 
 describe('DbSaveSurveyResultUseCase', () => {
   it('should call CreateOrUpdateSurveyResultRepository with correct values', async () => {
@@ -17,6 +18,21 @@ describe('DbSaveSurveyResultUseCase', () => {
 
     // Assert
     expect(createOrUpdateSpy).toHaveBeenCalledWith(saveSurveyResultInput)
+  })
+
+  it('should throw a SaveSurveyResultUseCaseError when CreateOrUpdateSurveyResultRepository throws an unexpected error', async () => {
+    // Arrange
+    const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
+    jest
+      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
+      .mockRejectedValueOnce(new Error('Unexpected error'))
+    const saveSurveyResultInput = fakeSurveyResultInput()
+
+    // Act
+    const savePromise = sut.save(saveSurveyResultInput)
+
+    // Assert
+    await expect(savePromise).rejects.toThrowError(SaveSurveyResultUseCaseError)
   })
 })
 

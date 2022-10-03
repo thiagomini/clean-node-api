@@ -1,4 +1,4 @@
-import { ContextError, ContextErrorInput } from '@/errors'
+import { ContextError } from '@/errors'
 
 export class SurveyNotFoundError extends ContextError {
   constructor(id: string) {
