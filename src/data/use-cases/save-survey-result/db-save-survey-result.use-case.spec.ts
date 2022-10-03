@@ -1,5 +1,7 @@
-import { SaveSurveyResultInput } from '@/domain/use-cases/save-survey-result'
-import { CreateOrUpdateSurveyResultRepository } from '../../protocols/db/survey-result-repository'
+import {
+  CreateOrUpdateSurveyResultRepository,
+  SaveSurveyResultInput,
+} from './db-save-survey-result.protocols'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
 import { SaveSurveyResultUseCaseError } from './save-survey-result.use-case.error'
 
