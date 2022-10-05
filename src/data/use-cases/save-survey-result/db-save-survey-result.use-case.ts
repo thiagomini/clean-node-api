@@ -20,18 +20,28 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
         saveSurveyResultInput
       )
     } catch (err) {
-      if (err instanceof NonexistentSurveyError) {
-        throw err
-      }
+      this.handleSaveError(err as Error, saveSurveyResultInput)
+    }
+  }
 
-      if (err instanceof NonexistentAccountError) {
-        throw err
-      }
-
+  private handleSaveError(
+    error: Error,
+    saveSurveyResultInput: SaveSurveyResultInput
+  ): never {
+    if (this.isUnknownError(error)) {
       throw new SaveSurveyResultUseCaseError({
-        cause: err as Error,
+        cause: error as Error,
         saveSurveyResultInput,
       })
     }
+
+    throw error
+  }
+
+  private isUnknownError(error: Error): boolean {
+    return ![
+      NonexistentAccountError.name,
+      NonexistentSurveyError.name,
+    ].includes(error.name)
   }
 }
