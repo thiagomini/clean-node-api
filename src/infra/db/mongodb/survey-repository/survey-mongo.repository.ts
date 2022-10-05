@@ -8,10 +8,18 @@ import { ModelAttributes } from '@/domain/models'
 import { LoadSurveysUseCase } from '@/domain/use-cases/list-surveys'
 import { getSurveysCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
+import {
+  FindSurveyByIdRepository,
+  Optional,
+} from '../../../../data/use-cases/find-survey/find-survey-by-id.protocols'
 
 export class SurveyMongoRepository
-  implements AddSurveyRepository, LoadSurveysUseCase
+  implements AddSurveyRepository, LoadSurveysUseCase, FindSurveyByIdRepository
 {
+  async findById(id: string): Promise<Optional<SurveyModel>> {
+    return undefined
+  }
+
   async list(): Promise<SurveyModel[]> {
     const surveysCollection = await this.getCollection()
     const surveysInDb = await surveysCollection.find().toArray()

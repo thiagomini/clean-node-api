@@ -86,6 +86,19 @@ describe('SurveyMongoRepository', () => {
       expect(surveysList).toEqual(surveysInDb)
     })
   })
+
+  describe('findById', () => {
+    it('should return undefined when there is no survey with given id', async () => {
+      // Arrange
+      const sut = await createSut()
+
+      // Act
+      const surveysList = await sut.findById('nonenxistent_id')
+
+      // Assert
+      expect(surveysList).toBeUndefined()
+    })
+  })
 })
 
 const createSut = async (): Promise<SurveyMongoRepository> => {
