@@ -1,4 +1,7 @@
-import { NonexistentSurveyError } from '../../../domain/use-cases/save-survey-result/errors'
+import {
+  NonexistentAccountError,
+  NonexistentSurveyError,
+} from '../../../domain/use-cases/save-survey-result/errors'
 import {
   CreateOrUpdateSurveyResultRepository,
   SaveSurveyResultInput,
@@ -53,6 +56,23 @@ describe('DbSaveSurveyResultUseCase', () => {
 
     // Assert
     await expect(savePromise).rejects.toThrowError(NonexistentSurveyError)
+  })
+
+  it('should bubble up error if CreateOrUpdateSurveyResultRepository throws NonexistentAccountError', async () => {
+    // Arrange
+    const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
+    jest
+      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdateResult')
+      .mockRejectedValueOnce(
+        new NonexistentAccountError({ accountId: 'invalid_account_id' })
+      )
+    const saveSurveyResultInput = fakeSurveyResultInput()
+
+    // Act
+    const savePromise = sut.save(saveSurveyResultInput)
+
+    // Assert
+    await expect(savePromise).rejects.toThrowError(NonexistentAccountError)
   })
 })
 

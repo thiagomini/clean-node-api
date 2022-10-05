@@ -1,4 +1,7 @@
-import { NonexistentSurveyError } from '../../../domain/use-cases/save-survey-result/errors'
+import {
+  NonexistentAccountError,
+  NonexistentSurveyError,
+} from '../../../domain/use-cases/save-survey-result/errors'
 import {
   CreateOrUpdateSurveyResultRepository,
   SaveSurveyResultInput,
@@ -18,6 +21,10 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
       )
     } catch (err) {
       if (err instanceof NonexistentSurveyError) {
+        throw err
+      }
+
+      if (err instanceof NonexistentAccountError) {
         throw err
       }
 
