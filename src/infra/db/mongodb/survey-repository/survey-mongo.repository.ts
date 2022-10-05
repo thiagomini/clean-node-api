@@ -17,13 +17,22 @@ export class SurveyMongoRepository
   implements AddSurveyRepository, LoadSurveysUseCase, FindSurveyByIdRepository
 {
   async findById(id: string): Promise<Optional<SurveyModel>> {
-    const surveysCollection = await this.getCollection()
-    const surveyInDb = await surveysCollection.findOne({
-      _id: new ObjectId(id),
-    })
+    try {
+      const surveysCollection = await this.getCollection()
 
-    if (surveyInDb) {
-      return addIdToDocument(surveyInDb) as SurveyModel
+      const surveyInDb = await surveysCollection.findOne({
+        _id: new ObjectId(id),
+      })
+
+      if (surveyInDb) {
+        return addIdToDocument(surveyInDb) as SurveyModel
+      }
+    } catch (err) {
+      if ((err as Error).name === 'BSONTypeError') {
+        return undefined
+      }
+
+      throw err
     }
   }
 

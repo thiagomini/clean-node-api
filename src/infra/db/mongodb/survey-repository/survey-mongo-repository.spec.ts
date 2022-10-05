@@ -100,6 +100,18 @@ describe('SurveyMongoRepository', () => {
       expect(surveysList).toBeUndefined()
     })
 
+    it('should return undefined when given id is an invalid ObjectId', async () => {
+      // Arrange
+      const sut = await createSut()
+      const invalidId = 'not_an_object_id'
+
+      // Act
+      const surveysList = await sut.findById(invalidId)
+
+      // Assert
+      expect(surveysList).toBeUndefined()
+    })
+
     it('should return an existing survey by id on success', async () => {
       // Arrange
       const sut = await createSut()
