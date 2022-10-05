@@ -3,7 +3,7 @@ import {
   SaveSurveyResultInput,
   SaveSurveyResultUseCase,
 } from './db-save-survey-result.protocols'
-import { SaveSurveyResultUseCaseError } from './save-survey-result.use-case.error'
+import { SaveSurveyResultUseCaseError } from './errors/'
 
 export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
   constructor(
@@ -12,7 +12,7 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
 
   async save(saveSurveyResultInput: SaveSurveyResultInput): Promise<void> {
     try {
-      await this.createOrUpdateSurveyRepository.createOrUpdate(
+      await this.createOrUpdateSurveyRepository.createOrUpdateResult(
         saveSurveyResultInput
       )
     } catch (err) {

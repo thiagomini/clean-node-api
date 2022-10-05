@@ -3,7 +3,7 @@ import {
   SaveSurveyResultInput,
 } from './db-save-survey-result.protocols'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
-import { SaveSurveyResultUseCaseError } from './save-survey-result.use-case.error'
+import { SaveSurveyResultUseCaseError } from './errors/'
 
 describe('DbSaveSurveyResultUseCase', () => {
   it('should call CreateOrUpdateSurveyResultRepository with correct values', async () => {
@@ -11,7 +11,7 @@ describe('DbSaveSurveyResultUseCase', () => {
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
     const createOrUpdateSpy = jest.spyOn(
       createOrUpdateSurveyRepositoryStub,
-      'createOrUpdate'
+      'createOrUpdateResult'
     )
     const saveSurveyResultInput = fakeSurveyResultInput()
 
@@ -26,7 +26,7 @@ describe('DbSaveSurveyResultUseCase', () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
     jest
-      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
+      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdateResult')
       .mockRejectedValueOnce(new Error('Unexpected error'))
     const saveSurveyResultInput = fakeSurveyResultInput()
 
@@ -60,7 +60,7 @@ const createSut = (): SutFactoryResponse => {
 const makeCreateOrUpdateSurveyRepositoryStub =
   (): CreateOrUpdateSurveyResultRepository => {
     class RepositoryStub implements CreateOrUpdateSurveyResultRepository {
-      async createOrUpdate(): Promise<void> {}
+      async createOrUpdateResult(): Promise<void> {}
     }
 
     return new RepositoryStub()

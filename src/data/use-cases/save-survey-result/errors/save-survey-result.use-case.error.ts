@@ -1,5 +1,5 @@
 import { ContextError, ContextErrorInput } from '@/errors'
-import { SaveSurveyResultInput } from './db-save-survey-result.protocols'
+import { SaveSurveyResultInput } from '../db-save-survey-result.protocols'
 
 export interface SaveSurveyResultErrorInput
   extends Pick<ContextErrorInput, 'cause'> {
