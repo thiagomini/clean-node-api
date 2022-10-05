@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest'
 import { Collection, ObjectId } from 'mongodb'
 import { SurveyModel } from '@/data/use-cases/add-survey/db-add-survey.use-case.protocols'
 import { ModelAttributes } from '@/domain/models'
@@ -122,6 +123,25 @@ describe('SurveyMongoRepository', () => {
 
       // Assert
       expect(foundSurvey).toEqual(existingSurvey)
+    })
+
+    it('should throw an error if surveysCollection throws an unexpected error', async () => {
+      // Arrange
+      const stubCollection = createMock<Collection>({
+        findOne() {
+          throw new Error('Unexpected error')
+        },
+      })
+      jest
+        .spyOn(mongoHelper, 'getCollection')
+        .mockResolvedValueOnce(stubCollection)
+      const sut = await createSut()
+
+      // Act
+      const findByIdPromise = sut.findById(new ObjectId().toString())
+
+      // Assert
+      await expect(findByIdPromise).rejects.toThrowError(Error)
     })
   })
 })
