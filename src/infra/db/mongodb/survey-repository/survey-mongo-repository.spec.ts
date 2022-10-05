@@ -91,12 +91,25 @@ describe('SurveyMongoRepository', () => {
     it('should return undefined when there is no survey with given id', async () => {
       // Arrange
       const sut = await createSut()
+      const nonexistentId = new ObjectId()
 
       // Act
-      const surveysList = await sut.findById('nonenxistent_id')
+      const surveysList = await sut.findById(nonexistentId.toString())
 
       // Assert
       expect(surveysList).toBeUndefined()
+    })
+
+    it('should return an existing survey by id on success', async () => {
+      // Arrange
+      const sut = await createSut()
+      const existingSurvey = await mongoSurveyFactory.create()
+
+      // Act
+      const foundSurvey = await sut.findById(existingSurvey.id)
+
+      // Assert
+      expect(foundSurvey).toEqual(existingSurvey)
     })
   })
 })

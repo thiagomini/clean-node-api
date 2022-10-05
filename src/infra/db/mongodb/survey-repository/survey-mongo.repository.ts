@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { AddSurveyRepository } from '@/data/protocols/db/survey-repository'
 import {
   AddSurveyInput,
@@ -17,7 +17,14 @@ export class SurveyMongoRepository
   implements AddSurveyRepository, LoadSurveysUseCase, FindSurveyByIdRepository
 {
   async findById(id: string): Promise<Optional<SurveyModel>> {
-    return undefined
+    const surveysCollection = await this.getCollection()
+    const surveyInDb = await surveysCollection.findOne({
+      _id: new ObjectId(id),
+    })
+
+    if (surveyInDb) {
+      return addIdToDocument(surveyInDb) as SurveyModel
+    }
   }
 
   async list(): Promise<SurveyModel[]> {
