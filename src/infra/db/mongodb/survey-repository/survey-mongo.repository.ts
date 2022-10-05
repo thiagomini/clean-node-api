@@ -18,22 +18,30 @@ export class SurveyMongoRepository
 {
   async findById(id: string): Promise<Optional<SurveyModel>> {
     try {
-      const surveysCollection = await this.getCollection()
-
-      const surveyInDb = await surveysCollection.findOne({
-        _id: new ObjectId(id),
-      })
-
-      if (surveyInDb) {
-        return addIdToDocument(surveyInDb) as SurveyModel
-      }
+      return await this.findSurveyById(id)
     } catch (err) {
-      if ((err as Error).name === 'BSONTypeError') {
+      if (this.isInvalidIdError(err as Error)) {
         return undefined
       }
 
       throw err
     }
+  }
+
+  private async findSurveyById(id: string): Promise<Optional<SurveyModel>> {
+    const surveysCollection = await this.getCollection()
+
+    const surveyInDb = await surveysCollection.findOne({
+      _id: new ObjectId(id),
+    })
+
+    if (surveyInDb) {
+      return addIdToDocument(surveyInDb) as SurveyModel
+    }
+  }
+
+  private isInvalidIdError(error: Error): boolean {
+    return error.name === 'BSONTypeError'
   }
 
   async list(): Promise<SurveyModel[]> {
