@@ -15,7 +15,7 @@ export async function getSurveysCollection(): Promise<
 export async function getSurveyResultsCollection(): Promise<
   Collection<ModelAttributes<SurveyResultModel>>
 > {
-  return await mongoHelper.getCollection('survey.results')
+  return await mongoHelper.getCollection('surveyresults')
 }
 
 export async function getAccountsCollection(): Promise<Collection> {

@@ -7,6 +7,7 @@ import {
   NonexistentSurveyError,
 } from '@/domain/use-cases/save-survey-result/errors'
 import {
+  getAccountsCollection,
   getSurveyResultsCollection,
   getSurveysCollection,
 } from '../helpers/collections'
@@ -28,9 +29,31 @@ export class SurveyResultMongoRepository
       })
     }
 
-    throw new NonexistentAccountError({
-      accountId: saveSurveyResultInput.accountId,
+    const accountsCollection = await getAccountsCollection()
+    const accountInDatabase = await accountsCollection.findOne({
+      _id: new ObjectId(saveSurveyResultInput.accountId),
     })
+
+    if (!accountInDatabase) {
+      throw new NonexistentAccountError({
+        accountId: saveSurveyResultInput.accountId,
+      })
+    }
+
+    await (
+      await this.getCollection()
+    ).findOneAndUpdate(
+      {
+        surveyId: saveSurveyResultInput.surveyId,
+        accountId: saveSurveyResultInput.accountId,
+      },
+      {
+        $set: {
+          answer: saveSurveyResultInput.answer,
+          createdAt: new Date(),
+        },
+      }
+    )
   }
 
   private async getCollection(): Promise<
