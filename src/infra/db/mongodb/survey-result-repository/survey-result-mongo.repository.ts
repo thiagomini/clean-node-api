@@ -1,5 +1,5 @@
 import { CreateOrUpdateSurveyResultRepository } from '@/data/protocols/db/survey-result-repository'
-import { Collection, ObjectId } from 'mongodb'
+import { Collection, ObjectId, Document } from 'mongodb'
 import { ModelAttributes, SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultInput } from '@/domain/use-cases/save-survey-result'
 import {
@@ -11,13 +11,14 @@ import {
   getSurveyResultsCollection,
   getSurveysCollection,
 } from '../helpers/collections'
+import { addIdToDocument } from '../helpers/mongo-document-helper'
 
 export class SurveyResultMongoRepository
   implements CreateOrUpdateSurveyResultRepository
 {
   async createOrUpdate(
     saveSurveyResultInput: SaveSurveyResultInput
-  ): Promise<void> {
+  ): Promise<SurveyResultModel> {
     const surveysCollection = await getSurveysCollection()
     const surveyInDatabase = await surveysCollection.findOne({
       _id: new ObjectId(saveSurveyResultInput.surveyId),
@@ -40,7 +41,7 @@ export class SurveyResultMongoRepository
       })
     }
 
-    await (
+    const findOrUpdateResult = await (
       await this.getCollection()
     ).findOneAndUpdate(
       {
@@ -52,8 +53,16 @@ export class SurveyResultMongoRepository
           answer: saveSurveyResultInput.answer,
           createdAt: new Date(),
         },
+      },
+      {
+        upsert: true,
+        returnDocument: 'after',
       }
     )
+
+    return addIdToDocument(
+      findOrUpdateResult.value as Document
+    ) as SurveyResultModel
   }
 
   private async getCollection(): Promise<

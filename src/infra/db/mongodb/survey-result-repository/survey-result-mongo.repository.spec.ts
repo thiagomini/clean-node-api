@@ -77,9 +77,14 @@ describe('SurveyResultMongoRepository', () => {
       }
 
       // Act
-      await expect(
-        sut.createOrUpdate(saveSurveyResultInput)
-      ).resolves.toBeUndefined()
+      const surveyResult = await sut.createOrUpdate(saveSurveyResultInput)
+
+      // Assert
+      expect(surveyResult).toEqual({
+        id: expect.any(String),
+        ...saveSurveyResultInput,
+        createdAt: expect.any(Date),
+      })
     })
   })
 })
