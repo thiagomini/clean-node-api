@@ -16,7 +16,7 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
 
   async save(saveSurveyResultInput: SaveSurveyResultInput): Promise<void> {
     try {
-      await this.createOrUpdateSurveyRepository.createOrUpdateResult(
+      await this.createOrUpdateSurveyRepository.createOrUpdate(
         saveSurveyResultInput
       )
     } catch (err) {

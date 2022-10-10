@@ -15,7 +15,7 @@ describe('DbSaveSurveyResultUseCase', () => {
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
     const createOrUpdateSpy = jest.spyOn(
       createOrUpdateSurveyRepositoryStub,
-      'createOrUpdateResult'
+      'createOrUpdate'
     )
     const saveSurveyResultInput = fakeSurveyResultInput()
 
@@ -30,7 +30,7 @@ describe('DbSaveSurveyResultUseCase', () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
     jest
-      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdateResult')
+      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
       .mockRejectedValueOnce(new Error('Unexpected error'))
     const saveSurveyResultInput = fakeSurveyResultInput()
 
@@ -45,7 +45,7 @@ describe('DbSaveSurveyResultUseCase', () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
     jest
-      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdateResult')
+      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
       .mockRejectedValueOnce(
         new NonexistentSurveyError({ surveyId: 'invalid_survey_id' })
       )
@@ -62,7 +62,7 @@ describe('DbSaveSurveyResultUseCase', () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
     jest
-      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdateResult')
+      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
       .mockRejectedValueOnce(
         new NonexistentAccountError({ accountId: 'invalid_account_id' })
       )
@@ -98,7 +98,7 @@ const createSut = (): SutFactoryResponse => {
 const makeCreateOrUpdateSurveyRepositoryStub =
   (): CreateOrUpdateSurveyResultRepository => {
     class RepositoryStub implements CreateOrUpdateSurveyResultRepository {
-      async createOrUpdateResult(): Promise<void> {}
+      async createOrUpdate(): Promise<void> {}
     }
 
     return new RepositoryStub()
