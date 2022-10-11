@@ -14,7 +14,9 @@ export interface ModelWithOptionalId {
 export interface ModelDefaultAttributesFactory<
   TModel extends ModelWithOptionalId
 > {
-  defaultAttributes(): ModelAttributes<TModel>
+  defaultAttributes(
+    partialEntity?: Partial<TModel>
+  ): ModelAttributes<TModel> | Promise<ModelAttributes<TModel>>
 }
 
 export class MongoEntityFactory<TModel extends ModelWithOptionalId> {
@@ -24,21 +26,21 @@ export class MongoEntityFactory<TModel extends ModelWithOptionalId> {
   ) {}
 
   public async create(partialEntity: Partial<TModel> = {}): Promise<TModel> {
-    const finalInput = this.mergeGivenAndDefaultAttributes(partialEntity)
+    const finalInput = await this.mergeGivenAndDefaultAttributes(partialEntity)
     await this.collection.insertOne(
       finalInput as OptionalUnlessRequiredId<TModel>
     )
     return addIdToDocument(finalInput) as TModel
   }
 
-  private mergeGivenAndDefaultAttributes(
+  private async mergeGivenAndDefaultAttributes(
     partialEntity: Partial<TModel> = {}
-  ): ModelAttributes<TModel> & { _id?: ObjectId } {
+  ): Promise<ModelAttributes<TModel> & { _id?: ObjectId }> {
     const { id, ...accountInputWithoutId } = partialEntity
     const passedMongoId = new ObjectId(id)
 
     const defaultAttributes =
-      this.modelDefaultAttributesFactory.defaultAttributes()
+      await this.modelDefaultAttributesFactory.defaultAttributes()
 
     return {
       ...defaultAttributes,
