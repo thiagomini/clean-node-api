@@ -19,7 +19,7 @@ export class MongoSurveyResultDefaultAttributesFactory
   ) {}
 
   async defaultAttributes(
-    partialEntity: Partial<SurveyResultModel>
+    partialEntity?: Partial<SurveyResultModel>
   ): Promise<ModelAttributes<SurveyResultModel>> {
     const accountId = await this.getAccountId(partialEntity)
     const surveyId = await this.getSurveyId(partialEntity)
@@ -33,9 +33,9 @@ export class MongoSurveyResultDefaultAttributesFactory
   }
 
   private async getAccountId(
-    partialEntity: Partial<SurveyResultModel>
+    partialEntity?: Partial<SurveyResultModel>
   ): Promise<string> {
-    if (partialEntity.accountId) {
+    if (partialEntity?.accountId) {
       return partialEntity.accountId
     }
 
@@ -44,9 +44,9 @@ export class MongoSurveyResultDefaultAttributesFactory
   }
 
   private async getSurveyId(
-    partialEntity: Partial<SurveyResultModel>
+    partialEntity?: Partial<SurveyResultModel>
   ): Promise<string> {
-    if (partialEntity.surveyId) {
+    if (partialEntity?.surveyId) {
       return partialEntity.surveyId
     }
 

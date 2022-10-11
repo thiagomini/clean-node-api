@@ -1,4 +1,4 @@
-import { AccountModel, SurveyModel } from '@/domain/models'
+import { AccountModel, SurveyModel, SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultInput } from '@/domain/use-cases/save-survey-result'
 import {
   NonexistentAccountError,
@@ -7,6 +7,7 @@ import {
 import { ObjectId } from 'mongodb'
 import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
+import { createSurveyResultFactory } from '../helpers/factories/mongo-survey-result.factory'
 import { createSurveysFactory } from '../helpers/factories/mongo-surveys.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
@@ -15,10 +16,12 @@ import { SurveyResultMongoRepository } from './survey-result-mongo.repository'
 describe('SurveyResultMongoRepository', () => {
   let surveyFactory: MongoEntityFactory<SurveyModel>
   let accountFactory: MongoEntityFactory<AccountModel>
+  let surveyResultFactory: MongoEntityFactory<SurveyResultModel>
 
   beforeAll(async () => {
     surveyFactory = await createSurveysFactory()
     accountFactory = await createAccountFactory()
+    surveyResultFactory = await createSurveyResultFactory()
   })
 
   afterEach(async () => {
@@ -82,6 +85,27 @@ describe('SurveyResultMongoRepository', () => {
       // Assert
       expect(surveyResult).toEqual({
         id: expect.any(String),
+        ...saveSurveyResultInput,
+        createdAt: expect.any(Date),
+      })
+    })
+
+    it('should update an existing SurveyResult with new answer', async () => {
+      // Arrange
+      const sut = new SurveyResultMongoRepository()
+      const existingSurveyResult = await surveyResultFactory.create()
+      const saveSurveyResultInput: SaveSurveyResultInput = {
+        accountId: existingSurveyResult.accountId,
+        answer: 'updated_answer',
+        surveyId: existingSurveyResult.surveyId,
+      }
+
+      // Act
+      const surveyResult = await sut.createOrUpdate(saveSurveyResultInput)
+
+      // Assert
+      expect(surveyResult).toEqual({
+        id: existingSurveyResult.id,
         ...saveSurveyResultInput,
         createdAt: expect.any(Date),
       })
