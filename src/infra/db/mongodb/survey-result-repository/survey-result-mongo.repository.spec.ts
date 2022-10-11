@@ -1,9 +1,9 @@
 import { AccountModel, SurveyModel, SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResultInput } from '@/domain/use-cases/save-survey-result'
+import { SaveSurveyResultInput } from '@/domain/use-cases/survey-result/save-survey-result'
 import {
   NonexistentAccountError,
   NonexistentSurveyError,
-} from '@/domain/use-cases/save-survey-result/errors'
+} from '@/domain/use-cases/survey-result/save-survey-result/errors'
 import { ObjectId } from 'mongodb'
 import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'

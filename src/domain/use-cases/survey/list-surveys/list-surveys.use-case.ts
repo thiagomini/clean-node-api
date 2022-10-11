@@ -1,4 +1,4 @@
-import { SurveyModel } from '../../models'
+import { SurveyModel } from '../../../models'
 
 export interface LoadSurveysUseCase {
   list(): Promise<SurveyModel[]>

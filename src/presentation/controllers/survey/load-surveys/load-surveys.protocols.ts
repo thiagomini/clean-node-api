@@ -5,7 +5,7 @@ export {
   Validation,
   HttpStatusCodes,
 } from '../../../protocols'
-export * from '@/domain/use-cases/list-surveys'
+export * from '@/domain/use-cases/survey/list-surveys'
 export { SurveyModel } from '@/domain/models'
 export {
   internalServerError,

@@ -1,11 +1,11 @@
 import { CreateOrUpdateSurveyResultRepository } from '@/data/protocols/db/survey-result-repository'
 import { Collection, ObjectId, Document } from 'mongodb'
 import { ModelAttributes, SurveyResultModel } from '@/domain/models'
-import { SaveSurveyResultInput } from '@/domain/use-cases/save-survey-result'
+import { SaveSurveyResultInput } from '@/domain/use-cases/survey-result/save-survey-result'
 import {
   NonexistentAccountError,
   NonexistentSurveyError,
-} from '@/domain/use-cases/save-survey-result/errors'
+} from '@/domain/use-cases/survey-result/save-survey-result/errors'
 import {
   getAccountsCollection,
   getSurveyResultsCollection,

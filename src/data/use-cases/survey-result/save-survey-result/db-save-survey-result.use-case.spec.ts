@@ -1,7 +1,7 @@
 import {
   NonexistentAccountError,
   NonexistentSurveyError,
-} from '@/domain/use-cases/save-survey-result/errors'
+} from '@/domain/use-cases/survey-result/save-survey-result/errors'
 import { SurveyResultModel } from '@/domain/models'
 import {
   CreateOrUpdateSurveyResultRepository,

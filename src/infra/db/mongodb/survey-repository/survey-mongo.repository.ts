@@ -5,7 +5,7 @@ import {
   SurveyModel,
 } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
 import { ModelAttributes } from '@/domain/models'
-import { LoadSurveysUseCase } from '@/domain/use-cases/list-surveys'
+import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
 import { getSurveysCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import {

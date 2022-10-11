@@ -1,4 +1,4 @@
-export { FindSurveyByIdUseCase } from '@/domain/use-cases/find-survey'
+export { FindSurveyByIdUseCase } from '@/domain/use-cases/survey/find-survey'
 export { FindSurveyByIdRepository } from '@/data/protocols/db/survey-repository/find-survey-by-id.repository'
 export { SurveyModel } from '@/domain/models'
 export { FindSurveyByIdUseCaseError } from './find-survey-by-id.use-case.error'
