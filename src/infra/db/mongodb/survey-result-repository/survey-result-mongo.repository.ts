@@ -19,31 +19,11 @@ export class SurveyResultMongoRepository
   async createOrUpdate(
     saveSurveyResultInput: SaveSurveyResultInput
   ): Promise<SurveyResultModel> {
-    const surveysCollection = await getSurveysCollection()
-    const surveyInDatabase = await surveysCollection.findOne({
-      _id: new ObjectId(saveSurveyResultInput.surveyId),
-    })
+    await this.ensureSurveyExists(saveSurveyResultInput.surveyId)
+    await this.ensureAccountExists(saveSurveyResultInput.accountId)
 
-    if (!surveyInDatabase) {
-      throw new NonexistentSurveyError({
-        surveyId: saveSurveyResultInput.surveyId,
-      })
-    }
-
-    const accountsCollection = await getAccountsCollection()
-    const accountInDatabase = await accountsCollection.findOne({
-      _id: new ObjectId(saveSurveyResultInput.accountId),
-    })
-
-    if (!accountInDatabase) {
-      throw new NonexistentAccountError({
-        accountId: saveSurveyResultInput.accountId,
-      })
-    }
-
-    const findOrUpdateResult = await (
-      await this.getCollection()
-    ).findOneAndUpdate(
+    const surveyResultCollection = await this.getCollection()
+    const findOrUpdateResult = await surveyResultCollection.findOneAndUpdate(
       {
         surveyId: saveSurveyResultInput.surveyId,
         accountId: saveSurveyResultInput.accountId,
@@ -63,6 +43,32 @@ export class SurveyResultMongoRepository
     return addIdToDocument(
       findOrUpdateResult.value as Document
     ) as SurveyResultModel
+  }
+
+  private async ensureSurveyExists(surveyId: string): Promise<void> {
+    const surveysCollection = await getSurveysCollection()
+    const surveyInDatabase = await surveysCollection.findOne({
+      _id: new ObjectId(surveyId),
+    })
+
+    if (!surveyInDatabase) {
+      throw new NonexistentSurveyError({
+        surveyId,
+      })
+    }
+  }
+
+  private async ensureAccountExists(accountId: string): Promise<void> {
+    const accountsCollection = await getAccountsCollection()
+    const accountInDatabase = await accountsCollection.findOne({
+      _id: new ObjectId(accountId),
+    })
+
+    if (!accountInDatabase) {
+      throw new NonexistentAccountError({
+        accountId,
+      })
+    }
   }
 
   private async getCollection(): Promise<
