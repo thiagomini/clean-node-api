@@ -3,7 +3,7 @@ import { AddSurveyRepository } from '@/data/protocols/db/survey-repository'
 import {
   AddSurveyInput,
   SurveyModel,
-} from '@/data/use-cases/add-survey/db-add-survey.use-case.protocols'
+} from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
 import { ModelAttributes } from '@/domain/models'
 import { LoadSurveysUseCase } from '@/domain/use-cases/list-surveys'
 import { getSurveysCollection } from '../helpers/collections'
@@ -11,7 +11,7 @@ import { addIdToDocument } from '../helpers/mongo-document-helper'
 import {
   FindSurveyByIdRepository,
   Optional,
-} from '../../../../data/use-cases/find-survey/find-survey-by-id.protocols'
+} from '@/data/use-cases/survey/find-survey/find-survey-by-id.protocols'
 
 export class SurveyMongoRepository
   implements AddSurveyRepository, LoadSurveysUseCase, FindSurveyByIdRepository

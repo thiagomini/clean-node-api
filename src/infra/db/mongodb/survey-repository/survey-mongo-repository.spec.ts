@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Collection, ObjectId } from 'mongodb'
-import { SurveyModel } from '@/data/use-cases/add-survey/db-add-survey.use-case.protocols'
+import { SurveyModel } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
 import { ModelAttributes } from '@/domain/models'
 import { getSurveysCollection } from '../helpers/collections'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'

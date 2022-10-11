@@ -9,8 +9,8 @@ import {
 import {
   AccountModel,
   AddAccountInput,
-} from '@/data/use-cases/add-account/db-add-account.protocols'
-import { AccountByTokenNotFoundError } from '@/data/use-cases/load-account-by-token/errors'
+} from '@/data/use-cases/account/add-account/db-add-account.protocols'
+import { AccountByTokenNotFoundError } from '@/data/use-cases/account/load-account-by-token/errors'
 import { Optional } from '@/utils'
 import { getAccountsCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'

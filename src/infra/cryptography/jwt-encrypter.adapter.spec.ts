@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { EncryptionError } from './encryption.error'
 import { JwtEcnrypterAdapter } from './jwt-encrypter.adapter'
-import { InvalidTokenError } from '@/data/use-cases/load-account-by-token/errors'
+import { InvalidTokenError } from '@/data/use-cases/account/load-account-by-token/errors'
 
 const SECRET = 'secret'
 const TOKEN = 'any_token'

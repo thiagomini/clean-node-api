@@ -1,6 +1,6 @@
 export { FindSurveyByIdUseCase } from '@/domain/use-cases/find-survey'
 export { FindSurveyByIdRepository } from '@/data/protocols/db/survey-repository/find-survey-by-id.repository'
-export { SurveyModel } from '../add-survey/db-add-survey.use-case.protocols'
+export { SurveyModel } from '@/domain/models'
 export { FindSurveyByIdUseCaseError } from './find-survey-by-id.use-case.error'
 export { SurveyNotFoundError } from './survey-not-found.error'
 export { Optional } from '@/utils'

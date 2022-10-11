@@ -4,7 +4,7 @@ export {
   LoadAccountByTokenRepository,
   Optional,
 } from '../add-account/db-add-account.protocols'
-export { LoadAccountByTokenUseCase } from '../authentication/db-authentication-protocols'
+export { LoadAccountByTokenUseCase } from '../../authentication/db-authentication-protocols'
 export {
   AccountByTokenNotFoundError,
   InvalidTokenError,

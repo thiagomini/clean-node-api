@@ -1,7 +1,8 @@
 import {
   NonexistentAccountError,
   NonexistentSurveyError,
-} from '../../../domain/use-cases/save-survey-result/errors'
+} from '@/domain/use-cases/save-survey-result/errors'
+import { SurveyResultModel } from '@/domain/models'
 import {
   CreateOrUpdateSurveyResultRepository,
   SaveSurveyResultInput,
@@ -98,7 +99,15 @@ const createSut = (): SutFactoryResponse => {
 const makeCreateOrUpdateSurveyRepositoryStub =
   (): CreateOrUpdateSurveyResultRepository => {
     class RepositoryStub implements CreateOrUpdateSurveyResultRepository {
-      async createOrUpdate(): Promise<void> {}
+      async createOrUpdate(): Promise<SurveyResultModel> {
+        return {
+          accountId: 'any_account_id',
+          surveyId: 'any_survey_id',
+          answer: 'any_answer',
+          createdAt: new Date(),
+          id: 'any_id',
+        }
+      }
     }
 
     return new RepositoryStub()
