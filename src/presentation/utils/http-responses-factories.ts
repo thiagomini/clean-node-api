@@ -1,4 +1,5 @@
 import { ServerError, UnauthorizedError } from '../errors'
+import { NotFoundError } from '../errors/not-found.error'
 import { HttpResponse, HttpStatusCodes } from '../protocols'
 
 export function badRequest(error: Error): HttpResponse {
@@ -40,5 +41,18 @@ export function noContent(): HttpResponse {
   return {
     statusCode: HttpStatusCodes.NO_CONTENT,
     body: null,
+  }
+}
+
+export interface NotFoundInput {
+  entityName: string
+  missingId: string
+  cause: Error
+}
+
+export function notFound(input: NotFoundInput): HttpResponse {
+  return {
+    statusCode: HttpStatusCodes.NOT_FOUND,
+    body: new NotFoundError(input),
   }
 }

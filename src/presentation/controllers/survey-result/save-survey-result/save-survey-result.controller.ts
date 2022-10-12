@@ -1,4 +1,4 @@
-import { noContent } from '../../../utils/http-responses-factories'
+import { noContent, notFound } from '../../../utils/http-responses-factories'
 import {
   Controller,
   HttpResponse,
@@ -12,15 +12,23 @@ export class SaveSurveyResultController implements Controller {
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { answer, accountId } = httpRequest.body
-    const surveyId = httpRequest.params?.surveyId
+    try {
+      const { answer, accountId } = httpRequest.body
+      const surveyId = httpRequest.params?.surveyId
 
-    await this.saveSurveyResultUseCase.save({
-      accountId,
-      answer,
-      surveyId,
-    })
+      await this.saveSurveyResultUseCase.save({
+        accountId,
+        answer,
+        surveyId,
+      })
 
-    return noContent()
+      return noContent()
+    } catch (err) {
+      return notFound({
+        cause: err as Error,
+        entityName: 'SurveyResult',
+        missingId: httpRequest.params?.surveyId,
+      })
+    }
   }
 }

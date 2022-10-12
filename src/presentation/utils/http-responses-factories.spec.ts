@@ -4,10 +4,12 @@ import {
   forbidden,
   internalServerError,
   noContent,
+  notFound,
   ok,
   unauthorized,
 } from './http-responses-factories'
 import { HttpStatusCodes } from '../protocols/http-status-codes'
+import { NotFoundError } from '../errors/not-found.error'
 
 describe('http responses factories', () => {
   describe('badRequest', () => {
@@ -67,6 +69,25 @@ describe('http responses factories', () => {
 
       expect(badRequestResponse.statusCode).toBe(HttpStatusCodes.NO_CONTENT)
       expect(badRequestResponse.body).toBe(null)
+    })
+  })
+
+  describe('notFound', () => {
+    it('should return an object with NOT_FOUND as statusCode and NotFoundError as body', () => {
+      const notFoundRequestResponse = notFound({
+        entityName: 'SomeEntity',
+        missingId: 'id',
+        cause: new Error(),
+      })
+
+      expect(notFoundRequestResponse.statusCode).toBe(HttpStatusCodes.NOT_FOUND)
+      expect(notFoundRequestResponse.body).toEqual(
+        new NotFoundError({
+          entityName: 'SomeEntity',
+          missingId: 'id',
+          cause: new Error(),
+        })
+      )
     })
   })
 })
