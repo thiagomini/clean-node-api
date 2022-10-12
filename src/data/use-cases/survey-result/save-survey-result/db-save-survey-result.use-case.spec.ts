@@ -116,6 +116,15 @@ describe('DbSaveSurveyResultUseCase', () => {
     // Assert
     await expect(savePromise).rejects.toThrowError(SaveSurveyResultUseCaseError)
   })
+
+  it('should save the survey result on success', async () => {
+    const { sut } = createSut()
+    const saveSurveyResultInput = fakeSurveyResultInput()
+
+    const savePromise = sut.save(saveSurveyResultInput)
+
+    await expect(savePromise).resolves.toBeUndefined()
+  })
 })
 
 type SutFactoryResponse = {
