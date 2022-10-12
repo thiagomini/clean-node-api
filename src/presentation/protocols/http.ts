@@ -3,7 +3,8 @@ export interface HttpResponse {
   body: any
 }
 
-export interface HttpRequest<T = any> {
-  body?: T
+export interface HttpRequest<TBody = any> {
+  body?: TBody
   headers?: Record<string, any>
+  params?: Record<string, any>
 }
