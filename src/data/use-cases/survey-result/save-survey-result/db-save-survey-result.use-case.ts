@@ -1,8 +1,12 @@
 import {
+  InvalidSurveyAnswerError,
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
-import { FindSurveyByIdRepository } from '../../survey/find-survey/find-survey-by-id.protocols'
+import {
+  FindSurveyByIdRepository,
+  SurveyModel,
+} from '../../survey/find-survey/find-survey-by-id.protocols'
 import {
   CreateOrUpdateSurveyResultRepository,
   LoadAccountByIdRepository,
@@ -29,15 +33,17 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
   private async saveSurveyResultOrFail(
     saveSurveyResultInput: SaveSurveyResultInput
   ): Promise<void> {
-    await this.ensureSurveyExists(saveSurveyResultInput.surveyId)
-    await this.ensureAccountExists(saveSurveyResultInput.accountId)
+    const survey = await this.findSurveyOrFail(saveSurveyResultInput.surveyId)
+    this.ensureAnswerIsValid(saveSurveyResultInput.answer, survey)
+
+    await this.findAccount(saveSurveyResultInput.accountId)
 
     await this.createOrUpdateSurveyRepository.createOrUpdate(
       saveSurveyResultInput
     )
   }
 
-  private async ensureSurveyExists(surveyId: string): Promise<void> {
+  private async findSurveyOrFail(surveyId: string): Promise<SurveyModel> {
     const survey = await this.findSurveyByIdRepository.findById(surveyId)
 
     if (!survey) {
@@ -48,9 +54,11 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
         },
       })
     }
+
+    return survey
   }
 
-  private async ensureAccountExists(accountId: string): Promise<void> {
+  private async findAccount(accountId: string): Promise<void> {
     const account = await this.loadAccountByIdRepository.loadById(accountId)
 
     if (!account) {
@@ -81,6 +89,24 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
     return ![
       NonexistentAccountError.name,
       NonexistentSurveyError.name,
+      InvalidSurveyAnswerError.name,
     ].includes(error.name)
+  }
+
+  private ensureAnswerIsValid(surveyAnswer: string, survey: SurveyModel): void {
+    const surveyHasAnswer = survey.answers.find(
+      (answer) => answer.answer === surveyAnswer
+    )
+
+    if (!surveyHasAnswer) {
+      throw new InvalidSurveyAnswerError({
+        answer: surveyAnswer,
+        answers: survey.answers,
+        context: {
+          survey,
+          surveyAnswer,
+        },
+      })
+    }
   }
 }

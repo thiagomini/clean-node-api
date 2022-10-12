@@ -1,4 +1,5 @@
 import {
+  InvalidSurveyAnswerError,
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
@@ -87,6 +88,20 @@ describe('DbSaveSurveyResultUseCase', () => {
     await expect(savePromise).rejects.toThrowError(NonexistentAccountError)
   })
 
+  it('should throw InvalidSurveyAnswerError when survey does not contain given answer', async () => {
+    // Arrange
+    const { sut } = createSut()
+
+    const saveSurveyResultInput = fakeSurveyResultInput()
+    saveSurveyResultInput.answer = 'invalid_answer'
+
+    // Act
+    const savePromise = sut.save(saveSurveyResultInput)
+
+    // Assert
+    await expect(savePromise).rejects.toThrowError(InvalidSurveyAnswerError)
+  })
+
   it('should throw a SaveSurveyResultUseCaseError when CreateOrUpdateSurveyResultRepository throws an unexpected error', async () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
@@ -143,7 +158,11 @@ const createSut = (): SutFactoryResponse => {
 
 const fakeSurvey = (): SurveyModel => ({
   id: 'any_id',
-  answers: [],
+  answers: [
+    {
+      answer: 'valid_answer',
+    },
+  ],
   createdAt: new Date(),
   question: 'any_question',
 })
@@ -176,6 +195,6 @@ const makeCreateOrUpdateSurveyRepositoryStub =
 
 const fakeSurveyResultInput = (): SaveSurveyResultInput => ({
   accountId: 'any_id',
-  answer: 'any_answer',
+  answer: 'valid_answer',
   surveyId: 'any_survey_id',
 })
