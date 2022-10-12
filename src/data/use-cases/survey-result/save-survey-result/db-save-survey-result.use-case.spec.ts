@@ -42,6 +42,20 @@ describe('DbSaveSurveyResultUseCase', () => {
     expect(findByIdSpy).toHaveBeenCalledWith(saveSurveyResultInput.surveyId)
   })
 
+  it('should throw NonexistentSurveyError when survey does not exist', async () => {
+    // Arrange
+    const { sut, findSurveyByIdStub } = createSut()
+    jest.spyOn(findSurveyByIdStub, 'findById').mockResolvedValueOnce(undefined)
+
+    const saveSurveyResultInput = fakeSurveyResultInput()
+
+    // Act
+    const savePromise = sut.save(saveSurveyResultInput)
+
+    // Assert
+    await expect(savePromise).rejects.toThrowError(NonexistentSurveyError)
+  })
+
   it('should throw a SaveSurveyResultUseCaseError when CreateOrUpdateSurveyResultRepository throws an unexpected error', async () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
@@ -55,23 +69,6 @@ describe('DbSaveSurveyResultUseCase', () => {
 
     // Assert
     await expect(savePromise).rejects.toThrowError(SaveSurveyResultUseCaseError)
-  })
-
-  it('should bubble up error if CreateOrUpdateSurveyResultRepository throws NonexistentSurveyError', async () => {
-    // Arrange
-    const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
-    jest
-      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
-      .mockRejectedValueOnce(
-        new NonexistentSurveyError({ surveyId: 'invalid_survey_id' })
-      )
-    const saveSurveyResultInput = fakeSurveyResultInput()
-
-    // Act
-    const savePromise = sut.save(saveSurveyResultInput)
-
-    // Assert
-    await expect(savePromise).rejects.toThrowError(NonexistentSurveyError)
   })
 
   it('should bubble up error if CreateOrUpdateSurveyResultRepository throws NonexistentAccountError', async () => {

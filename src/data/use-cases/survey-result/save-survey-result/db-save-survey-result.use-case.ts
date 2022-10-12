@@ -18,9 +18,18 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
 
   async save(saveSurveyResultInput: SaveSurveyResultInput): Promise<void> {
     try {
-      await this.findSurveyByIdRepository.findById(
+      const survey = await this.findSurveyByIdRepository.findById(
         saveSurveyResultInput.surveyId
       )
+
+      if (!survey) {
+        throw new NonexistentSurveyError({
+          surveyId: saveSurveyResultInput.surveyId,
+          context: {
+            saveSurveyResultInput,
+          },
+        })
+      }
       await this.createOrUpdateSurveyRepository.createOrUpdate(
         saveSurveyResultInput
       )
