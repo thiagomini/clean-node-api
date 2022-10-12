@@ -2,10 +2,14 @@ import {
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
-import { SurveyModel, SurveyResultModel } from '@/domain/models'
 import {
   CreateOrUpdateSurveyResultRepository,
   SaveSurveyResultInput,
+  AccountModel,
+  SurveyModel,
+  SurveyResultModel,
+  Role,
+  LoadAccountByIdRepository,
 } from './db-save-survey-result.protocols'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
 import { SaveSurveyResultUseCaseError } from './errors/'
@@ -56,6 +60,19 @@ describe('DbSaveSurveyResultUseCase', () => {
     await expect(savePromise).rejects.toThrowError(NonexistentSurveyError)
   })
 
+  it('should call LoadAccountById with correct values', async () => {
+    // Arrange
+    const { sut, loadAccountByIdStub } = createSut()
+    const loadByIdSpy = jest.spyOn(loadAccountByIdStub, 'loadById')
+    const saveSurveyResultInput = fakeSurveyResultInput()
+
+    // Act
+    await sut.save(saveSurveyResultInput)
+
+    // Assert
+    expect(loadByIdSpy).toHaveBeenCalledWith(saveSurveyResultInput.accountId)
+  })
+
   it('should throw a SaveSurveyResultUseCaseError when CreateOrUpdateSurveyResultRepository throws an unexpected error', async () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
@@ -93,6 +110,7 @@ type SutFactoryResponse = {
   sut: DbSaveSurveyResultUseCase
   createOrUpdateSurveyRepositoryStub: CreateOrUpdateSurveyResultRepository
   findSurveyByIdStub: FindSurveyByIdRepository
+  loadAccountByIdStub: LoadAccountByIdRepository
 }
 
 const createSut = (): SutFactoryResponse => {
@@ -105,9 +123,16 @@ const createSut = (): SutFactoryResponse => {
     },
   })
 
+  const loadAccountByIdStub = createMock<LoadAccountByIdRepository>({
+    async loadById() {
+      return fakeAccount()
+    },
+  })
+
   const sut = new DbSaveSurveyResultUseCase(
     createOrUpdateSurveyResultRepositoryStub,
-    findSurveyByIdStub
+    findSurveyByIdStub,
+    loadAccountByIdStub
   )
 
   return {
@@ -115,6 +140,7 @@ const createSut = (): SutFactoryResponse => {
     createOrUpdateSurveyRepositoryStub:
       createOrUpdateSurveyResultRepositoryStub,
     findSurveyByIdStub,
+    loadAccountByIdStub,
   }
 }
 
@@ -123,6 +149,15 @@ const fakeSurvey = (): SurveyModel => ({
   answers: [],
   createdAt: new Date(),
   question: 'any_question',
+})
+
+const fakeAccount = (): AccountModel => ({
+  id: 'any_id',
+  email: 'any_email',
+  name: 'any_name',
+  password: 'any_password',
+  role: Role.User,
+  accessToken: 'any_access_token',
 })
 
 const makeCreateOrUpdateSurveyRepositoryStub =
