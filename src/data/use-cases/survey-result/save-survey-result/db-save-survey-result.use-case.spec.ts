@@ -73,6 +73,20 @@ describe('DbSaveSurveyResultUseCase', () => {
     expect(loadByIdSpy).toHaveBeenCalledWith(saveSurveyResultInput.accountId)
   })
 
+  it('should throw NonexistentAccountError when account does not exist', async () => {
+    // Arrange
+    const { sut, loadAccountByIdStub } = createSut()
+    jest.spyOn(loadAccountByIdStub, 'loadById').mockResolvedValueOnce(undefined)
+
+    const saveSurveyResultInput = fakeSurveyResultInput()
+
+    // Act
+    const savePromise = sut.save(saveSurveyResultInput)
+
+    // Assert
+    await expect(savePromise).rejects.toThrowError(NonexistentAccountError)
+  })
+
   it('should throw a SaveSurveyResultUseCaseError when CreateOrUpdateSurveyResultRepository throws an unexpected error', async () => {
     // Arrange
     const { sut, createOrUpdateSurveyRepositoryStub } = createSut()

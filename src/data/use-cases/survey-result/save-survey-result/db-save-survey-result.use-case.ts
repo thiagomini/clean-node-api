@@ -33,9 +33,18 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
         })
       }
 
-      await this.loadAccountByIdRepository.loadById(
+      const account = await this.loadAccountByIdRepository.loadById(
         saveSurveyResultInput.accountId
       )
+
+      if (!account) {
+        throw new NonexistentAccountError({
+          accountId: saveSurveyResultInput.accountId,
+          context: {
+            saveSurveyResultInput,
+          },
+        })
+      }
 
       await this.createOrUpdateSurveyRepository.createOrUpdate(
         saveSurveyResultInput
