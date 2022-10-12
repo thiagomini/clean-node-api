@@ -101,23 +101,6 @@ describe('DbSaveSurveyResultUseCase', () => {
     // Assert
     await expect(savePromise).rejects.toThrowError(SaveSurveyResultUseCaseError)
   })
-
-  it('should bubble up error if CreateOrUpdateSurveyResultRepository throws NonexistentAccountError', async () => {
-    // Arrange
-    const { sut, createOrUpdateSurveyRepositoryStub } = createSut()
-    jest
-      .spyOn(createOrUpdateSurveyRepositoryStub, 'createOrUpdate')
-      .mockRejectedValueOnce(
-        new NonexistentAccountError({ accountId: 'invalid_account_id' })
-      )
-    const saveSurveyResultInput = fakeSurveyResultInput()
-
-    // Act
-    const savePromise = sut.save(saveSurveyResultInput)
-
-    // Assert
-    await expect(savePromise).rejects.toThrowError(NonexistentAccountError)
-  })
 })
 
 type SutFactoryResponse = {
