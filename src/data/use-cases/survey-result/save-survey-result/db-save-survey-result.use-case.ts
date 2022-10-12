@@ -2,6 +2,7 @@ import {
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
+import { FindSurveyByIdRepository } from '../../survey/find-survey/find-survey-by-id.protocols'
 import {
   CreateOrUpdateSurveyResultRepository,
   SaveSurveyResultInput,
@@ -11,11 +12,15 @@ import { SaveSurveyResultUseCaseError } from './errors/'
 
 export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
   constructor(
-    private readonly createOrUpdateSurveyRepository: CreateOrUpdateSurveyResultRepository
+    private readonly createOrUpdateSurveyRepository: CreateOrUpdateSurveyResultRepository,
+    private readonly findSurveyByIdRepository: FindSurveyByIdRepository
   ) {}
 
   async save(saveSurveyResultInput: SaveSurveyResultInput): Promise<void> {
     try {
+      await this.findSurveyByIdRepository.findById(
+        saveSurveyResultInput.surveyId
+      )
       await this.createOrUpdateSurveyRepository.createOrUpdate(
         saveSurveyResultInput
       )
