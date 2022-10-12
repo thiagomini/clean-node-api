@@ -1,10 +1,5 @@
 import { AccountModel, SurveyModel, SurveyResultModel } from '@/domain/models'
 import { SaveSurveyResultInput } from '@/domain/use-cases/survey-result/save-survey-result'
-import {
-  NonexistentAccountError,
-  NonexistentSurveyError,
-} from '@/domain/use-cases/survey-result/save-survey-result/errors'
-import { ObjectId } from 'mongodb'
 import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
 import { createSurveyResultFactory } from '../helpers/factories/mongo-survey-result.factory'
@@ -33,41 +28,7 @@ describe('SurveyResultMongoRepository', () => {
   })
 
   describe('createOrUpdate', () => {
-    it('should throw a NonexistentAccountError when the account does not exist', async () => {
-      // Arrange
-      const sut = new SurveyResultMongoRepository()
-      const survey = await surveyFactory.create()
-      const saveSurveyResultInput: SaveSurveyResultInput = {
-        accountId: new ObjectId().toString(),
-        answer: 'valid_answer',
-        surveyId: survey.id,
-      }
-
-      // Act & Assert
-      await expect(
-        sut.createOrUpdate(saveSurveyResultInput)
-      ).rejects.toThrowError(NonexistentAccountError)
-    })
-
-    it('should throw a NonexistentSurveyError when the survey does not exist', async () => {
-      // Arrange
-      const sut = new SurveyResultMongoRepository()
-      const nonexistentSurveyId = new ObjectId().toString()
-      const existingAccount = await accountFactory.create()
-
-      const saveSurveyResultInput: SaveSurveyResultInput = {
-        accountId: existingAccount.id,
-        answer: 'valid_answer',
-        surveyId: nonexistentSurveyId,
-      }
-
-      // Act & Assert
-      await expect(
-        sut.createOrUpdate(saveSurveyResultInput)
-      ).rejects.toThrowError(NonexistentSurveyError)
-    })
-
-    it('should create a new SurveyResult entry if account and survey exist', async () => {
+    it('should create a new SurveyResult entry if there was no SurveyResult before', async () => {
       // Arrange
       const sut = new SurveyResultMongoRepository()
       const existingSurvey = await surveyFactory.create()
