@@ -20,38 +20,44 @@ export class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
 
   async save(saveSurveyResultInput: SaveSurveyResultInput): Promise<void> {
     try {
-      const survey = await this.findSurveyByIdRepository.findById(
-        saveSurveyResultInput.surveyId
-      )
-
-      if (!survey) {
-        throw new NonexistentSurveyError({
-          surveyId: saveSurveyResultInput.surveyId,
-          context: {
-            saveSurveyResultInput,
-          },
-        })
-      }
-
-      const account = await this.loadAccountByIdRepository.loadById(
-        saveSurveyResultInput.accountId
-      )
-
-      if (!account) {
-        throw new NonexistentAccountError({
-          accountId: saveSurveyResultInput.accountId,
-          context: {
-            saveSurveyResultInput,
-          },
-        })
-      }
-
-      await this.createOrUpdateSurveyRepository.createOrUpdate(
-        saveSurveyResultInput
-      )
+      await this.saveSurveyResultOrFail(saveSurveyResultInput)
     } catch (err) {
       this.handleSaveError(err as Error, saveSurveyResultInput)
     }
+  }
+
+  private async saveSurveyResultOrFail(
+    saveSurveyResultInput: SaveSurveyResultInput
+  ): Promise<void> {
+    const survey = await this.findSurveyByIdRepository.findById(
+      saveSurveyResultInput.surveyId
+    )
+
+    if (!survey) {
+      throw new NonexistentSurveyError({
+        surveyId: saveSurveyResultInput.surveyId,
+        context: {
+          saveSurveyResultInput,
+        },
+      })
+    }
+
+    const account = await this.loadAccountByIdRepository.loadById(
+      saveSurveyResultInput.accountId
+    )
+
+    if (!account) {
+      throw new NonexistentAccountError({
+        accountId: saveSurveyResultInput.accountId,
+        context: {
+          saveSurveyResultInput,
+        },
+      })
+    }
+
+    await this.createOrUpdateSurveyRepository.createOrUpdate(
+      saveSurveyResultInput
+    )
   }
 
   private handleSaveError(
