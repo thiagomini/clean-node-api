@@ -3,12 +3,9 @@
 ## Success cases:
 
 1. ⛔ Receives a **PUT** request over **/api/surveys/{survey_id}/results**
-1. ⛔ Validates if the request is authenticated
-1. ✅ Validates the **survey_id** parameter
-1. ✅ Validates the **answer** parameter
-1. ⛔ Creates a survey result with provided data if no record exists yet.
-1. ⛔ Updates a survey result with provided data if no record exists yet.
-1. ⛔ Returns 200 with survey data
+1. ✅ Creates a survey result with provided data if no record exists yet.
+1. ✅ Updates a survey result with provided data if no record exists yet.
+1. ✅ Returns 204 on success
 
 ## Exceptions:
 
