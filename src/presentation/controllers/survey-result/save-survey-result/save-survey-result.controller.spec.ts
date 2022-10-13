@@ -7,6 +7,7 @@ import {
 import {
   badRequest,
   internalServerError,
+  noContent,
   notFound,
 } from '../../../utils/http-responses-factories'
 import {
@@ -118,6 +119,18 @@ describe('SaveSurveyResultController', () => {
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(thrownError))
+  })
+
+  it('should return 204 on success', async () => {
+    // Arrange
+    const { sut } = createSut()
+    const request = fakeRequest()
+
+    // Act
+    const httpResponse = await sut.handle(request)
+
+    // Assert
+    expect(httpResponse).toEqual(noContent())
   })
 })
 
