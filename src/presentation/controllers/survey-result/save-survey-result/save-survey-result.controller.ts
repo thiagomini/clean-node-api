@@ -1,8 +1,10 @@
 import {
+  InvalidSurveyAnswerError,
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import {
+  badRequest,
   internalServerError,
   noContent,
   notFound,
@@ -51,6 +53,10 @@ export class SaveSurveyResultController implements Controller {
         entityName: 'SurveyResult',
         missingId: httpRequest.params?.surveyId,
       })
+    }
+
+    if (err instanceof InvalidSurveyAnswerError) {
+      return badRequest(err)
     }
 
     return internalServerError(err)

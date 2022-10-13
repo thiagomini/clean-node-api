@@ -1,9 +1,10 @@
 import { createMock } from '@golevelup/ts-jest'
 import {
+  InvalidSurveyAnswerError,
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
-import { notFound } from '../../../utils/http-responses-factories'
+import { badRequest, notFound } from '../../../utils/http-responses-factories'
 import {
   HttpRequest,
   SaveSurveyResultUseCase,
@@ -76,6 +77,26 @@ describe('SaveSurveyResultController', () => {
         missingId: request.body?.accountId,
       })
     )
+  })
+
+  it('should return a 400 when SaveSurveyResultUseCase throws an InvalidSurveyAnswerError', async () => {
+    // Arrange
+    const { sut, saveSurveyResultUseCaseStub } = createSut()
+    const request = fakeRequest()
+    const thrownError = new InvalidSurveyAnswerError({
+      answer: request.body?.answer,
+      answers: [],
+    })
+
+    jest
+      .spyOn(saveSurveyResultUseCaseStub, 'save')
+      .mockRejectedValueOnce(thrownError)
+
+    // Act
+    const httpResponse = await sut.handle(request)
+
+    // Assert
+    expect(httpResponse).toEqual(badRequest(thrownError))
   })
 })
 
