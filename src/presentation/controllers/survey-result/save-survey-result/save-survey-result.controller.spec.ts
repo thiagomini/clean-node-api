@@ -4,7 +4,11 @@ import {
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
-import { badRequest, notFound } from '../../../utils/http-responses-factories'
+import {
+  badRequest,
+  internalServerError,
+  notFound,
+} from '../../../utils/http-responses-factories'
 import {
   HttpRequest,
   SaveSurveyResultUseCase,
@@ -97,6 +101,23 @@ describe('SaveSurveyResultController', () => {
 
     // Assert
     expect(httpResponse).toEqual(badRequest(thrownError))
+  })
+
+  it('should return a 500 when SaveSurveyResultUseCase throws an unexpected error', async () => {
+    // Arrange
+    const { sut, saveSurveyResultUseCaseStub } = createSut()
+    const request = fakeRequest()
+    const thrownError = new Error('Unexpected error')
+
+    jest
+      .spyOn(saveSurveyResultUseCaseStub, 'save')
+      .mockRejectedValueOnce(thrownError)
+
+    // Act
+    const httpResponse = await sut.handle(request)
+
+    // Assert
+    expect(httpResponse).toEqual(internalServerError(thrownError))
   })
 })
 
