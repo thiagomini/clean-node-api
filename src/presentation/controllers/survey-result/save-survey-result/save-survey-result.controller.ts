@@ -1,3 +1,4 @@
+import { NonexistentAccountError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import { noContent, notFound } from '../../../utils/http-responses-factories'
 import {
   Controller,
@@ -24,6 +25,14 @@ export class SaveSurveyResultController implements Controller {
 
       return noContent()
     } catch (err) {
+      if (err instanceof NonexistentAccountError) {
+        return notFound({
+          cause: err as Error,
+          entityName: 'Account',
+          missingId: httpRequest.body?.accountId,
+        })
+      }
+
       return notFound({
         cause: err as Error,
         entityName: 'SurveyResult',

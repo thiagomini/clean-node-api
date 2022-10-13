@@ -1,5 +1,8 @@
 import { createMock } from '@golevelup/ts-jest'
-import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
+import {
+  NonexistentAccountError,
+  NonexistentSurveyError,
+} from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import { notFound } from '../../../utils/http-responses-factories'
 import {
   HttpRequest,
@@ -33,11 +36,9 @@ describe('SaveSurveyResultController', () => {
       surveyId: request.params?.surveyId,
     })
 
-    jest.spyOn(saveSurveyResultUseCaseStub, 'save').mockRejectedValueOnce(
-      new NonexistentSurveyError({
-        surveyId: request.params?.surveyId,
-      })
-    )
+    jest
+      .spyOn(saveSurveyResultUseCaseStub, 'save')
+      .mockRejectedValueOnce(thrownError)
 
     // Act
     const httpResponse = await sut.handle(request)
@@ -48,6 +49,31 @@ describe('SaveSurveyResultController', () => {
         cause: thrownError,
         entityName: 'SurveyResult',
         missingId: request.params?.surveyId,
+      })
+    )
+  })
+
+  it('should return a 404 when SaveSurveyResultUseCase throws a NonexistentAccountError', async () => {
+    // Arrange
+    const { sut, saveSurveyResultUseCaseStub } = createSut()
+    const request = fakeRequest()
+    const thrownError = new NonexistentAccountError({
+      accountId: request.body?.accountId,
+    })
+
+    jest
+      .spyOn(saveSurveyResultUseCaseStub, 'save')
+      .mockRejectedValueOnce(thrownError)
+
+    // Act
+    const httpResponse = await sut.handle(request)
+
+    // Assert
+    expect(httpResponse).toEqual(
+      notFound({
+        cause: thrownError,
+        entityName: 'Account',
+        missingId: request.body?.accountId,
       })
     )
   })
