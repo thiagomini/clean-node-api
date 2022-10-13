@@ -23,20 +23,26 @@ export class SaveSurveyResultController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { answer } = httpRequest.body
-      const { accountId } = httpRequest
-      const surveyId = httpRequest.params?.surveyId
-
-      await this.saveSurveyResultUseCase.save({
-        accountId: accountId as string,
-        answer,
-        surveyId,
-      })
-
-      return noContent()
+      return await this.upsertSurveyResult(httpRequest)
     } catch (err) {
       return this.handleError(err as Error, httpRequest)
     }
+  }
+
+  private async upsertSurveyResult(
+    httpRequest: HttpRequest
+  ): Promise<HttpResponse> {
+    const { answer } = httpRequest.body
+    const { accountId } = httpRequest
+    const surveyId = httpRequest.params?.surveyId
+
+    await this.saveSurveyResultUseCase.save({
+      accountId: accountId as string,
+      answer,
+      surveyId,
+    })
+
+    return noContent()
   }
 
   private handleError(err: Error, httpRequest: HttpRequest): HttpResponse {
