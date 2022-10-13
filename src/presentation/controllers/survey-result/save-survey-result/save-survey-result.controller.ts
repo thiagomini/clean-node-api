@@ -1,5 +1,12 @@
-import { NonexistentAccountError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
-import { noContent, notFound } from '../../../utils/http-responses-factories'
+import {
+  NonexistentAccountError,
+  NonexistentSurveyError,
+} from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
+import {
+  internalServerError,
+  noContent,
+  notFound,
+} from '../../../utils/http-responses-factories'
 import {
   Controller,
   HttpResponse,
@@ -25,19 +32,27 @@ export class SaveSurveyResultController implements Controller {
 
       return noContent()
     } catch (err) {
-      if (err instanceof NonexistentAccountError) {
-        return notFound({
-          cause: err as Error,
-          entityName: 'Account',
-          missingId: httpRequest.body?.accountId,
-        })
-      }
+      return this.handleError(err as Error, httpRequest)
+    }
+  }
 
+  private handleError(err: Error, httpRequest: HttpRequest): HttpResponse {
+    if (err instanceof NonexistentAccountError) {
       return notFound({
         cause: err as Error,
+        entityName: 'Account',
+        missingId: httpRequest.body?.accountId,
+      })
+    }
+
+    if (err instanceof NonexistentSurveyError) {
+      return notFound({
+        cause: err,
         entityName: 'SurveyResult',
         missingId: httpRequest.params?.surveyId,
       })
     }
+
+    return internalServerError(err)
   }
 }
