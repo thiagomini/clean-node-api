@@ -23,11 +23,12 @@ export class SaveSurveyResultController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { answer, accountId } = httpRequest.body
+      const { answer } = httpRequest.body
+      const { accountId } = httpRequest
       const surveyId = httpRequest.params?.surveyId
 
       await this.saveSurveyResultUseCase.save({
-        accountId,
+        accountId: accountId as string,
         answer,
         surveyId,
       })

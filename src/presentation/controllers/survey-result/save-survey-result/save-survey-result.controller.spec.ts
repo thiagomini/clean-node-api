@@ -27,7 +27,7 @@ describe('SaveSurveyResultController', () => {
 
     // Assert
     expect(saveSpy).toHaveBeenCalledWith({
-      accountId: request.body.accountId,
+      accountId: request.accountId,
       surveyId: request.params?.surveyId,
       answer: request.body.answer,
     })
@@ -141,7 +141,7 @@ const fakeRequest = (): HttpRequest => ({
     surveyId: 'valid_survey_id',
   },
   body: {
-    accountId: 'account_id',
     answer: 'answer',
   },
+  accountId: 'account_id',
 })
