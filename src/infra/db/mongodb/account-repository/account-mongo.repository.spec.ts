@@ -60,7 +60,7 @@ describe('AccountMongoRepository', () => {
       expect(loadedAccount?.id).toEqual(savedAccount.id)
     })
 
-    it('should return an undefined if account does not exist', async () => {
+    it('should return undefined if account does not exist', async () => {
       // Arrange
       const sut = new AccountMongoRepository()
 
@@ -83,6 +83,17 @@ describe('AccountMongoRepository', () => {
 
       // Assert
       expect(loadedAccount).toEqual(savedAccount)
+    })
+
+    it('should return undefined if account does not exist', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+
+      // Act
+      const account = await sut.loadById(new ObjectId().toString())
+
+      // Assert
+      expect(account).toBeUndefined()
     })
   })
 
