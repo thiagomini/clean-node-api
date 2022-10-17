@@ -72,6 +72,20 @@ describe('AccountMongoRepository', () => {
     })
   })
 
+  describe('loadById', () => {
+    it('should return an account by id on success', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+      const savedAccount = await mongoAccountFactory.create()
+
+      // Act
+      const loadedAccount = await sut.loadById(savedAccount.id)
+
+      // Assert
+      expect(loadedAccount).toEqual(savedAccount)
+    })
+  })
+
   describe('updateAccessToken', () => {
     it('should update an account access token on success', async () => {
       // Arrange

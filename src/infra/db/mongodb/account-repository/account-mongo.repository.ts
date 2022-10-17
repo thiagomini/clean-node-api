@@ -3,6 +3,7 @@ import { Role } from '@/auth'
 import {
   AddAccountRepository,
   LoadAccountByEmailRepository,
+  LoadAccountByIdRepository,
   LoadAccountByTokenRepository,
   UpdateAccessTokenRepository,
 } from '@/data/protocols/db/account-repository'
@@ -21,7 +22,8 @@ export class AccountMongoRepository
     AddAccountRepository,
     LoadAccountByEmailRepository,
     UpdateAccessTokenRepository,
-    LoadAccountByTokenRepository
+    LoadAccountByTokenRepository,
+    LoadAccountByIdRepository
 {
   // TODO: Add the Role as an input
   async add(addAccountInput: AddAccountInput): Promise<AccountModel> {
@@ -41,6 +43,18 @@ export class AccountMongoRepository
 
     if (accountByEmail) {
       return addIdToDocument(accountByEmail) as AccountModel
+    }
+  }
+
+  async loadById(id: string): Promise<Optional<AccountModel>> {
+    const accountCollection = await getAccountsCollection()
+
+    const accountById = await accountCollection.findOne({
+      _id: new ObjectId(id),
+    })
+
+    if (accountById) {
+      return addIdToDocument(accountById) as AccountModel
     }
   }
 
