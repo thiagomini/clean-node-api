@@ -1,3 +1,4 @@
+import { getSurveyResultsCollection } from './collections'
 import { mongoHelper } from './mongo-helper'
 
 export async function clearAccountsCollection(): Promise<void> {
@@ -13,4 +14,9 @@ export async function clearErrorLogsCollection(): Promise<void> {
 export async function clearSurveysCollection(): Promise<void> {
   const accountsCollection = await mongoHelper.getCollection('surveys')
   await accountsCollection.deleteMany({})
+}
+
+export async function clearSurveyResultCollection(): Promise<void> {
+  const surveyResultCollection = await getSurveyResultsCollection()
+  await surveyResultCollection.deleteMany({})
 }
