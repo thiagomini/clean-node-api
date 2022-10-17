@@ -47,6 +47,18 @@ export class AccountMongoRepository
   }
 
   async loadById(id: string): Promise<Optional<AccountModel>> {
+    try {
+      return await this.findAccountById(id)
+    } catch (err) {
+      if (this.isInvalidIdError(err as Error)) {
+        return undefined
+      }
+
+      throw err
+    }
+  }
+
+  private async findAccountById(id: string): Promise<Optional<AccountModel>> {
     const accountCollection = await getAccountsCollection()
 
     const accountById = await accountCollection.findOne({
@@ -56,6 +68,10 @@ export class AccountMongoRepository
     if (accountById) {
       return addIdToDocument(accountById) as AccountModel
     }
+  }
+
+  private isInvalidIdError(error: Error): boolean {
+    return error.name === 'BSONTypeError'
   }
 
   async updateAccessToken(id: string, accessToken: string): Promise<void> {

@@ -95,6 +95,17 @@ describe('AccountMongoRepository', () => {
       // Assert
       expect(account).toBeUndefined()
     })
+
+    it('should return undefined if given id is an invalid Mongo Id', async () => {
+      // Arrange
+      const sut = new AccountMongoRepository()
+
+      // Act
+      const account = await sut.loadById('not_a_mongo_id')
+
+      // Assert
+      expect(account).toBeUndefined()
+    })
   })
 
   describe('updateAccessToken', () => {
