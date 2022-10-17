@@ -16,6 +16,7 @@ import { Optional } from '@/utils'
 import { getAccountsCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { AccountNotFoundError } from './account-not-found.error'
+import { isInvalidIdError } from '../helpers/error-helper'
 
 export class AccountMongoRepository
   implements
@@ -50,7 +51,7 @@ export class AccountMongoRepository
     try {
       return await this.findAccountById(id)
     } catch (err) {
-      if (this.isInvalidIdError(err as Error)) {
+      if (isInvalidIdError(err as Error)) {
         return undefined
       }
 
@@ -68,10 +69,6 @@ export class AccountMongoRepository
     if (accountById) {
       return addIdToDocument(accountById) as AccountModel
     }
-  }
-
-  private isInvalidIdError(error: Error): boolean {
-    return error.name === 'BSONTypeError'
   }
 
   async updateAccessToken(id: string, accessToken: string): Promise<void> {

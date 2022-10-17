@@ -12,6 +12,7 @@ import {
   FindSurveyByIdRepository,
   Optional,
 } from '@/data/use-cases/survey/find-survey/find-survey-by-id.protocols'
+import { isInvalidIdError } from '../helpers/error-helper'
 
 export class SurveyMongoRepository
   implements AddSurveyRepository, LoadSurveysUseCase, FindSurveyByIdRepository
@@ -20,7 +21,7 @@ export class SurveyMongoRepository
     try {
       return await this.findSurveyById(id)
     } catch (err) {
-      if (this.isInvalidIdError(err as Error)) {
+      if (isInvalidIdError(err as Error)) {
         return undefined
       }
 
@@ -38,10 +39,6 @@ export class SurveyMongoRepository
     if (surveyInDb) {
       return addIdToDocument(surveyInDb) as SurveyModel
     }
-  }
-
-  private isInvalidIdError(error: Error): boolean {
-    return error.name === 'BSONTypeError'
   }
 
   async list(): Promise<SurveyModel[]> {
