@@ -3,6 +3,7 @@ import { getSurveysCollection } from '@/infra/db/mongodb/helpers/collections'
 import { mongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { clearSurveysCollection } from '@/infra/db/mongodb/helpers/test-teardown-helpers'
 import { Collection, ObjectId } from 'mongodb'
+import { AddSurveyInput } from '../../../domain/use-cases/survey/add-survey'
 import { SurveyDSL } from './survey.dsl'
 
 describe('SurveyDSL', () => {
@@ -24,7 +25,7 @@ describe('SurveyDSL', () => {
     it('should create a new survey with all parameters', async () => {
       const surveyDSL = await SurveyDSL.create()
 
-      await surveyDSL.createSurvey({
+      const surveyInput: AddSurveyInput = {
         question: 'test_question',
         answers: [
           {
@@ -36,13 +37,14 @@ describe('SurveyDSL', () => {
             image: 'any_image_2',
           },
         ],
-      })
+      }
+      await surveyDSL.createSurvey(surveyInput)
 
       const surveyInDb = await surveysCollection.findOne({
         question: 'test_question',
       })
 
-      expect(surveyInDb).toBeDefined()
+      expect(surveyInDb).toMatchObject(surveyInput)
     })
 
     it('should create a new survey with default parameters', async () => {
