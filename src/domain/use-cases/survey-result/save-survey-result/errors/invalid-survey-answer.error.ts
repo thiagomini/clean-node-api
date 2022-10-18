@@ -11,9 +11,11 @@ export class InvalidSurveyAnswerError extends ContextError {
   constructor(errorInput: InvalidSurveyAnswerErrorInput) {
     super({
       ...errorInput,
-      message: `Survey asnwer ${
+      message: `Survey answer '${
         errorInput.answer
-      } is invalid. Please provide one of the following values: [${errorInput.answers.toString()}]`,
+      }' is invalid. Please provide one of the following values: [${errorInput.answers
+        .map(({ answer }) => answer)
+        .join(', ')}]`,
       errorName: InvalidSurveyAnswerError.name,
     })
   }
