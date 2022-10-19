@@ -1,10 +1,10 @@
 import { Role } from '@/auth'
+import { fakeAccount, fakeAccountInput } from '@/domain/test'
 import {
-  AddAccountInput,
-  AddAccountOutput,
-  AddAccountUseCaseError,
   AccountModel,
+  AddAccountOutput,
   AddAccountRepository,
+  AddAccountUseCaseError,
   Hasher,
   LoadAccountByEmailRepository,
   Optional,
@@ -17,7 +17,7 @@ describe('DbAddAccountUseCase', () => {
     // Arrange
     const { sut, hasherStub: encrypterStub } = createSut()
     const encryptSpy = jest.spyOn(encrypterStub, 'hash')
-    const accountData = createDefaultAddAccountInput()
+    const accountData = fakeAccountInput()
 
     // Act
     await sut.findOrCreate(accountData)
@@ -35,7 +35,7 @@ describe('DbAddAccountUseCase', () => {
       throw innerError
     })
 
-    const accountData = createDefaultAddAccountInput()
+    const accountData = fakeAccountInput()
 
     // Act
     const addAccountPromise = sut.findOrCreate(accountData)
@@ -48,7 +48,7 @@ describe('DbAddAccountUseCase', () => {
     // Arrange
     const { sut, addAccountRepository } = createSut()
     const repositorySpy = jest.spyOn(addAccountRepository, 'add')
-    const accountData = createDefaultAddAccountInput()
+    const accountData = fakeAccountInput()
 
     // Act
     await sut.findOrCreate(accountData)
@@ -70,7 +70,7 @@ describe('DbAddAccountUseCase', () => {
       throw innerError
     })
 
-    const accountData = createDefaultAddAccountInput()
+    const accountData = fakeAccountInput()
 
     // Act
     const addAccountPromise = sut.findOrCreate(accountData)
@@ -82,7 +82,7 @@ describe('DbAddAccountUseCase', () => {
   it('should create a new account if it did not exist', async () => {
     // Arrange
     const { sut } = createSut()
-    const accountData = createDefaultAddAccountInput()
+    const accountData = fakeAccountInput()
 
     // Act
     const account = await sut.findOrCreate(accountData)
@@ -94,11 +94,11 @@ describe('DbAddAccountUseCase', () => {
   it('should return an existing account if it exists', async () => {
     // Arrange
     const { sut, loadAccountByEmailRepository } = createSut()
-    const existingAccount = getExistingAccount()
+    const existingAccount = fakeAccount()
     jest
       .spyOn(loadAccountByEmailRepository, 'loadByEmail')
       .mockResolvedValueOnce(existingAccount)
-    const accountData = createDefaultAddAccountInput()
+    const accountData = fakeAccountInput()
 
     // Act
     const account = await sut.findOrCreate(accountData)
@@ -172,18 +172,4 @@ const getDefaultSavedAccountData = (): AddAccountOutput => ({
   password: 'hashed_password',
   isNew: true,
   role: Role.User,
-})
-
-const getExistingAccount = (): AccountModel => ({
-  id: 'existing_id',
-  email: 'existing@mail.com',
-  name: 'existing_name',
-  password: 'existing_hashed_password',
-  role: Role.User,
-})
-
-const createDefaultAddAccountInput = (): AddAccountInput => ({
-  name: 'valid_name',
-  email: 'valid_email',
-  password: 'valid_password',
 })
