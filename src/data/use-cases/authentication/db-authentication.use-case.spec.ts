@@ -1,4 +1,5 @@
 import { fakeAccount } from '@/domain/test'
+import { createEncrypterStub, createHashComparerStub } from '@/data/test'
 import {
   AccountModel,
   AuthenticationError,
@@ -170,26 +171,6 @@ const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
   }
 
   return new LoadAccountByEmailRepositoryStub()
-}
-
-const createHashComparerStub = (): HashComparer => {
-  class HashComparerStub implements HashComparer {
-    async compare(): Promise<boolean> {
-      return true
-    }
-  }
-
-  return new HashComparerStub()
-}
-
-const createEncrypterStub = (): Encrypter => {
-  class EncrypterStub implements Encrypter {
-    async encrypt(): Promise<string> {
-      return 'token'
-    }
-  }
-
-  return new EncrypterStub()
 }
 
 const createUpdateAccessTokenRepositoryStub =

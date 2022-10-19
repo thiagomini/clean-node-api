@@ -1,5 +1,6 @@
 import { Role } from '@/auth'
 import { fakeAccount, fakeAccountInput } from '@/domain/test'
+import { createHasherStub } from '@/data/test'
 import {
   AccountModel,
   AddAccountOutput,
@@ -134,15 +135,6 @@ const createSut = (): SutFactoryResponse => {
     addAccountRepository,
     loadAccountByEmailRepository,
   }
-}
-
-const createHasherStub = (): Hasher => {
-  class EncrypterStub implements Hasher {
-    async hash(): Promise<string> {
-      return 'hashed_password'
-    }
-  }
-  return new EncrypterStub()
 }
 
 const createAddAccountRepositoryStub = (): any => {

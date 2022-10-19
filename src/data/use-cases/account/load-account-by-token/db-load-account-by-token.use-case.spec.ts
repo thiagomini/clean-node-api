@@ -9,6 +9,7 @@ import {
 } from './db-load-account-by-token.protocols'
 import { Role } from '@/auth'
 import { fakeAccount } from '@/domain/test'
+import { createDecrypterStub } from '@/data/test'
 
 const TOKEN = 'any_token'
 const ROLE = Role.User
@@ -95,7 +96,7 @@ type SutFactoryResponse = {
 }
 
 const createSut = (): SutFactoryResponse => {
-  const decrypterStub = createDecrypterStub()
+  const decrypterStub = createDecrypterStub(TOKEN)
   const loadAccountByTokenRepositoryStub =
     createLoadAccountByTokenRepositoryStub()
   const sut = new DbLoadAccountByTokenUseCase(
@@ -108,16 +109,6 @@ const createSut = (): SutFactoryResponse => {
     decrypterStub,
     loadAccountByTokenRepositoryStub,
   }
-}
-
-const createDecrypterStub = (): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    public async decrypt(): Promise<string> {
-      return TOKEN
-    }
-  }
-  const decrypterStub = new DecrypterStub()
-  return decrypterStub
 }
 
 const createLoadAccountByTokenRepositoryStub =
