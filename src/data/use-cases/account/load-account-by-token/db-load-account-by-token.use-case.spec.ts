@@ -1,15 +1,17 @@
-import { DbLoadAccountByTokenUseCase } from './db-load-account-by-token.use-case'
+import { Role } from '@/auth'
 import {
-  AccountModel,
-  Decrypter,
-  LoadAccountByTokenRepository,
+  createDecrypterStub,
+  createLoadAccountByTokenRepositoryStub,
+} from '@/data/test'
+import { fakeAccount } from '@/domain/test'
+import {
   AccountByTokenNotFoundError,
+  Decrypter,
   InvalidTokenError,
+  LoadAccountByTokenRepository,
   LoadAccountByTokenUseCaseError,
 } from './db-load-account-by-token.protocols'
-import { Role } from '@/auth'
-import { fakeAccount } from '@/domain/test'
-import { createDecrypterStub } from '@/data/test'
+import { DbLoadAccountByTokenUseCase } from './db-load-account-by-token.use-case'
 
 const TOKEN = 'any_token'
 const ROLE = Role.User
@@ -110,16 +112,3 @@ const createSut = (): SutFactoryResponse => {
     loadAccountByTokenRepositoryStub,
   }
 }
-
-const createLoadAccountByTokenRepositoryStub =
-  (): LoadAccountByTokenRepository => {
-    class LoadAccountByTokenRepositoryStub
-      implements LoadAccountByTokenRepository
-    {
-      public async loadByToken(): Promise<AccountModel> {
-        return fakeAccount()
-      }
-    }
-    const repositoryStub = new LoadAccountByTokenRepositoryStub()
-    return repositoryStub
-  }

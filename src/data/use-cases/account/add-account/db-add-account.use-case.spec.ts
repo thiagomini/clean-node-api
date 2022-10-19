@@ -1,16 +1,18 @@
-import { Role } from '@/auth'
-import { fakeAccount, fakeAccountInput } from '@/domain/test'
-import { createHasherStub } from '@/data/test'
+import { createAddAccountRepositoryStub, createHasherStub } from '@/data/test'
 import {
-  AccountModel,
+  fakeAccount,
+  fakeAccountInput,
+  fakeAddAccountOutput,
+} from '@/domain/test'
+import {
   AddAccountOutput,
   AddAccountRepository,
   AddAccountUseCaseError,
   Hasher,
   LoadAccountByEmailRepository,
-  Optional,
 } from './db-add-account.protocols'
 
+import { createLoadAccountByEmailRepositoryStub } from '@/data/test'
 import { DbAddAccountUseCase } from './db-add-account.use-case'
 
 describe('DbAddAccountUseCase', () => {
@@ -89,7 +91,7 @@ describe('DbAddAccountUseCase', () => {
     const account = await sut.findOrCreate(accountData)
 
     // Assert
-    expect(account).toEqual(getDefaultSavedAccountData())
+    expect(account).toEqual(fakeAddAccountOutput())
   })
 
   it('should return an existing account if it exists', async () => {
@@ -136,32 +138,3 @@ const createSut = (): SutFactoryResponse => {
     loadAccountByEmailRepository,
   }
 }
-
-const createAddAccountRepositoryStub = (): any => {
-  class RepositoryStub implements AddAccountRepository {
-    public async add(): Promise<AccountModel> {
-      return getDefaultSavedAccountData()
-    }
-  }
-
-  return new RepositoryStub()
-}
-
-const createLoadAccountByEmailRepositoryStub = (): any => {
-  class RepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail(): Promise<Optional<AccountModel>> {
-      return undefined
-    }
-  }
-
-  return new RepositoryStub()
-}
-
-const getDefaultSavedAccountData = (): AddAccountOutput => ({
-  id: 'valid_id',
-  email: 'valid_email@mail.com',
-  name: 'valid_name',
-  password: 'hashed_password',
-  isNew: true,
-  role: Role.User,
-})

@@ -4,7 +4,7 @@ import {
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
 import { createMock } from '@golevelup/ts-jest'
-import { fakeAccount } from '@/domain/test'
+import { createLoadAccountByIdStub } from '@/data/test'
 import { FindSurveyByIdRepository } from '../../survey/find-survey/find-survey-by-id.protocols'
 import {
   CreateOrUpdateSurveyResultRepository,
@@ -143,11 +143,7 @@ const createSut = (): SutFactoryResponse => {
     },
   })
 
-  const loadAccountByIdStub = createMock<LoadAccountByIdRepository>({
-    async loadById() {
-      return fakeAccount()
-    },
-  })
+  const loadAccountByIdStub = createLoadAccountByIdStub()
 
   const sut = new DbSaveSurveyResultUseCase(
     createOrUpdateSurveyResultRepositoryStub,
