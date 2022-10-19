@@ -1,5 +1,6 @@
 import { Role } from '@/auth'
-import { Optional } from '../../utils'
+import { fakeAccount } from '@/domain/test'
+import { Optional } from '@/utils'
 import { AuthMiddleware } from './auth.middleware'
 import {
   AccessDeniedException,
@@ -62,7 +63,7 @@ describe('AuthMiddleware', () => {
       const response = await sut.handle(httpRequest)
 
       // Assert
-      const accountId = getAccountModel().id
+      const accountId = fakeAccount().id
       expect(response).toEqual(
         ok({
           accountId,
@@ -105,21 +106,12 @@ const createSut = (role: Role = Role.User): SutFactoryResponse => {
 const createLoadAccountByTokenStub = (): LoadAccountByTokenUseCase => {
   class LoadAccountByTokenStub implements LoadAccountByTokenUseCase {
     async load(): Promise<Optional<AccountModel>> {
-      return getAccountModel()
+      return fakeAccount()
     }
   }
   const loadAccountByTokenStub = new LoadAccountByTokenStub()
   return loadAccountByTokenStub
 }
-
-const getAccountModel = (): AccountModel => ({
-  id: 'any_id',
-  email: 'any_email',
-  name: 'any_name',
-  password: 'any_password',
-  accessToken: 'any_access_token',
-  role: Role.User,
-})
 
 const createFakeRequest = (): HttpRequest => ({
   headers: {

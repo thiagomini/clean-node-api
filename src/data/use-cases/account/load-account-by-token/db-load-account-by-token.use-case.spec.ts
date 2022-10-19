@@ -8,6 +8,7 @@ import {
   LoadAccountByTokenUseCaseError,
 } from './db-load-account-by-token.protocols'
 import { Role } from '@/auth'
+import { fakeAccount } from '@/domain/test'
 
 const TOKEN = 'any_token'
 const ROLE = Role.User
@@ -83,7 +84,7 @@ describe('DbLoadAccountByTokenUseCase', () => {
 
     const response = await sut.load(TOKEN)
 
-    expect(response).toEqual(accountModel())
+    expect(response).toEqual(fakeAccount())
   })
 })
 
@@ -125,18 +126,9 @@ const createLoadAccountByTokenRepositoryStub =
       implements LoadAccountByTokenRepository
     {
       public async loadByToken(): Promise<AccountModel> {
-        return accountModel()
+        return fakeAccount()
       }
     }
     const repositoryStub = new LoadAccountByTokenRepositoryStub()
     return repositoryStub
   }
-
-const accountModel = (): AccountModel => ({
-  id: 'valid_id',
-  email: 'any_email@mail.com',
-  name: 'any_name',
-  accessToken: TOKEN,
-  password: 'any_hashed_password',
-  role: Role.User,
-})

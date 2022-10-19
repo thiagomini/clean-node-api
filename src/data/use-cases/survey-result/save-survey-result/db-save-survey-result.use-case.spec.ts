@@ -3,19 +3,18 @@ import {
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
+import { createMock } from '@golevelup/ts-jest'
+import { fakeAccount } from '@/domain/test'
+import { FindSurveyByIdRepository } from '../../survey/find-survey/find-survey-by-id.protocols'
 import {
   CreateOrUpdateSurveyResultRepository,
+  LoadAccountByIdRepository,
   SaveSurveyResultInput,
-  AccountModel,
   SurveyModel,
   SurveyResultModel,
-  Role,
-  LoadAccountByIdRepository,
 } from './db-save-survey-result.protocols'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
 import { SaveSurveyResultUseCaseError } from './errors/'
-import { createMock } from '@golevelup/ts-jest'
-import { FindSurveyByIdRepository } from '../../survey/find-survey/find-survey-by-id.protocols'
 
 describe('DbSaveSurveyResultUseCase', () => {
   it('should call CreateOrUpdateSurveyResultRepository with correct values', async () => {
@@ -174,15 +173,6 @@ const fakeSurvey = (): SurveyModel => ({
   ],
   createdAt: new Date(),
   question: 'any_question',
-})
-
-const fakeAccount = (): AccountModel => ({
-  id: 'any_id',
-  email: 'any_email',
-  name: 'any_name',
-  password: 'any_password',
-  role: Role.User,
-  accessToken: 'any_access_token',
 })
 
 const makeCreateOrUpdateSurveyRepositoryStub =

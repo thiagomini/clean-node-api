@@ -1,17 +1,19 @@
-import { Role } from '@/auth'
 import { Authentication } from '@/domain/use-cases/authentication'
 import { Optional } from '@/utils'
-import { ExistingEmailException, MissingParamException } from '../../../errors'
-import { pick } from '../../../utils'
+import { fakeAccount } from '@/domain/test'
+import {
+  ExistingEmailException,
+  MissingParamException,
+} from '@/presentation/errors'
+import { pick } from '@/presentation/utils'
 import {
   badRequest,
   forbidden,
   internalServerError,
   ok,
-} from '../../../utils/http-responses-factories'
+} from '@/presentation/utils/http-responses-factories'
 import { SignUpController } from './signup.controller'
 import {
-  AccountModel,
   AddAccountOutput,
   AddAccountUseCase,
   HttpRequest,
@@ -141,7 +143,7 @@ describe('SignupController', () => {
     // Arrange
     const { sut, addAccountUseCase } = createSut()
     jest.spyOn(addAccountUseCase, 'findOrCreate').mockResolvedValueOnce({
-      ...getDefaultAccount(),
+      ...fakeAccount(),
       isNew: false,
     })
 
@@ -185,21 +187,13 @@ const createAddAccountUseCaseStub = (): AddAccountUseCase => {
   class AddAccountStub implements AddAccountUseCase {
     async findOrCreate(): Promise<AddAccountOutput> {
       return {
-        ...getDefaultAccount(),
+        ...fakeAccount(),
         isNew: true,
       }
     }
   }
   return new AddAccountStub()
 }
-
-const getDefaultAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'valid_password',
-  role: Role.User,
-})
 
 const createValidationStub = (): Validation => {
   class ValidationStub implements Validation {
