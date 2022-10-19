@@ -1,12 +1,12 @@
-import { Role } from '@/auth'
+import { fakeAccount } from '@/domain/test'
 import {
+  AccountModel,
+  AuthenticationError,
+  AuthenticationInput,
+  Encrypter,
+  HashComparer,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
-  AuthenticationInput,
-  HashComparer,
-  Encrypter,
-  AuthenticationError,
-  AccountModel,
 } from './db-authentication-protocols'
 import { DbAuthenticationUseCase } from './db-authentication.use-case'
 
@@ -165,20 +165,12 @@ const createLoadAccountByEmailRepoStub = (): LoadAccountByEmailRepository => {
     implements LoadAccountByEmailRepository
   {
     public async loadByEmail(): Promise<AccountModel> {
-      return getFakeAccount()
+      return fakeAccount()
     }
   }
 
   return new LoadAccountByEmailRepositoryStub()
 }
-
-const getFakeAccount = (): AccountModel => ({
-  email: 'any_email@mail.com',
-  id: 'valid_id',
-  name: 'any_name',
-  password: 'hashed_password',
-  role: Role.User,
-})
 
 const createHashComparerStub = (): HashComparer => {
   class HashComparerStub implements HashComparer {
