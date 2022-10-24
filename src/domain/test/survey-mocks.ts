@@ -1,5 +1,9 @@
 import { SurveyModel } from '@/domain/models'
-import { AddSurveyInput } from '@/domain/use-cases/survey/add-survey'
+import {
+  AddSurveyInput,
+  AddSurveyUseCase,
+} from '@/domain/use-cases/survey/add-survey'
+import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
 
 export const fakeSurvey = (): SurveyModel => ({
   id: 'any_id',
@@ -21,3 +25,21 @@ export const createFakeSurveyInput = (): AddSurveyInput => ({
     },
   ],
 })
+
+export const createAddSurveyStub = (): AddSurveyUseCase => {
+  class AddSurveyStub implements AddSurveyUseCase {
+    async add(): Promise<void> {}
+  }
+
+  return new AddSurveyStub()
+}
+
+export const createLoadSurveysStub = (): LoadSurveysUseCase => {
+  class LoadSurveysStub implements LoadSurveysUseCase {
+    public async list(): Promise<SurveyModel[]> {
+      return [fakeSurvey()]
+    }
+  }
+  const loadSurveyStub = new LoadSurveysStub()
+  return loadSurveyStub
+}

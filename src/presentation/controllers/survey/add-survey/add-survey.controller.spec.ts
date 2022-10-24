@@ -4,6 +4,7 @@ import {
   internalServerError,
   noContent,
 } from '@/presentation/utils/http-responses-factories'
+import { createAddSurveyStub } from '@/domain/test'
 import {
   AddSurveyUseCase,
   HttpRequest,
@@ -88,14 +89,6 @@ const createSut = (): SutFactoryResponse => {
     validationStub,
     addSurveyStub,
   }
-}
-
-const createAddSurveyStub = (): AddSurveyUseCase => {
-  class AddSurveyStub implements AddSurveyUseCase {
-    async add(): Promise<void> {}
-  }
-
-  return new AddSurveyStub()
 }
 
 const createFakeRequest = (): HttpRequest => ({

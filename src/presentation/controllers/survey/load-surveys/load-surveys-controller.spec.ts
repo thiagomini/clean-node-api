@@ -1,10 +1,9 @@
-import { fakeSurvey } from '@/domain/test'
+import { createLoadSurveysStub, fakeSurvey } from '@/domain/test'
 import { LoadSurveysController } from './load-surveys-controller'
 import {
   internalServerError,
   LoadSurveysUseCase,
   ok,
-  SurveyModel,
 } from './load-surveys.protocols'
 
 describe('LoadSurveysController', () => {
@@ -61,14 +60,4 @@ const createSut = (): SutFactoryResponse => {
     sut,
     loadSurveysStub,
   }
-}
-
-const createLoadSurveysStub = (): LoadSurveysUseCase => {
-  class LoadSurveysStub implements LoadSurveysUseCase {
-    public async list(): Promise<SurveyModel[]> {
-      return [fakeSurvey()]
-    }
-  }
-  const loadSurveyStub = new LoadSurveysStub()
-  return loadSurveyStub
 }

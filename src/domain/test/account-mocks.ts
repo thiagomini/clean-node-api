@@ -3,6 +3,7 @@ import { AccountModel } from '@/domain/models'
 import {
   AddAccountInput,
   AddAccountOutput,
+  AddAccountUseCase,
 } from '@/domain/use-cases/account/add-account'
 import { AuthenticationInput } from '@/domain/use-cases/authentication'
 
@@ -33,3 +34,15 @@ export const fakeAuthenticationInput = (): AuthenticationInput => ({
   email: 'any_mail@mail.com',
   password: 'any_password',
 })
+
+export const createAddAccountUseCaseStub = (): AddAccountUseCase => {
+  class AddAccountStub implements AddAccountUseCase {
+    async findOrCreate(): Promise<AddAccountOutput> {
+      return {
+        ...fakeAccount(),
+        isNew: true,
+      }
+    }
+  }
+  return new AddAccountStub()
+}

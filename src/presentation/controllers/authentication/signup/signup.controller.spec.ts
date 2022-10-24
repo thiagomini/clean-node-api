@@ -1,9 +1,13 @@
-import { fakeAccount } from '@/domain/test'
+import { createAddAccountUseCaseStub, fakeAccount } from '@/domain/test'
 import { Authentication } from '@/domain/use-cases/authentication'
 import {
   ExistingEmailException,
   MissingParamException,
 } from '@/presentation/errors'
+import {
+  createAuthenticationStub,
+  createValidationStub,
+} from '@/presentation/test'
 import { pick } from '@/presentation/utils'
 import {
   badRequest,
@@ -11,13 +15,8 @@ import {
   internalServerError,
   ok,
 } from '@/presentation/utils/http-responses-factories'
-import {
-  createAuthenticationStub,
-  createValidationStub,
-} from '@/presentation/test'
 import { SignUpController } from './signup.controller'
 import {
-  AddAccountOutput,
   AddAccountUseCase,
   HttpRequest,
   Validation,
@@ -184,18 +183,6 @@ const createSut = (): SutFactoryResponse => {
     validationStub,
     authenticationStub,
   }
-}
-
-const createAddAccountUseCaseStub = (): AddAccountUseCase => {
-  class AddAccountStub implements AddAccountUseCase {
-    async findOrCreate(): Promise<AddAccountOutput> {
-      return {
-        ...fakeAccount(),
-        isNew: true,
-      }
-    }
-  }
-  return new AddAccountStub()
 }
 
 type RequestBody = Partial<{
