@@ -1,3 +1,4 @@
+import { fakeSurvey } from '@/domain/test'
 import { LoadSurveysController } from './load-surveys-controller'
 import {
   internalServerError,
@@ -71,16 +72,3 @@ const createLoadSurveysStub = (): LoadSurveysUseCase => {
   const loadSurveyStub = new LoadSurveysStub()
   return loadSurveyStub
 }
-const fakeDate = new Date()
-
-const fakeSurvey = (): SurveyModel => ({
-  id: 'valid_id',
-  question: 'any_question',
-  answers: [
-    {
-      image: 'any_image',
-      answer: 'any_answer',
-    },
-  ],
-  createdAt: new Date(fakeDate),
-})

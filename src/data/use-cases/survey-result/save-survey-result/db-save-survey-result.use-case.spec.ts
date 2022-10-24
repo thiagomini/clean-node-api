@@ -15,6 +15,7 @@ import {
 } from './db-save-survey-result.protocols'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
 import { SaveSurveyResultUseCaseError } from './errors/'
+import { fakeSurvey } from '@/domain/test'
 
 describe('DbSaveSurveyResultUseCase', () => {
   it('should call CreateOrUpdateSurveyResultRepository with correct values', async () => {
@@ -159,17 +160,6 @@ const createSut = (): SutFactoryResponse => {
     loadAccountByIdStub,
   }
 }
-
-const fakeSurvey = (): SurveyModel => ({
-  id: 'any_id',
-  answers: [
-    {
-      answer: 'valid_answer',
-    },
-  ],
-  createdAt: new Date(),
-  question: 'any_question',
-})
 
 const makeCreateOrUpdateSurveyRepositoryStub =
   (): CreateOrUpdateSurveyResultRepository => {

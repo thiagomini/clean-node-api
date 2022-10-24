@@ -1,3 +1,4 @@
+import { fakeSurvey } from '@/domain/test'
 import { DbFindSurveyByIdUseCase } from './db-find-survey-by-id.use-case'
 import {
   FindSurveyByIdRepository,
@@ -89,10 +90,3 @@ const createFindSurveyByIdRepositoryStub = (): FindSurveyByIdRepository => {
 
   return new FindSurveyByIdRepositoryStub()
 }
-
-const fakeSurvey = (): SurveyModel => ({
-  id: 'any_id',
-  answers: [],
-  createdAt: new Date(2022, 0, 1),
-  question: 'any_question',
-})

@@ -1,10 +1,10 @@
 import {
   AddSurveyInput,
   AddSurveyRepository,
-  SurveyModel,
 } from './db-add-survey.use-case.protocols'
 import { DbAddSurveyUseCase } from './db-add-survey.use-case'
 import { AddSurveyUseCaseError } from './add-survey.use-case.error'
+import { createAddSurveyRepositoryStub } from '@/data/test'
 
 describe('DbAddSurveyUseCase', () => {
   it('should call AddSurveyRepository with correct values', async () => {
@@ -47,20 +47,6 @@ const createSut = (): SutFactoryResponse => {
     sut,
     addSurveyRepositoryStub,
   }
-}
-
-const createAddSurveyRepositoryStub = (): AddSurveyRepository => {
-  class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add(addSurveyInput: AddSurveyInput): Promise<SurveyModel> {
-      return {
-        id: 'any_id',
-        ...addSurveyInput,
-        createdAt: new Date(),
-      }
-    }
-  }
-
-  return new AddSurveyRepositoryStub()
 }
 
 const createFakeSurveyInput = (): AddSurveyInput => ({
