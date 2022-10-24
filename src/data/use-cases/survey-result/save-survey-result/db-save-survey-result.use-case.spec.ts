@@ -4,7 +4,10 @@ import {
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
 import { createMock } from '@golevelup/ts-jest'
-import { createLoadAccountByIdStub } from '@/data/test'
+import {
+  createLoadAccountByIdStub,
+  makeCreateOrUpdateSurveyRepositoryStub,
+} from '@/data/test'
 import { FindSurveyByIdRepository } from '../../survey/find-survey/find-survey-by-id.protocols'
 import {
   CreateOrUpdateSurveyResultRepository,
@@ -15,7 +18,7 @@ import {
 } from './db-save-survey-result.protocols'
 import { DbSaveSurveyResultUseCase } from './db-save-survey-result.use-case'
 import { SaveSurveyResultUseCaseError } from './errors/'
-import { fakeSurvey } from '@/domain/test'
+import { fakeSurvey, fakeSurveyResultInput } from '@/domain/test'
 
 describe('DbSaveSurveyResultUseCase', () => {
   it('should call CreateOrUpdateSurveyResultRepository with correct values', async () => {
@@ -160,26 +163,3 @@ const createSut = (): SutFactoryResponse => {
     loadAccountByIdStub,
   }
 }
-
-const makeCreateOrUpdateSurveyRepositoryStub =
-  (): CreateOrUpdateSurveyResultRepository => {
-    class RepositoryStub implements CreateOrUpdateSurveyResultRepository {
-      async createOrUpdate(): Promise<SurveyResultModel> {
-        return {
-          accountId: 'any_account_id',
-          surveyId: 'any_survey_id',
-          answer: 'any_answer',
-          createdAt: new Date(),
-          id: 'any_id',
-        }
-      }
-    }
-
-    return new RepositoryStub()
-  }
-
-const fakeSurveyResultInput = (): SaveSurveyResultInput => ({
-  accountId: 'any_id',
-  answer: 'valid_answer',
-  surveyId: 'any_survey_id',
-})
