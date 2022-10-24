@@ -1,5 +1,5 @@
-import { Optional } from '@/utils'
 import { Validation } from '@/presentation/protocols/validation'
+import { createValidationStub } from '@/validation/tests'
 import { ValidationComposite } from './validation-composite'
 import { ValidationError } from './validation.error'
 
@@ -85,11 +85,5 @@ const createSut = (): SutFactoryResponse => {
 }
 
 const createValidationStubs = (): [Validation, Validation] => {
-  class ValidationStub implements Validation {
-    validate(input: unknown): Optional<Error> {
-      return undefined
-    }
-  }
-
-  return [new ValidationStub(), new ValidationStub()]
+  return [createValidationStub(), createValidationStub()]
 }

@@ -1,5 +1,6 @@
 import { InvalidParamException } from '@/presentation/errors'
 import { EmailValidator } from '../protocols'
+import { createEmailValidatorStub } from '@/validation/tests'
 import { EmailValidationError } from './email-validation.error'
 import { EmailValidation } from './email.validation'
 
@@ -65,14 +66,4 @@ const createSut = (): SutFactoryResponse => {
     emailValidatorStub,
     sut,
   }
-}
-
-const createEmailValidatorStub = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(): boolean {
-      return true
-    }
-  }
-
-  return new EmailValidatorStub()
 }
