@@ -7,6 +7,6 @@ export const fakeSurvey = (): SurveyModel => ({
       answer: 'valid_answer',
     },
   ],
-  createdAt: new Date(),
+  createdAt: new Date(2022, 0, 1),
   question: 'any_question',
 })
