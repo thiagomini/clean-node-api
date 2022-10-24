@@ -6,6 +6,7 @@ import {
   HttpStatusCodes,
 } from '@/presentation/protocols'
 import { internalServerError } from '@/presentation/utils/http-responses-factories'
+import { createStubLogRepository } from '@/data/test'
 import { LogDecoratorController } from './log.decorator'
 
 describe('LogDecorator', () => {
@@ -96,11 +97,3 @@ const getStubControllerResponse = (): HttpResponse => ({
   },
   statusCode: HttpStatusCodes.OK,
 })
-
-const createStubLogRepository = (): LogErrorRepository => {
-  class StubLogRepository implements LogErrorRepository {
-    async error(): Promise<void> {}
-  }
-
-  return new StubLogRepository()
-}
