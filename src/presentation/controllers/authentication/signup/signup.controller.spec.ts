@@ -1,6 +1,5 @@
-import { Authentication } from '@/domain/use-cases/authentication'
-import { Optional } from '@/utils'
 import { fakeAccount } from '@/domain/test'
+import { Authentication } from '@/domain/use-cases/authentication'
 import {
   ExistingEmailException,
   MissingParamException,
@@ -12,6 +11,10 @@ import {
   internalServerError,
   ok,
 } from '@/presentation/utils/http-responses-factories'
+import {
+  createAuthenticationStub,
+  createValidationStub,
+} from '@/presentation/test'
 import { SignUpController } from './signup.controller'
 import {
   AddAccountOutput,
@@ -193,26 +196,6 @@ const createAddAccountUseCaseStub = (): AddAccountUseCase => {
     }
   }
   return new AddAccountStub()
-}
-
-const createValidationStub = (): Validation => {
-  class ValidationStub implements Validation {
-    validate(): Optional<Error> {
-      return undefined
-    }
-  }
-
-  return new ValidationStub()
-}
-
-const createAuthenticationStub = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async authenticate(): Promise<string> {
-      return 'valid_token'
-    }
-  }
-
-  return new AuthenticationStub()
 }
 
 type RequestBody = Partial<{

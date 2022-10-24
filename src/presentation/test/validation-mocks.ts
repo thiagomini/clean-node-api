@@ -3,7 +3,7 @@ import { Optional } from '@/utils'
 
 export const createValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    validate(input: unknown): Optional<Error> {
+    validate(): Optional<Error> {
       return undefined
     }
   }

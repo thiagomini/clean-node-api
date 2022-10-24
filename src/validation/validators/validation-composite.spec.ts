@@ -1,5 +1,5 @@
 import { Validation } from '@/presentation/protocols/validation'
-import { createValidationStub } from '@/validation/tests'
+import { createValidationStub } from '@/presentation/test'
 import { ValidationComposite } from './validation-composite'
 import { ValidationError } from './validation.error'
 

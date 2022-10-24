@@ -1,7 +1,10 @@
 import { Authentication } from '@/domain/use-cases/authentication'
-import { Optional } from '@/utils'
 import { MissingParamException } from '@/presentation/errors'
 import { HttpRequest, Validation } from '@/presentation/protocols'
+import {
+  createAuthenticationStub,
+  createValidationStub,
+} from '@/presentation/test'
 import {
   badRequest,
   internalServerError,
@@ -107,26 +110,6 @@ const createSut = (): SutFactoryResponse => {
     authenticationStub,
     validationStub,
   }
-}
-
-const createValidationStub = (): Validation => {
-  class ValidationStub implements Validation {
-    validate(): Optional<Error> {
-      return undefined
-    }
-  }
-
-  return new ValidationStub()
-}
-
-const createAuthenticationStub = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async authenticate(): Promise<string> {
-      return 'valid_token'
-    }
-  }
-
-  return new AuthenticationStub()
 }
 
 const createFakeRequest = (): HttpRequest => ({

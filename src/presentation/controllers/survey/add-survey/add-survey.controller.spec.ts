@@ -1,12 +1,12 @@
+import { createValidationStub } from '@/presentation/test'
 import {
   badRequest,
   internalServerError,
   noContent,
-} from '../../../utils/http-responses-factories'
+} from '@/presentation/utils/http-responses-factories'
 import {
   AddSurveyUseCase,
   HttpRequest,
-  Optional,
   Validation,
 } from './add-survey-controller.protocols'
 import { AddSurveyController } from './add-survey.controller'
@@ -88,16 +88,6 @@ const createSut = (): SutFactoryResponse => {
     validationStub,
     addSurveyStub,
   }
-}
-
-const createValidationStub = (): Validation => {
-  class ValidationStub implements Validation {
-    validate(): Optional<Error> {
-      return undefined
-    }
-  }
-  const validationStub = new ValidationStub()
-  return validationStub
 }
 
 const createAddSurveyStub = (): AddSurveyUseCase => {
