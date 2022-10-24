@@ -5,6 +5,7 @@ import {
 import { DbAddSurveyUseCase } from './db-add-survey.use-case'
 import { AddSurveyUseCaseError } from './add-survey.use-case.error'
 import { createAddSurveyRepositoryStub } from '@/data/test'
+import { createFakeSurveyInput } from '@/domain/test'
 
 describe('DbAddSurveyUseCase', () => {
   it('should call AddSurveyRepository with correct values', async () => {
@@ -48,13 +49,3 @@ const createSut = (): SutFactoryResponse => {
     addSurveyRepositoryStub,
   }
 }
-
-const createFakeSurveyInput = (): AddSurveyInput => ({
-  question: 'any_question',
-  answers: [
-    {
-      image: 'any_image',
-      answer: 'any_answer',
-    },
-  ],
-})
