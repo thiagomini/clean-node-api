@@ -1,8 +1,11 @@
-import { badRequest } from './components/bad-request.component'
+import {
+  badRequest,
+  notFound,
+  internalServerError,
+  unauthorized,
+} from './components'
 import { loginPath } from './paths/login-path'
-import { accountSchema } from './schemas/account.schema'
-import { errorSchema } from './schemas/error.schema'
-import { loginInputSchema } from './schemas/login-input.schema'
+import { accountSchema, errorSchema, loginInputSchema } from './schemas'
 
 export default {
   openapi: '3.0.0',
@@ -28,5 +31,8 @@ export default {
   },
   components: {
     badRequest,
+    unauthorized,
+    internalServerError,
+    notFound,
   },
 }

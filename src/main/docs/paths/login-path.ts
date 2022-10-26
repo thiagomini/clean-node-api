@@ -22,11 +22,14 @@ export const loginPath = {
           },
         },
       },
-      401: {
-        description: 'Unauthorized',
+      403: {
+        $ref: '#/components/unauthorized',
       },
       400: {
         $ref: '#/components/badRequest',
+      },
+      500: {
+        $ref: '#/components/internalServerError',
       },
     },
   },
