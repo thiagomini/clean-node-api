@@ -15,6 +15,10 @@ export default {
       'API do curso do Mango para realizar enquetes entre programadores',
     version: '1.0.0',
   },
+  license: {
+    name: 'ISC',
+    url: 'https://opensource.org/licenses/ISC',
+  },
   servers: [{ url: '/api' }],
   tags: [
     {
