@@ -26,7 +26,7 @@ export const loginPath = {
         description: 'Unauthorized',
       },
       400: {
-        description: 'Bad Request',
+        $ref: '#/components/badRequest',
       },
     },
   },
