@@ -1,30 +1,12 @@
-export const surveysSchema = {
+import { Schema } from 'swagger-schema-official'
+
+export const surveysSchema: Schema = {
   type: 'object',
   properties: {
     surveys: {
       type: 'array',
       items: {
-        type: 'object',
-        properties: {
-          question: {
-            type: 'string',
-          },
-          answers: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                image: {
-                  type: 'string',
-                },
-                answer: {
-                  type: 'string',
-                  required: false,
-                },
-              },
-            },
-          },
-        },
+        $ref: '#/schemas/survey',
       },
     },
   },

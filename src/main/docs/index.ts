@@ -2,8 +2,9 @@ import {
   badRequest,
   notFound,
   internalServerError,
-  unauthorized,
+  forbidden,
 } from './components'
+import { unauthorized } from './components/unauthorized.component'
 import { surveyPath, loginPath } from './paths'
 import {
   accountSchema,
@@ -11,6 +12,7 @@ import {
   loginInputSchema,
   surveysSchema,
 } from './schemas'
+import { surveySchema } from './schemas/survey.schema'
 
 export default {
   openapi: '3.0.0',
@@ -29,6 +31,9 @@ export default {
     {
       name: 'Login',
     },
+    {
+      name: 'Surveys',
+    },
   ],
   paths: {
     '/login': loginPath,
@@ -39,9 +44,11 @@ export default {
     loginInput: loginInputSchema,
     error: errorSchema,
     surveys: surveysSchema,
+    survey: surveySchema,
   },
   components: {
     badRequest,
+    forbidden,
     unauthorized,
     internalServerError,
     notFound,

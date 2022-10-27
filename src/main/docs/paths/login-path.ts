@@ -22,8 +22,11 @@ export const loginPath = {
           },
         },
       },
-      403: {
+      401: {
         $ref: '#/components/unauthorized',
+      },
+      403: {
+        $ref: '#/components/forbidden',
       },
       400: {
         $ref: '#/components/badRequest',

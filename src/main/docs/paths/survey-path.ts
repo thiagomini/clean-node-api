@@ -14,7 +14,37 @@ export const surveyPath = {
         },
       },
       403: {
+        $ref: '#/components/forbidden',
+      },
+      400: {
+        $ref: '#/components/badRequest',
+      },
+      500: {
+        $ref: '#/components/internalServerError',
+      },
+    },
+  },
+  post: {
+    tags: ['Surveys'],
+    summary: 'API to create surveys',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/schemas/survey',
+          },
+        },
+      },
+    },
+    responses: {
+      204: {
+        description: 'Survey created',
+      },
+      401: {
         $ref: '#/components/unauthorized',
+      },
+      403: {
+        $ref: '#/components/forbidden',
       },
       400: {
         $ref: '#/components/badRequest',
