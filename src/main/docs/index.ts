@@ -8,6 +8,7 @@ import { unauthorized } from './components/unauthorized.component'
 import { surveyPath, loginPath } from './paths'
 import {
   accountSchema,
+  apiKeyAuthSchema,
   errorSchema,
   loginInputSchema,
   surveysSchema,
@@ -47,6 +48,9 @@ export default {
     survey: surveySchema,
   },
   components: {
+    securitySchemes: {
+      apiKeyAuth: apiKeyAuthSchema,
+    },
     badRequest,
     forbidden,
     unauthorized,
