@@ -13,6 +13,7 @@ export const surveySchema: Schema = {
         properties: {
           image: {
             type: 'string',
+            description: 'The image url',
           },
           answer: {
             type: 'string',
