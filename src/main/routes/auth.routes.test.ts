@@ -28,6 +28,18 @@ describe('auth routes', () => {
         })
         .expect(HttpStatusCodes.OK)
     })
+
+    it('should return 400 when password and confirmation dont match', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'Thiago',
+          email: 'thiago@mail.com',
+          password: '123',
+          passwordConfirmation: '1234',
+        })
+        .expect(HttpStatusCodes.BAD_REQUEST)
+    })
   })
 
   describe('[POST] /login', () => {
