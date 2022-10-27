@@ -4,8 +4,13 @@ import {
   internalServerError,
   unauthorized,
 } from './components'
-import { loginPath } from './paths/login-path'
-import { accountSchema, errorSchema, loginInputSchema } from './schemas'
+import { surveyPath, loginPath } from './paths'
+import {
+  accountSchema,
+  errorSchema,
+  loginInputSchema,
+  surveysSchema,
+} from './schemas'
 
 export default {
   openapi: '3.0.0',
@@ -27,11 +32,13 @@ export default {
   ],
   paths: {
     '/login': loginPath,
+    '/surveys': surveyPath,
   },
   schemas: {
     account: accountSchema,
     loginInput: loginInputSchema,
     error: errorSchema,
+    surveys: surveysSchema,
   },
   components: {
     badRequest,
