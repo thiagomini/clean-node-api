@@ -30,6 +30,11 @@ export const surveyPath = {
     },
   },
   post: {
+    security: [
+      {
+        apiKeyAuth: [],
+      },
+    ],
     tags: ['Surveys'],
     summary: 'API to create surveys',
     requestBody: {
