@@ -1,10 +1,13 @@
 import { Collection, ObjectId } from 'mongodb'
-import { AddSurveyRepository } from '@/data/protocols/db/survey-repository'
+import {
+  AddSurveyRepository,
+  LoadSurveySummaryById,
+} from '@/data/protocols/db/survey-repository'
 import {
   AddSurveyInput,
   SurveyModel,
 } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
-import { ModelAttributes } from '@/domain/models'
+import { ModelAttributes, SurveySummaryModel } from '@/domain/models'
 import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
 import { getSurveysCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
@@ -15,8 +18,34 @@ import {
 import { isInvalidIdError } from '../helpers/error-helper'
 
 export class SurveyMongoRepository
-  implements AddSurveyRepository, LoadSurveysUseCase, FindSurveyByIdRepository
+  implements
+    AddSurveyRepository,
+    LoadSurveysUseCase,
+    FindSurveyByIdRepository,
+    LoadSurveySummaryById
 {
+  async loadSummaryById(id: string): Promise<SurveySummaryModel> {
+    const existingSurvey = await this.findById(id)
+
+    if (!existingSurvey) {
+      throw new Error(`Survey ${id} does not exist`)
+    }
+
+    return {
+      surveyId: existingSurvey.id,
+      createdAt: existingSurvey.createdAt,
+      question: existingSurvey.question,
+      answers: [
+        {
+          answer: existingSurvey.answers[0].answer,
+          image: existingSurvey.answers[0].image,
+          count: 1,
+          percent: 100,
+        },
+      ],
+    }
+  }
+
   async findById(id: string): Promise<Optional<SurveyModel>> {
     try {
       return await this.findSurveyById(id)

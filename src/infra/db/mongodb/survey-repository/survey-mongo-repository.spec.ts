@@ -1,26 +1,42 @@
+import { SurveyModel } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
+import { ModelAttributes, SurveySummaryModel } from '@/domain/models'
 import { createMock } from '@golevelup/ts-jest'
 import { Collection, ObjectId } from 'mongodb'
-import { SurveyModel } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
-import { ModelAttributes } from '@/domain/models'
 import { getSurveysCollection } from '../helpers/collections'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
-import { mongoHelper } from '../helpers/mongo-helper'
-import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
-import { SurveyMongoRepository } from './survey-mongo.repository'
+import {
+  createSurveyResultFactory,
+  MongoSurveyResultFactory,
+} from '../helpers/factories/mongo-survey-result.factory'
 import { createSurveysFactory } from '../helpers/factories/mongo-surveys.factory'
+import { mongoHelper } from '../helpers/mongo-helper'
+import {
+  clearAccountsCollection,
+  clearSurveyResultCollection,
+  clearSurveysCollection,
+} from '../helpers/test-teardown-helpers'
+import { SurveyMongoRepository } from './survey-mongo.repository'
 
 let surveysCollection: Collection<ModelAttributes<SurveyModel>>
 let mongoSurveyFactory: MongoEntityFactory<SurveyModel>
+let surveyResultFactory: MongoSurveyResultFactory
 
 describe('SurveyMongoRepository', () => {
   beforeAll(async () => {
     await mongoHelper.connect()
     surveysCollection = await getSurveysCollection()
     mongoSurveyFactory = await createSurveysFactory()
+    surveyResultFactory = await createSurveyResultFactory()
   })
 
   beforeEach(async () => {
     await clearSurveysCollection()
+  })
+
+  afterEach(async () => {
+    await clearSurveysCollection()
+    await clearAccountsCollection()
+    await clearSurveyResultCollection()
   })
 
   afterAll(async () => {
@@ -142,6 +158,49 @@ describe('SurveyMongoRepository', () => {
 
       // Assert
       await expect(findByIdPromise).rejects.toThrowError(Error)
+    })
+  })
+
+  describe('loadSummaryById', () => {
+    describe('when there is a single answer', () => {
+      it('should return a summary with one answer, count 1 and percent as 100', async () => {
+        // Arrange
+        const sut = await createSut()
+        const existingSurvey = await mongoSurveyFactory.create({
+          answers: [
+            {
+              answer: 'answer_1',
+              image: 'image_1',
+            },
+            {
+              answer: 'answer_2',
+              image: 'image_2',
+            },
+          ],
+        })
+        const singleAnswer = await surveyResultFactory.create({
+          surveyId: existingSurvey.id,
+          answer: 'answer_1',
+        })
+
+        // Act
+        const surveySummary = await sut.loadSummaryById(singleAnswer.surveyId)
+
+        // Assert
+        expect(surveySummary).toEqual<SurveySummaryModel>({
+          surveyId: singleAnswer.surveyId,
+          question: existingSurvey.question,
+          createdAt: existingSurvey.createdAt,
+          answers: [
+            {
+              answer: singleAnswer.answer,
+              image: existingSurvey.answers[0].image,
+              count: 1,
+              percent: 100,
+            },
+          ],
+        })
+      })
     })
   })
 })
