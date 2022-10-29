@@ -13,6 +13,10 @@ export class MongoSurveyDefaultAttributesFactory
           answer: 'answer_1',
           image: 'image',
         },
+        {
+          answer: 'answer_2',
+          image: 'image_2',
+        },
       ],
     }
   }

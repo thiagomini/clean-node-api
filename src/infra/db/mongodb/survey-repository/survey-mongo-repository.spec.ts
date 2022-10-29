@@ -166,21 +166,12 @@ describe('SurveyMongoRepository', () => {
       it('should return a summary with one answer, count 1 and percent as 100', async () => {
         // Arrange
         const sut = await createSut()
-        const existingSurvey = await mongoSurveyFactory.create({
-          answers: [
-            {
-              answer: 'answer_1',
-              image: 'image_1',
-            },
-            {
-              answer: 'answer_2',
-              image: 'image_2',
-            },
-          ],
-        })
+        const existingSurvey = await mongoSurveyFactory.create()
+        const firstAnswer = existingSurvey.answers[0]
+
         const singleAnswer = await surveyResultFactory.create({
           surveyId: existingSurvey.id,
-          answer: 'answer_1',
+          answer: firstAnswer.answer,
         })
 
         // Act
@@ -194,7 +185,7 @@ describe('SurveyMongoRepository', () => {
           answers: [
             {
               answer: singleAnswer.answer,
-              image: existingSurvey.answers[0].image,
+              image: firstAnswer.image,
               count: 1,
               percent: 100,
             },
