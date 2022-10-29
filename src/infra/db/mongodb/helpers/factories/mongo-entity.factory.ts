@@ -6,18 +6,10 @@ import {
 } from 'mongodb'
 import { ModelAttributes } from '@/domain/models'
 import { addIdToDocument } from '../mongo-document-helper'
-
-export interface ModelWithOptionalId {
-  id?: string
-}
-
-export interface ModelDefaultAttributesFactory<
-  TModel extends ModelWithOptionalId
-> {
-  defaultAttributes(
-    partialEntity?: Partial<TModel>
-  ): ModelAttributes<TModel> | Promise<ModelAttributes<TModel>>
-}
+import {
+  ModelDefaultAttributesFactory,
+  ModelWithOptionalId,
+} from './interfaces'
 
 export class MongoEntityFactory<TModel extends ModelWithOptionalId> {
   constructor(

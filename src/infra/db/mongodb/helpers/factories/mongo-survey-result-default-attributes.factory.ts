@@ -5,10 +5,8 @@ import {
   SurveyResultModel,
 } from '@/domain/models'
 import { faker } from '@faker-js/faker'
-import {
-  ModelDefaultAttributesFactory,
-  MongoEntityFactory,
-} from './mongo-entity.factory'
+import { ModelDefaultAttributesFactory } from './interfaces'
+import { MongoEntityFactory } from './mongo-entity.factory'
 
 export class MongoSurveyResultDefaultAttributesFactory
   implements ModelDefaultAttributesFactory<SurveyResultModel>

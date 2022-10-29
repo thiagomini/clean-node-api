@@ -1,5 +1,5 @@
 import { ModelAttributes, SurveyModel } from '@/domain/models'
-import { ModelDefaultAttributesFactory } from './mongo-entity.factory'
+import { ModelDefaultAttributesFactory } from './interfaces'
 
 export class MongoSurveyDefaultAttributesFactory
   implements ModelDefaultAttributesFactory<SurveyModel>

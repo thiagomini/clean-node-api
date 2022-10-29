@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import {
   ModelAttributes,
   SurveyModel,
@@ -12,9 +12,13 @@ export async function getSurveysCollection(): Promise<
   return await mongoHelper.getCollection('surveys')
 }
 
-export async function getSurveyResultsCollection(): Promise<
-  Collection<ModelAttributes<SurveyResultModel>>
-> {
+export type SurveyResultCollection = Collection<
+  Pick<SurveyResultModel, 'answer' | 'createdAt'> & {
+    surveyId: ObjectId
+    accountId: ObjectId
+  }
+>
+export async function getSurveyResultsCollection(): Promise<SurveyResultCollection> {
   return await mongoHelper.getCollection('surveyresults')
 }
 

@@ -1,6 +1,6 @@
-import { ModelDefaultAttributesFactory } from './mongo-entity.factory'
 import { AccountModel, ModelAttributes } from '@/domain/models'
 import { Role } from '@/auth'
+import { ModelDefaultAttributesFactory } from './interfaces'
 
 export class MongoAccountDefaultAttributesFactory
   implements ModelDefaultAttributesFactory<AccountModel>

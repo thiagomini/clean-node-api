@@ -1,8 +1,11 @@
-import { AccountModel, SurveyModel, SurveyResultModel } from '@/domain/models'
+import { AccountModel, SurveyModel } from '@/domain/models'
 import { SaveSurveyResultInput } from '@/domain/use-cases/survey-result/save-survey-result'
 import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
-import { createSurveyResultFactory } from '../helpers/factories/mongo-survey-result.factory'
+import {
+  createSurveyResultFactory,
+  MongoSurveyResultFactory,
+} from '../helpers/factories/mongo-survey-result.factory'
 import { createSurveysFactory } from '../helpers/factories/mongo-surveys.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
@@ -11,7 +14,7 @@ import { SurveyResultMongoRepository } from './survey-result-mongo.repository'
 describe('SurveyResultMongoRepository', () => {
   let surveyFactory: MongoEntityFactory<SurveyModel>
   let accountFactory: MongoEntityFactory<AccountModel>
-  let surveyResultFactory: MongoEntityFactory<SurveyResultModel>
+  let surveyResultFactory: MongoSurveyResultFactory
 
   beforeAll(async () => {
     surveyFactory = await createSurveysFactory()
