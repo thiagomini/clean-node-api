@@ -20,6 +20,11 @@ import {
 } from '@/data/use-cases/survey/find-survey/find-survey-by-id.protocols'
 import { isInvalidIdError } from '../helpers/error-helper'
 
+export type GroupedSurveyResults = Array<{
+  _id: string
+  numberOfAnswers: number
+}>
+
 export class SurveyMongoRepository
   implements
     AddSurveyRepository,
@@ -34,12 +39,40 @@ export class SurveyMongoRepository
       throw new Error(`Survey ${id} does not exist`)
     }
 
+    const surveyAnswerToImageMap =
+      this.getSurveyAnswerToImageMap(existingSurvey)
+
+    const surveyResultsGroupedBySurvey =
+      await this.getSurveyResultsGroupedBySurvey()
+
+    const totalAnswers = this.getTotalNumberOfAnswersFor(
+      surveyResultsGroupedBySurvey
+    )
+
+    return {
+      surveyId: existingSurvey.id,
+      createdAt: existingSurvey.createdAt,
+      question: existingSurvey.question,
+      answers: surveyResultsGroupedBySurvey.map((resultsByAnswer) => ({
+        answer: resultsByAnswer._id,
+        count: resultsByAnswer.numberOfAnswers,
+        percent: (resultsByAnswer.numberOfAnswers / totalAnswers) * 100,
+        image: surveyAnswerToImageMap.get(resultsByAnswer._id),
+      })),
+    }
+  }
+
+  private getSurveyAnswerToImageMap(survey: SurveyModel): Map<string, string> {
     const surveyAnswerToImageMap = new Map()
 
-    existingSurvey.answers.forEach((answer) => {
+    survey.answers.forEach((answer) => {
       surveyAnswerToImageMap.set(answer.answer, answer.image)
     })
 
+    return surveyAnswerToImageMap
+  }
+
+  private async getSurveyResultsGroupedBySurvey(): Promise<GroupedSurveyResults> {
     const surveyResultsCollection = await getSurveyResultsCollection()
     const surveyResultsGroupedBySurvey = (await surveyResultsCollection
       .aggregate([
@@ -57,22 +90,16 @@ export class SurveyMongoRepository
       numberOfAnswers: number
     }>
 
-    const totalAnswers = surveyResultsGroupedBySurvey.reduce(
+    return surveyResultsGroupedBySurvey
+  }
+
+  private getTotalNumberOfAnswersFor(
+    surveyResultsGroupedBySurvey: GroupedSurveyResults
+  ): number {
+    return surveyResultsGroupedBySurvey.reduce(
       (total, resultsByAnswer) => total + resultsByAnswer.numberOfAnswers,
       0
     )
-
-    return {
-      surveyId: existingSurvey.id,
-      createdAt: existingSurvey.createdAt,
-      question: existingSurvey.question,
-      answers: surveyResultsGroupedBySurvey.map((resultsByAnswer) => ({
-        answer: resultsByAnswer._id,
-        count: resultsByAnswer.numberOfAnswers,
-        percent: (resultsByAnswer.numberOfAnswers / totalAnswers) * 100,
-        image: surveyAnswerToImageMap.get(resultsByAnswer._id),
-      })),
-    }
   }
 
   async findById(id: string): Promise<Optional<SurveyModel>> {
