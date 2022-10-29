@@ -34,24 +34,44 @@ export class SurveyMongoRepository
       throw new Error(`Survey ${id} does not exist`)
     }
 
+    const surveyAnswerToImageMap = new Map()
+
+    existingSurvey.answers.forEach((answer) => {
+      surveyAnswerToImageMap.set(answer.answer, answer.image)
+    })
+
     const surveyResultsCollection = await getSurveyResultsCollection()
-    const numberOfResultsForSurvey =
-      await surveyResultsCollection.countDocuments({
-        surveyId: new ObjectId(id),
-      })
+    const surveyResultsGroupedBySurvey = (await surveyResultsCollection
+      .aggregate([
+        {
+          $group: {
+            _id: '$answer',
+            numberOfAnswers: {
+              $count: {},
+            },
+          },
+        },
+      ])
+      .toArray()) as Array<{
+      _id: string
+      numberOfAnswers: number
+    }>
+
+    const totalAnswers = surveyResultsGroupedBySurvey.reduce(
+      (total, resultsByAnswer) => total + resultsByAnswer.numberOfAnswers,
+      0
+    )
 
     return {
       surveyId: existingSurvey.id,
       createdAt: existingSurvey.createdAt,
       question: existingSurvey.question,
-      answers: [
-        {
-          answer: existingSurvey.answers[0].answer,
-          image: existingSurvey.answers[0].image,
-          count: numberOfResultsForSurvey,
-          percent: 100,
-        },
-      ],
+      answers: surveyResultsGroupedBySurvey.map((resultsByAnswer) => ({
+        answer: resultsByAnswer._id,
+        count: resultsByAnswer.numberOfAnswers,
+        percent: (resultsByAnswer.numberOfAnswers / totalAnswers) * 100,
+        image: surveyAnswerToImageMap.get(resultsByAnswer._id),
+      })),
     }
   }
 
