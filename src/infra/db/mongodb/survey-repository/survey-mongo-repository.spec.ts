@@ -193,6 +193,46 @@ describe('SurveyMongoRepository', () => {
         })
       })
     })
+
+    describe('when there are two survey results', () => {
+      describe('and they have the same answer', () => {
+        it('should return a summary with one answer, count 2 and percent 100', async () => {
+          // Arrange
+          const sut = await createSut()
+          const aSurvey = await mongoSurveyFactory.create()
+          const firstAnswer = aSurvey.answers[0]
+
+          await Promise.all([
+            surveyResultFactory.create({
+              surveyId: aSurvey.id,
+              answer: firstAnswer.answer,
+            }),
+            surveyResultFactory.create({
+              surveyId: aSurvey.id,
+              answer: firstAnswer.answer,
+            }),
+          ])
+
+          // Act
+          const surveySummary = await sut.loadSummaryById(aSurvey.id)
+
+          // Assert
+          expect(surveySummary).toEqual<SurveySummaryModel>({
+            surveyId: aSurvey.id,
+            question: aSurvey.question,
+            createdAt: aSurvey.createdAt,
+            answers: [
+              {
+                answer: firstAnswer.answer,
+                image: firstAnswer.image,
+                count: 2,
+                percent: 100,
+              },
+            ],
+          })
+        })
+      })
+    })
   })
 })
 

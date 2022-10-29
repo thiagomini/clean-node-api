@@ -9,7 +9,10 @@ import {
 } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
 import { ModelAttributes, SurveySummaryModel } from '@/domain/models'
 import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
-import { getSurveysCollection } from '../helpers/collections'
+import {
+  getSurveyResultsCollection,
+  getSurveysCollection,
+} from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import {
   FindSurveyByIdRepository,
@@ -31,6 +34,12 @@ export class SurveyMongoRepository
       throw new Error(`Survey ${id} does not exist`)
     }
 
+    const surveyResultsCollection = await getSurveyResultsCollection()
+    const numberOfResultsForSurvey =
+      await surveyResultsCollection.countDocuments({
+        surveyId: new ObjectId(id),
+      })
+
     return {
       surveyId: existingSurvey.id,
       createdAt: existingSurvey.createdAt,
@@ -39,7 +48,7 @@ export class SurveyMongoRepository
         {
           answer: existingSurvey.answers[0].answer,
           image: existingSurvey.answers[0].image,
-          count: 1,
+          count: numberOfResultsForSurvey,
           percent: 100,
         },
       ],
