@@ -8,7 +8,10 @@ import {
 } from '../helpers/factories/mongo-survey-result.factory'
 import { createSurveysFactory } from '../helpers/factories/mongo-surveys.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
-import { clearSurveysCollection } from '../helpers/test-teardown-helpers'
+import {
+  clearSurveyResultCollection,
+  clearSurveysCollection,
+} from '../helpers/test-teardown-helpers'
 import { SurveyResultMongoRepository } from './survey-result-mongo.repository'
 
 describe('SurveyResultMongoRepository', () => {
@@ -24,6 +27,7 @@ describe('SurveyResultMongoRepository', () => {
 
   afterEach(async () => {
     await clearSurveysCollection()
+    await clearSurveyResultCollection()
   })
 
   afterAll(async () => {

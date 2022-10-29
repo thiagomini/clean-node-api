@@ -29,10 +29,6 @@ describe('SurveyMongoRepository', () => {
     surveyResultFactory = await createSurveyResultFactory()
   })
 
-  beforeEach(async () => {
-    await clearSurveysCollection()
-  })
-
   afterEach(async () => {
     await clearSurveysCollection()
     await clearAccountsCollection()
@@ -162,6 +158,25 @@ describe('SurveyMongoRepository', () => {
   })
 
   describe('loadSummaryById', () => {
+    describe('when there is no answer', () => {
+      it('should return a summary with zero answers', async () => {
+        // Arrange
+        const sut = await createSut()
+        const existingSurvey = await mongoSurveyFactory.create()
+
+        // Act
+        const surveySummary = await sut.loadSummaryById(existingSurvey.id)
+
+        // Assert
+        expect(surveySummary).toEqual<SurveySummaryModel>({
+          surveyId: existingSurvey.id,
+          question: existingSurvey.question,
+          createdAt: existingSurvey.createdAt,
+          answers: [],
+        })
+      })
+    })
+
     describe('when there is a single answer', () => {
       it('should return a summary with one answer, count 1 and percent as 100', async () => {
         // Arrange
@@ -259,7 +274,7 @@ describe('SurveyMongoRepository', () => {
             surveyId: aSurvey.id,
             question: aSurvey.question,
             createdAt: aSurvey.createdAt,
-            answers: [
+            answers: expect.arrayContaining([
               {
                 answer: firstAnswer.answer,
                 image: firstAnswer.image,
@@ -272,7 +287,7 @@ describe('SurveyMongoRepository', () => {
                 count: 1,
                 percent: 50,
               },
-            ],
+            ]),
           })
         })
       })
