@@ -42,7 +42,7 @@ export class MongoSurveyResultFactory {
       surveyId: new ObjectId(finalInput.surveyId),
       answer: finalInput.answer,
       createdAt: finalInput.createdAt,
-      _id: finalInput._id,
+      _id: finalInput._id as ObjectId,
     })
 
     return addIdToDocument(finalInput) as SurveyResultModel

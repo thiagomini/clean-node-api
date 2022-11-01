@@ -6,11 +6,11 @@ import { MongoSurveyDefaultAttributesFactory } from './mongo-surveys-default-att
 export const createSurveysFactory = async (): Promise<
   MongoEntityFactory<SurveyModel>
 > => {
-  const accountCollection = await mongoHelper.getCollection<SurveyModel>(
+  const surveysCollection = await mongoHelper.getCollection<SurveyModel>(
     'surveys'
   )
   return await MongoEntityFactory.createFactory(
-    accountCollection,
+    surveysCollection,
     new MongoSurveyDefaultAttributesFactory()
   )
 }
