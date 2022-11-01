@@ -1,11 +1,12 @@
 import { Authentication } from '@/domain/use-cases/authentication'
-import { ExistingEmailException } from '../../../errors'
+import { Role } from '@/auth'
+import { ExistingEmailException } from '@/presentation/errors'
 import {
   badRequest,
   forbidden,
   internalServerError,
   ok,
-} from '../../../utils/http-responses-factories'
+} from '@/presentation/utils/http-responses-factories'
 import {
   AddAccountUseCase,
   Controller,
@@ -44,6 +45,7 @@ export class SignUpController implements Controller {
       name,
       email,
       password,
+      role: Role.User,
     })
 
     if (!account.isNew) {

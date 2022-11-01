@@ -17,6 +17,7 @@ import { getAccountsCollection } from '../helpers/collections'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { AccountNotFoundError } from './account-not-found.error'
 import { isInvalidIdError } from '../helpers/error-helper'
+import { AccountSchema } from '../schemas'
 
 export class AccountMongoRepository
   implements
@@ -26,7 +27,6 @@ export class AccountMongoRepository
     LoadAccountByTokenRepository,
     LoadAccountByIdRepository
 {
-  // TODO: Add the Role as an input
   async add(addAccountInput: AddAccountInput): Promise<AccountModel> {
     const accountCollection = await getAccountsCollection()
 
@@ -102,7 +102,7 @@ export class AccountMongoRepository
   public async loadByToken(token: string, role?: Role): Promise<AccountModel> {
     const accountCollection = await getAccountsCollection()
 
-    const accountByEmailFilter: Filter<AccountModel> = {
+    const accountByEmailFilter: Filter<AccountSchema> = {
       accessToken: token,
     }
 

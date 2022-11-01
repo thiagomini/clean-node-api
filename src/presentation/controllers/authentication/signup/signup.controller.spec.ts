@@ -15,6 +15,7 @@ import {
   internalServerError,
   ok,
 } from '@/presentation/utils/http-responses-factories'
+import { Role } from '@/auth'
 import { SignUpController } from './signup.controller'
 import {
   AddAccountUseCase,
@@ -34,9 +35,10 @@ describe('SignupController', () => {
     await sut.handle(httpRequest)
 
     // Assert
-    expect(addSpy).toHaveBeenCalledWith(
-      pick(httpRequest.body, 'name', 'email', 'password')
-    )
+    expect(addSpy).toHaveBeenCalledWith({
+      ...pick(httpRequest.body, 'name', 'email', 'password'),
+      role: Role.User,
+    })
   })
 
   it('should call Authentication with correct values', async () => {

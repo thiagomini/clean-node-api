@@ -19,6 +19,7 @@ export const fakeAccountInput = (): AddAccountInput => ({
   name: 'valid_name',
   email: 'valid_email',
   password: 'valid_password',
+  role: Role.User,
 })
 
 export const fakeAddAccountOutput = (): AddAccountOutput => ({

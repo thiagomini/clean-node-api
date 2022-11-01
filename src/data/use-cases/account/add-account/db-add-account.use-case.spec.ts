@@ -14,6 +14,7 @@ import {
 
 import { createLoadAccountByEmailRepositoryStub } from '@/data/test'
 import { DbAddAccountUseCase } from './db-add-account.use-case'
+import { Role } from '@/auth'
 
 describe('DbAddAccountUseCase', () => {
   it('should call Hasher with correct password', async () => {
@@ -61,6 +62,7 @@ describe('DbAddAccountUseCase', () => {
       name: accountData.name,
       email: accountData.email,
       password: 'hashed_password',
+      role: Role.User,
     })
   })
 

@@ -1,18 +1,21 @@
-import { Collection, ObjectId } from 'mongodb'
 import { Role } from '@/auth'
 import { AccountModel } from '@/data/use-cases/account/add-account/db-add-account.protocols'
 import { AccountByTokenNotFoundError } from '@/data/use-cases/account/load-account-by-token/errors'
+import { ObjectId } from 'mongodb'
+import {
+  AccountsCollection,
+  getAccountsCollection,
+} from '../helpers/collections'
+import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
+import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
 import { AccountNotFoundError } from './account-not-found.error'
-import { getAccountsCollection } from '../helpers/collections'
-import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
-import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
 
 describe('AccountMongoRepository', () => {
   let mongoAccountFactory: MongoEntityFactory<AccountModel>
-  let accountsCollection: Collection
+  let accountsCollection: AccountsCollection
 
   beforeAll(async () => {
     await mongoHelper.connect()
@@ -36,6 +39,7 @@ describe('AccountMongoRepository', () => {
         name: 'valid_name',
         email: 'valid_email@mail.com',
         password: 'valid_password',
+        role: Role.User,
       })
 
       expect(account).toEqual({
@@ -43,6 +47,7 @@ describe('AccountMongoRepository', () => {
         name: 'valid_name',
         email: 'valid_email@mail.com',
         password: 'valid_password',
+        role: Role.User,
       })
     })
   })
