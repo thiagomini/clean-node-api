@@ -1,11 +1,13 @@
 import { buildSurveyInput } from '@/data/test-data-builders/survey'
-import { AccountModel, ModelAttributes, SurveyModel } from '@/domain/models'
+import { AccountModel } from '@/domain/models'
 import {
   AddSurveyInput,
   AddSurveyUseCase,
 } from '@/domain/use-cases/survey/add-survey'
-import { Collection } from 'mongodb'
-import { getSurveysCollection } from '../../../infra/db/mongodb/helpers/collections'
+import {
+  getSurveysCollection,
+  SurveysCollection,
+} from '../../../infra/db/mongodb/helpers/collections'
 import { createDbAddSurveyUseCase } from '../../factories'
 
 export interface SignupUserInput extends Partial<Omit<AccountModel, 'id'>> {}
@@ -13,7 +15,7 @@ export interface SignupUserInput extends Partial<Omit<AccountModel, 'id'>> {}
 export class SurveyDSL {
   constructor(
     private readonly addSurveyUseCase: AddSurveyUseCase,
-    private readonly surveysCollection: Collection<ModelAttributes<SurveyModel>>
+    private readonly surveysCollection: SurveysCollection
   ) {}
 
   async createSurvey(

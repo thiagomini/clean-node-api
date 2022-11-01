@@ -15,8 +15,11 @@ describe('MongoAccountFactory', () => {
     accountCollection = await mongoHelper.getCollection('accounts')
   })
 
-  afterAll(async () => {
+  afterEach(async () => {
     await clearAccountsCollection()
+  })
+
+  afterAll(async () => {
     await mongoHelper.disconnect()
   })
 

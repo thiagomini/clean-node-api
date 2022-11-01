@@ -1,13 +1,15 @@
-import { ModelAttributes, SurveyModel } from '@/domain/models'
-import { getSurveysCollection } from '@/infra/db/mongodb/helpers/collections'
+import {
+  getSurveysCollection,
+  SurveysCollection,
+} from '@/infra/db/mongodb/helpers/collections'
 import { mongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { clearSurveysCollection } from '@/infra/db/mongodb/helpers/test-teardown-helpers'
-import { Collection, ObjectId } from 'mongodb'
-import { AddSurveyInput } from '../../../domain/use-cases/survey/add-survey'
+import { ObjectId } from 'mongodb'
+import { AddSurveyInput } from '@/domain/use-cases/survey/add-survey'
 import { SurveyDSL } from './survey.dsl'
 
 describe('SurveyDSL', () => {
-  let surveysCollection: Collection<ModelAttributes<SurveyModel>>
+  let surveysCollection: SurveysCollection
 
   beforeAll(async () => {
     surveysCollection = await getSurveysCollection()

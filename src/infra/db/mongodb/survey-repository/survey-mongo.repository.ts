@@ -1,4 +1,3 @@
-import { Collection, ObjectId } from 'mongodb'
 import {
   AddSurveyRepository,
   LoadSurveySummaryById,
@@ -7,18 +6,20 @@ import {
   AddSurveyInput,
   SurveyModel,
 } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
-import { ModelAttributes, SurveySummaryModel } from '@/domain/models'
-import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
-import {
-  getSurveyResultsCollection,
-  getSurveysCollection,
-} from '../helpers/collections'
-import { addIdToDocument } from '../helpers/mongo-document-helper'
 import {
   FindSurveyByIdRepository,
   Optional,
 } from '@/data/use-cases/survey/find-survey/find-survey-by-id.protocols'
+import { SurveySummaryModel } from '@/domain/models'
+import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
+import { ObjectId } from 'mongodb'
+import {
+  getSurveyResultsCollection,
+  getSurveysCollection,
+  SurveysCollection,
+} from '../helpers/collections'
 import { isInvalidIdError } from '../helpers/error-helper'
+import { addIdToDocument } from '../helpers/mongo-document-helper'
 
 export type GroupedSurveyResults = Array<{
   _id: string
@@ -143,9 +144,7 @@ export class SurveyMongoRepository
     return addIdToDocument(surveyInputWithDate) as SurveyModel
   }
 
-  private async getCollection(): Promise<
-    Collection<ModelAttributes<SurveyModel>>
-  > {
+  private async getCollection(): Promise<SurveysCollection> {
     return await getSurveysCollection()
   }
 }

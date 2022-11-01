@@ -1,14 +1,10 @@
+import { SurveyResultModel } from '@/domain/models'
 import { Collection, ObjectId } from 'mongodb'
-import {
-  ModelAttributes,
-  SurveyModel,
-  SurveyResultModel,
-} from '@/domain/models'
+import { SurveySchema } from '../schemas'
 import { mongoHelper } from './mongo-helper'
 
-export async function getSurveysCollection(): Promise<
-  Collection<ModelAttributes<SurveyModel>>
-> {
+export type SurveysCollection = Collection<SurveySchema>
+export async function getSurveysCollection(): Promise<SurveysCollection> {
   return await mongoHelper.getCollection('surveys')
 }
 

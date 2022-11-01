@@ -16,7 +16,7 @@
     "dev": "npm run up && npm run logs",
     "test": "jest --passWithNoTests --coverage=false --runInBand",
     "test:verbose": "jest --passWithNoTests",
-    "test:unit": "npm test -- --runInBand=false --watch -c jest-unit.config.js",
+    "test:unit": "npm test -- --runInBand=true --watch -c jest-unit.config.js",
     "test:integration": "npm test -- -c jest-integration.config.js",
     "test:staged": "npm test -- --onlyChanged",
     "test:ci": "npm test -- --coverage",

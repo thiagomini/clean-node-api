@@ -20,7 +20,7 @@ describe('AccountMongoRepository', () => {
     accountsCollection = await getAccountsCollection()
   })
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await clearAccountsCollection()
   })
 

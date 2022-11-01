@@ -1,8 +1,8 @@
 import { SurveyModel } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
-import { ModelAttributes, SurveySummaryModel } from '@/domain/models'
+import { SurveySummaryModel } from '@/domain/models'
 import { createMock } from '@golevelup/ts-jest'
 import { Collection, ObjectId } from 'mongodb'
-import { getSurveysCollection } from '../helpers/collections'
+import { getSurveysCollection, SurveysCollection } from '../helpers/collections'
 import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
 import {
   createSurveyResultFactory,
@@ -17,7 +17,7 @@ import {
 } from '../helpers/test-teardown-helpers'
 import { SurveyMongoRepository } from './survey-mongo.repository'
 
-let surveysCollection: Collection<ModelAttributes<SurveyModel>>
+let surveysCollection: SurveysCollection
 let mongoSurveyFactory: MongoEntityFactory<SurveyModel>
 let surveyResultFactory: MongoSurveyResultFactory
 
@@ -96,7 +96,8 @@ describe('SurveyMongoRepository', () => {
       const surveysList = await sut.list()
 
       // Assert
-      expect(surveysList).toEqual(surveysInDb)
+      expect(surveysList).toEqual(expect.arrayContaining(surveysInDb))
+      expect(surveysList).toHaveLength(surveysInDb.length)
     })
   })
 
