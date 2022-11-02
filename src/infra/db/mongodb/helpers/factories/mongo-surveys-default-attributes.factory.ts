@@ -1,10 +1,10 @@
-import { ModelAttributes, SurveyModel } from '@/domain/models'
+import { SurveySchema } from '../../schemas'
 import { ModelDefaultAttributesFactory } from './interfaces'
 
 export class MongoSurveyDefaultAttributesFactory
-  implements ModelDefaultAttributesFactory<SurveyModel>
+  implements ModelDefaultAttributesFactory<SurveySchema>
 {
-  defaultAttributes(): ModelAttributes<SurveyModel> {
+  defaultAttributes(): SurveySchema {
     return {
       createdAt: new Date(),
       question: 'any_question',

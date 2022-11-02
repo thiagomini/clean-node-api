@@ -1,14 +1,18 @@
 import { SurveyModel } from '@/data/use-cases/survey/add-survey/db-add-survey.use-case.protocols'
 import { SurveySummaryModel } from '@/domain/models'
 import { createMock } from '@golevelup/ts-jest'
+import { omit } from 'lodash'
 import { Collection, ObjectId } from 'mongodb'
 import { getSurveysCollection, SurveysCollection } from '../helpers/collections'
-import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
 import {
   createSurveyResultFactory,
-  MongoSurveyResultFactory,
+  SurveyResultFactory,
 } from '../helpers/factories/mongo-survey-result.factory'
-import { createSurveysFactory } from '../helpers/factories/mongo-surveys.factory'
+import {
+  createSurveysFactory,
+  SurveyFactory,
+} from '../helpers/factories/mongo-surveys.factory'
+import { addIdToDocument } from '../helpers/mongo-document-helper'
 import { mongoHelper } from '../helpers/mongo-helper'
 import {
   clearAccountsCollection,
@@ -18,8 +22,8 @@ import {
 import { SurveyMongoRepository } from './survey-mongo.repository'
 
 let surveysCollection: SurveysCollection
-let mongoSurveyFactory: MongoEntityFactory<SurveyModel>
-let surveyResultFactory: MongoSurveyResultFactory
+let mongoSurveyFactory: SurveyFactory
+let surveyResultFactory: SurveyResultFactory
 
 describe('SurveyMongoRepository', () => {
   beforeAll(async () => {
@@ -96,7 +100,11 @@ describe('SurveyMongoRepository', () => {
       const surveysList = await sut.list()
 
       // Assert
-      expect(surveysList).toEqual(expect.arrayContaining(surveysInDb))
+      expect(surveysList).toEqual(
+        expect.arrayContaining(
+          surveysInDb.map((survey) => addIdToDocument(survey))
+        )
+      )
       expect(surveysList).toHaveLength(surveysInDb.length)
     })
   })
@@ -132,10 +140,10 @@ describe('SurveyMongoRepository', () => {
       const existingSurvey = await mongoSurveyFactory.create()
 
       // Act
-      const foundSurvey = await sut.findById(existingSurvey.id)
+      const foundSurvey = await sut.findById(existingSurvey._id.toString())
 
       // Assert
-      expect(foundSurvey).toEqual(existingSurvey)
+      expect(foundSurvey).toMatchObject(omit(existingSurvey, '_id'))
     })
 
     it('should throw an error if surveysCollection throws an unexpected error', async () => {
@@ -166,11 +174,13 @@ describe('SurveyMongoRepository', () => {
         const existingSurvey = await mongoSurveyFactory.create()
 
         // Act
-        const surveySummary = await sut.loadSummaryById(existingSurvey.id)
+        const surveySummary = await sut.loadSummaryById(
+          existingSurvey._id.toString()
+        )
 
         // Assert
         expect(surveySummary).toEqual<SurveySummaryModel>({
-          surveyId: existingSurvey.id,
+          surveyId: existingSurvey._id.toString(),
           question: existingSurvey.question,
           createdAt: existingSurvey.createdAt,
           answers: [],
@@ -186,16 +196,18 @@ describe('SurveyMongoRepository', () => {
         const firstAnswer = existingSurvey.answers[0]
 
         const singleAnswer = await surveyResultFactory.create({
-          surveyId: existingSurvey.id,
+          surveyId: existingSurvey._id,
           answer: firstAnswer.answer,
         })
 
         // Act
-        const surveySummary = await sut.loadSummaryById(singleAnswer.surveyId)
+        const surveySummary = await sut.loadSummaryById(
+          singleAnswer.surveyId.toString()
+        )
 
         // Assert
         expect(surveySummary).toEqual<SurveySummaryModel>({
-          surveyId: singleAnswer.surveyId,
+          surveyId: singleAnswer.surveyId.toString(),
           question: existingSurvey.question,
           createdAt: existingSurvey.createdAt,
           answers: [
@@ -220,21 +232,23 @@ describe('SurveyMongoRepository', () => {
 
           await Promise.all([
             surveyResultFactory.create({
-              surveyId: aSurvey.id,
+              surveyId: aSurvey._id,
               answer: firstAnswer.answer,
             }),
             surveyResultFactory.create({
-              surveyId: aSurvey.id,
+              surveyId: aSurvey._id,
               answer: firstAnswer.answer,
             }),
           ])
 
           // Act
-          const surveySummary = await sut.loadSummaryById(aSurvey.id)
+          const surveySummary = await sut.loadSummaryById(
+            aSurvey._id.toString()
+          )
 
           // Assert
           expect(surveySummary).toEqual<SurveySummaryModel>({
-            surveyId: aSurvey.id,
+            surveyId: aSurvey._id.toString(),
             question: aSurvey.question,
             createdAt: aSurvey.createdAt,
             answers: [
@@ -258,21 +272,23 @@ describe('SurveyMongoRepository', () => {
 
           await Promise.all([
             surveyResultFactory.create({
-              surveyId: aSurvey.id,
+              surveyId: aSurvey._id,
               answer: firstAnswer.answer,
             }),
             surveyResultFactory.create({
-              surveyId: aSurvey.id,
+              surveyId: aSurvey._id,
               answer: secondAnswer.answer,
             }),
           ])
 
           // Act
-          const surveySummary = await sut.loadSummaryById(aSurvey.id)
+          const surveySummary = await sut.loadSummaryById(
+            aSurvey._id.toString()
+          )
 
           // Assert
           expect(surveySummary).toEqual<SurveySummaryModel>({
-            surveyId: aSurvey.id,
+            surveyId: aSurvey._id.toString(),
             question: aSurvey.question,
             createdAt: aSurvey.createdAt,
             answers: expect.arrayContaining([

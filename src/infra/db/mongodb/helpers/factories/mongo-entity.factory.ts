@@ -1,33 +1,32 @@
 import {
   Collection,
+  Document,
   ObjectId,
   OptionalUnlessRequiredId,
-  Document,
 } from 'mongodb'
-import { ModelAttributes } from '@/domain/models'
-import { addIdToDocument } from '../mongo-document-helper'
-import {
-  ModelDefaultAttributesFactory,
-  ModelWithOptionalId,
-} from './interfaces'
+import { ModelDefaultAttributesFactory } from './interfaces'
 
-export class MongoEntityFactory<TModel extends ModelWithOptionalId> {
+export class MongoEntityFactory<TSchema extends Document> {
   constructor(
-    private readonly collection: Collection<TModel>,
-    private readonly modelDefaultAttributesFactory: ModelDefaultAttributesFactory<TModel>
+    private readonly collection: Collection<TSchema>,
+    private readonly modelDefaultAttributesFactory: ModelDefaultAttributesFactory<TSchema>
   ) {}
 
-  public async create(partialEntity: Partial<TModel> = {}): Promise<TModel> {
+  public async create(
+    partialEntity: Partial<TSchema> = {}
+  ): Promise<TSchema & { _id: ObjectId }> {
     const finalInput = await this.mergeGivenAndDefaultAttributes(partialEntity)
+
     await this.collection.insertOne(
-      finalInput as OptionalUnlessRequiredId<TModel>
+      finalInput as OptionalUnlessRequiredId<TSchema>
     )
-    return addIdToDocument(finalInput) as TModel
+
+    return finalInput
   }
 
   private async mergeGivenAndDefaultAttributes(
-    partialEntity: Partial<TModel> = {}
-  ): Promise<ModelAttributes<TModel> & { _id?: ObjectId }> {
+    partialEntity: Partial<TSchema> = {}
+  ): Promise<TSchema & { _id: ObjectId }> {
     const { id, ...accountInputWithoutId } = partialEntity
     const passedMongoId = new ObjectId(id)
 
@@ -41,10 +40,10 @@ export class MongoEntityFactory<TModel extends ModelWithOptionalId> {
     }
   }
 
-  public static async createFactory<T extends Document>(
-    collection: Collection<T>,
-    modelDefaultAttributesFactory: ModelDefaultAttributesFactory<T>
-  ): Promise<MongoEntityFactory<T>> {
+  public static async createFactory<TSchema extends Document>(
+    collection: Collection<TSchema>,
+    modelDefaultAttributesFactory: ModelDefaultAttributesFactory<TSchema>
+  ): Promise<MongoEntityFactory<TSchema>> {
     return new MongoEntityFactory(collection, modelDefaultAttributesFactory)
   }
 }

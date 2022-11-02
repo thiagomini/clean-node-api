@@ -1,11 +1,12 @@
-import { Collection, ObjectId } from 'mongodb'
 import { Role } from '@/auth'
 import { AccountModel } from '@/domain/models'
+import { omit } from 'lodash'
+import { Collection, ObjectId } from 'mongodb'
 import { DocumentWithMongoId } from '../mongo-document-helper'
 import { mongoHelper } from '../mongo-helper'
 import { clearAccountsCollection } from '../test-teardown-helpers'
-import { MongoEntityFactory } from './mongo-entity.factory'
 import { createAccountFactory } from './mongo-account.factory'
+import { MongoEntityFactory } from './mongo-entity.factory'
 
 describe('MongoAccountFactory', () => {
   let accountCollection: Collection<DocumentWithMongoId<AccountModel>>
@@ -48,7 +49,10 @@ describe('MongoAccountFactory', () => {
       const createdAccount = await sut.create(accountData)
 
       // Assert
-      expect(createdAccount).toEqual(accountData)
+      expect(createdAccount).toEqual({
+        ...omit(accountData, 'id'),
+        _id: expect.any(ObjectId),
+      })
     })
 
     it('should return an account with all default properties', async () => {
@@ -59,8 +63,8 @@ describe('MongoAccountFactory', () => {
       const createdAccount = await sut.create()
 
       // Assert
-      expect(createdAccount).toEqual<AccountModel>({
-        id: expect.any(String),
+      expect(createdAccount).toEqual({
+        _id: expect.any(ObjectId),
         email: expect.any(String),
         name: expect.any(String),
         password: expect.any(String),
@@ -86,7 +90,7 @@ describe('MongoAccountFactory', () => {
       // Assert
       expect(createdAccount).toEqual({
         ...accountData,
-        id: expect.any(String),
+        _id: expect.any(ObjectId),
       })
     })
 
@@ -109,7 +113,9 @@ describe('MongoAccountFactory', () => {
       const accountInDatabase = await accountCollection.findOne({
         _id: new ObjectId(accountData.id),
       })
-      expect(createdAccount.id).toEqual(accountInDatabase?._id.toString())
+      expect(createdAccount._id.toString()).toEqual(
+        accountInDatabase?._id.toString()
+      )
     })
   })
 })

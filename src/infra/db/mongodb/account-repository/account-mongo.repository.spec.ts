@@ -1,20 +1,23 @@
 import { Role } from '@/auth'
 import { AccountModel } from '@/data/use-cases/account/add-account/db-add-account.protocols'
 import { AccountByTokenNotFoundError } from '@/data/use-cases/account/load-account-by-token/errors'
+import { omit } from 'lodash'
 import { ObjectId } from 'mongodb'
 import {
   AccountsCollection,
   getAccountsCollection,
 } from '../helpers/collections'
-import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
-import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
+import {
+  AccountFactory,
+  createAccountFactory,
+} from '../helpers/factories/mongo-account.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import { clearAccountsCollection } from '../helpers/test-teardown-helpers'
 import { AccountMongoRepository } from './account-mongo.repository'
 import { AccountNotFoundError } from './account-not-found.error'
 
 describe('AccountMongoRepository', () => {
-  let mongoAccountFactory: MongoEntityFactory<AccountModel>
+  let mongoAccountFactory: AccountFactory
   let accountsCollection: AccountsCollection
 
   beforeAll(async () => {
@@ -62,7 +65,7 @@ describe('AccountMongoRepository', () => {
       const loadedAccount = await sut.loadByEmail(savedAccount.email)
 
       // Assert
-      expect(loadedAccount?.id).toEqual(savedAccount.id)
+      expect(loadedAccount?.id.toString()).toEqual(savedAccount._id.toString())
     })
 
     it('should return undefined if account does not exist', async () => {
@@ -84,10 +87,13 @@ describe('AccountMongoRepository', () => {
       const savedAccount = await mongoAccountFactory.create()
 
       // Act
-      const loadedAccount = await sut.loadById(savedAccount.id)
+      const loadedAccount = await sut.loadById(savedAccount._id.toString())
 
       // Assert
-      expect(loadedAccount).toEqual(savedAccount)
+      expect(loadedAccount).toEqual({
+        id: savedAccount._id.toString(),
+        ...omit(savedAccount, '_id'),
+      })
     })
 
     it('should return undefined if account does not exist', async () => {
@@ -120,11 +126,11 @@ describe('AccountMongoRepository', () => {
       const existingAccount = await mongoAccountFactory.create()
 
       // Act
-      await sut.updateAccessToken(existingAccount.id, 'valid_token')
+      await sut.updateAccessToken(existingAccount._id.toString(), 'valid_token')
 
       // Assert
       const updatedAccount = await accountsCollection.findOne<AccountModel>({
-        _id: new ObjectId(existingAccount.id),
+        _id: existingAccount._id,
       })
       expect(updatedAccount?.accessToken).toBe('valid_token')
     })
@@ -191,7 +197,7 @@ describe('AccountMongoRepository', () => {
 
       const accountByToken = await sut.loadByToken('existing_token')
 
-      expect(accountByToken.id).toEqual(account.id)
+      expect(accountByToken.id).toEqual(account._id.toString())
     })
 
     it('should return an account when role and token match', async () => {
@@ -203,7 +209,7 @@ describe('AccountMongoRepository', () => {
 
       const accountByToken = await sut.loadByToken('existing_token', Role.Admin)
 
-      expect(accountByToken.id).toEqual(account.id)
+      expect(accountByToken.id).toEqual(account._id.toString())
     })
   })
 })

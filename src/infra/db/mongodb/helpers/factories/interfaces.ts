@@ -1,13 +1,11 @@
-import { ModelAttributes } from '@/domain/models'
+import { Document } from 'mongodb'
 
 export interface ModelWithOptionalId {
   id?: string
 }
 
-export interface ModelDefaultAttributesFactory<
-  TModel extends ModelWithOptionalId
-> {
+export interface ModelDefaultAttributesFactory<TSchema extends Document> {
   defaultAttributes(
-    partialEntity?: Partial<TModel>
-  ): ModelAttributes<TModel> | Promise<ModelAttributes<TModel>>
+    partialEntity?: Partial<TSchema>
+  ): TSchema | Promise<TSchema>
 }

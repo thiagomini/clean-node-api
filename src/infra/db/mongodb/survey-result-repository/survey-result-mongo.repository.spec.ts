@@ -1,12 +1,16 @@
-import { AccountModel, SurveyModel } from '@/domain/models'
 import { SaveSurveyResultInput } from '@/domain/use-cases/survey-result/save-survey-result'
-import { createAccountFactory } from '../helpers/factories/mongo-account.factory'
-import { MongoEntityFactory } from '../helpers/factories/mongo-entity.factory'
+import {
+  AccountFactory,
+  createAccountFactory,
+} from '../helpers/factories/mongo-account.factory'
 import {
   createSurveyResultFactory,
-  MongoSurveyResultFactory,
+  SurveyResultFactory,
 } from '../helpers/factories/mongo-survey-result.factory'
-import { createSurveysFactory } from '../helpers/factories/mongo-surveys.factory'
+import {
+  createSurveysFactory,
+  SurveyFactory,
+} from '../helpers/factories/mongo-surveys.factory'
 import { mongoHelper } from '../helpers/mongo-helper'
 import {
   clearSurveyResultCollection,
@@ -15,9 +19,9 @@ import {
 import { SurveyResultMongoRepository } from './survey-result-mongo.repository'
 
 describe('SurveyResultMongoRepository', () => {
-  let surveyFactory: MongoEntityFactory<SurveyModel>
-  let accountFactory: MongoEntityFactory<AccountModel>
-  let surveyResultFactory: MongoSurveyResultFactory
+  let surveyFactory: SurveyFactory
+  let accountFactory: AccountFactory
+  let surveyResultFactory: SurveyResultFactory
 
   beforeAll(async () => {
     surveyFactory = await createSurveysFactory()
@@ -42,9 +46,9 @@ describe('SurveyResultMongoRepository', () => {
       const existingAccount = await accountFactory.create()
 
       const saveSurveyResultInput: SaveSurveyResultInput = {
-        accountId: existingAccount.id,
+        accountId: existingAccount._id.toString(),
         answer: 'valid_answer',
-        surveyId: existingSurvey.id,
+        surveyId: existingSurvey._id.toString(),
       }
 
       // Act
@@ -63,9 +67,9 @@ describe('SurveyResultMongoRepository', () => {
       const sut = new SurveyResultMongoRepository()
       const existingSurveyResult = await surveyResultFactory.create()
       const saveSurveyResultInput: SaveSurveyResultInput = {
-        accountId: existingSurveyResult.accountId,
+        accountId: existingSurveyResult.accountId.toString(),
         answer: 'updated_answer',
-        surveyId: existingSurveyResult.surveyId,
+        surveyId: existingSurveyResult.surveyId.toString(),
       }
 
       // Act
@@ -73,7 +77,7 @@ describe('SurveyResultMongoRepository', () => {
 
       // Assert
       expect(surveyResult).toEqual({
-        id: existingSurveyResult.id,
+        id: existingSurveyResult._id.toString(),
         ...saveSurveyResultInput,
         createdAt: expect.any(Date),
       })

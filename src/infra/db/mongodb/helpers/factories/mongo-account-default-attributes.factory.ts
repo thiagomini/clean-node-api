@@ -1,11 +1,12 @@
-import { AccountModel, ModelAttributes } from '@/domain/models'
 import { Role } from '@/auth'
+import { ModelAttributes } from '@/domain/models'
+import { AccountSchema } from '../../schemas'
 import { ModelDefaultAttributesFactory } from './interfaces'
 
 export class MongoAccountDefaultAttributesFactory
-  implements ModelDefaultAttributesFactory<AccountModel>
+  implements ModelDefaultAttributesFactory<AccountSchema>
 {
-  defaultAttributes(): ModelAttributes<AccountModel> {
+  defaultAttributes(): ModelAttributes<AccountSchema> {
     return {
       name: 'valid_name',
       email: 'valid_email',

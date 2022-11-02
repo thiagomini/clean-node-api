@@ -1,24 +1,21 @@
-import {
-  AccountModel,
-  ModelAttributes,
-  SurveyModel,
-  SurveyResultModel,
-} from '@/domain/models'
 import { faker } from '@faker-js/faker'
+import { ObjectId } from 'mongodb'
+import { SurveyResultSchema } from '../../schemas'
 import { ModelDefaultAttributesFactory } from './interfaces'
-import { MongoEntityFactory } from './mongo-entity.factory'
+import { AccountFactory } from './mongo-account.factory'
+import { SurveyFactory } from './mongo-surveys.factory'
 
 export class MongoSurveyResultDefaultAttributesFactory
-  implements ModelDefaultAttributesFactory<SurveyResultModel>
+  implements ModelDefaultAttributesFactory<SurveyResultSchema>
 {
   constructor(
-    private readonly accountFactory: MongoEntityFactory<AccountModel>,
-    private readonly surveyFactory: MongoEntityFactory<SurveyModel>
+    private readonly accountFactory: AccountFactory,
+    private readonly surveyFactory: SurveyFactory
   ) {}
 
   async defaultAttributes(
-    partialEntity?: Partial<SurveyResultModel>
-  ): Promise<ModelAttributes<SurveyResultModel>> {
+    partialEntity?: Partial<SurveyResultSchema>
+  ): Promise<SurveyResultSchema> {
     const accountId = await this.getAccountId(partialEntity)
     const surveyId = await this.getSurveyId(partialEntity)
 
@@ -31,24 +28,24 @@ export class MongoSurveyResultDefaultAttributesFactory
   }
 
   private async getAccountId(
-    partialEntity?: Partial<SurveyResultModel>
-  ): Promise<string> {
+    partialEntity?: Partial<SurveyResultSchema>
+  ): Promise<ObjectId> {
     if (partialEntity?.accountId) {
       return partialEntity.accountId
     }
 
     const defaultAccount = await this.accountFactory.create()
-    return defaultAccount.id
+    return defaultAccount._id
   }
 
   private async getSurveyId(
-    partialEntity?: Partial<SurveyResultModel>
-  ): Promise<string> {
+    partialEntity?: Partial<SurveyResultSchema>
+  ): Promise<ObjectId> {
     if (partialEntity?.surveyId) {
       return partialEntity.surveyId
     }
 
     const defaultSurvey = await this.surveyFactory.create()
-    return defaultSurvey.id
+    return defaultSurvey._id
   }
 }
