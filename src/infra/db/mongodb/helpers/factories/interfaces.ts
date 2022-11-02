@@ -4,7 +4,7 @@ export interface ModelWithOptionalId {
   id?: string
 }
 
-export interface ModelDefaultAttributesFactory<TSchema extends Document> {
+export interface SchemaDefaultAttributesFactory<TSchema extends Document> {
   defaultAttributes(
     partialEntity?: Partial<TSchema>
   ): TSchema | Promise<TSchema>

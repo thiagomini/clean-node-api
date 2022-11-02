@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker'
 import { ObjectId } from 'mongodb'
 import { SurveyResultSchema } from '../../schemas'
-import { ModelDefaultAttributesFactory } from './interfaces'
+import { SchemaDefaultAttributesFactory } from './interfaces'
 import { AccountFactory } from './mongo-account.factory'
 import { SurveyFactory } from './mongo-surveys.factory'
 
 export class MongoSurveyResultDefaultAttributesFactory
-  implements ModelDefaultAttributesFactory<SurveyResultSchema>
+  implements SchemaDefaultAttributesFactory<SurveyResultSchema>
 {
   constructor(
     private readonly accountFactory: AccountFactory,

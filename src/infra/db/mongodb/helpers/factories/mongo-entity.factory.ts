@@ -4,12 +4,12 @@ import {
   ObjectId,
   OptionalUnlessRequiredId,
 } from 'mongodb'
-import { ModelDefaultAttributesFactory } from './interfaces'
+import { SchemaDefaultAttributesFactory } from './interfaces'
 
 export class MongoEntityFactory<TSchema extends Document> {
   constructor(
     private readonly collection: Collection<TSchema>,
-    private readonly modelDefaultAttributesFactory: ModelDefaultAttributesFactory<TSchema>
+    private readonly modelDefaultAttributesFactory: SchemaDefaultAttributesFactory<TSchema>
   ) {}
 
   public async create(
@@ -42,7 +42,7 @@ export class MongoEntityFactory<TSchema extends Document> {
 
   public static async createFactory<TSchema extends Document>(
     collection: Collection<TSchema>,
-    modelDefaultAttributesFactory: ModelDefaultAttributesFactory<TSchema>
+    modelDefaultAttributesFactory: SchemaDefaultAttributesFactory<TSchema>
   ): Promise<MongoEntityFactory<TSchema>> {
     return new MongoEntityFactory(collection, modelDefaultAttributesFactory)
   }

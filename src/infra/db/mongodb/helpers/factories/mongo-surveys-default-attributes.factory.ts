@@ -1,8 +1,8 @@
 import { SurveySchema } from '../../schemas'
-import { ModelDefaultAttributesFactory } from './interfaces'
+import { SchemaDefaultAttributesFactory } from './interfaces'
 
 export class MongoSurveyDefaultAttributesFactory
-  implements ModelDefaultAttributesFactory<SurveySchema>
+  implements SchemaDefaultAttributesFactory<SurveySchema>
 {
   defaultAttributes(): SurveySchema {
     return {

@@ -1,10 +1,10 @@
 import { Role } from '@/auth'
 import { ModelAttributes } from '@/domain/models'
 import { AccountSchema } from '../../schemas'
-import { ModelDefaultAttributesFactory } from './interfaces'
+import { SchemaDefaultAttributesFactory } from './interfaces'
 
 export class MongoAccountDefaultAttributesFactory
-  implements ModelDefaultAttributesFactory<AccountSchema>
+  implements SchemaDefaultAttributesFactory<AccountSchema>
 {
   defaultAttributes(): ModelAttributes<AccountSchema> {
     return {
