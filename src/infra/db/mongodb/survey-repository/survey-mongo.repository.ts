@@ -45,11 +45,11 @@ export class SurveyMongoRepository
     FindSurveyByIdRepository,
     LoadSurveySummaryByIdRepository
 {
-  async loadSummaryById(id: string): Promise<SurveySummaryModel> {
+  async loadSummaryById(id: string): Promise<Optional<SurveySummaryModel>> {
     const existingSurvey = await this.findById(id)
 
     if (!existingSurvey) {
-      throw new Error(`Survey ${id} does not exist`)
+      return
     }
 
     const surveysWithResultCount = await this.getSuveyResultsCountAndPercentage(

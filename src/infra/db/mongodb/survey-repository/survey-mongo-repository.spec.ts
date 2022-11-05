@@ -167,6 +167,17 @@ describe('SurveyMongoRepository', () => {
   })
 
   describe('loadSummaryById', () => {
+    describe('when the surveyId does not exist', () => {
+      it('should return undefined', async () => {
+        const sut = await createSut()
+        const nonexistentId = new ObjectId().toString()
+
+        const result = await sut.loadSummaryById(nonexistentId)
+
+        expect(result).toBeUndefined()
+      })
+    })
+
     describe('when there is no answer', () => {
       it('should return a summary with zero answers', async () => {
         // Arrange
