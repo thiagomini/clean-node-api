@@ -1,9 +1,11 @@
 import { faker } from '@faker-js/faker'
 import { createLoadSurveySummaryByIdRepositoryStub } from '@/data/test'
-import { LoadSurveySummaryByIdRepository } from '@/data/protocols/db/survey-repository'
-import { DbLoadSurveySummaryUseCase } from './db-load-survey-summary.use-case'
-import { NonexistentSurveyError } from '@/domain/use-cases/survey-result/save-survey-result/errors'
+import {
+  LoadSurveySummaryByIdRepository,
+  NonexistentSurveyError,
+} from './db-load-survey-summary.use-case.protocols'
 import { fakeSurveySummary } from '@/domain/test'
+import { DbLoadSurveySummaryUseCase } from './db-load-survey-summary.use-case'
 
 describe('DbLoadSurveySummaryUseCase', () => {
   it('should call the LoadSurveySummaryByIdRepository with the surveyId', async () => {

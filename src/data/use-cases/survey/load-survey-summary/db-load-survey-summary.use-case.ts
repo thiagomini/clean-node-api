@@ -1,7 +1,9 @@
-import { SurveySummaryModel } from '../../../../domain/models'
-import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
-import { LoadSurveySummaryUseCase } from '../../../../domain/use-cases/survey/load-survey-summary'
-import { LoadSurveySummaryByIdRepository } from '../../../protocols/db/survey-repository'
+import {
+  LoadSurveySummaryByIdRepository,
+  LoadSurveySummaryUseCase,
+  NonexistentSurveyError,
+  SurveySummaryModel,
+} from './db-load-survey-summary.use-case.protocols'
 
 export class DbLoadSurveySummaryUseCase implements LoadSurveySummaryUseCase {
   constructor(
