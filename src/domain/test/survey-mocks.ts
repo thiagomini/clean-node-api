@@ -4,6 +4,8 @@ import {
   AddSurveyUseCase,
 } from '@/domain/use-cases/survey/add-survey'
 import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
+import { createMock } from '@golevelup/ts-jest'
+import { LoadSurveySummaryUseCase } from '../use-cases/survey/load-survey-summary'
 
 export const fakeSurvey = (): SurveyModel => ({
   id: 'any_id',
@@ -43,3 +45,26 @@ export const createLoadSurveysStub = (): LoadSurveysUseCase => {
   const loadSurveyStub = new LoadSurveysStub()
   return loadSurveyStub
 }
+
+export const createLoadSurveySummaryStub = (): LoadSurveySummaryUseCase =>
+  createMock<LoadSurveySummaryUseCase>({
+    load: async () => ({
+      surveyId: 'survey_id',
+      question: 'any_question',
+      createdAt: new Date(2022, 0, 1),
+      answers: [
+        {
+          answer: 'answer_1',
+          image: 'image_1',
+          count: 1,
+          percent: 50,
+        },
+        {
+          answer: 'answer_2',
+          image: 'image_2',
+          count: 1,
+          percent: 50,
+        },
+      ],
+    }),
+  })
