@@ -3,6 +3,7 @@ import { createLoadSurveySummaryByIdRepositoryStub } from '@/data/test'
 import {
   LoadSurveySummaryByIdRepository,
   NonexistentSurveyError,
+  LoadSurveySummaryUseCaseError,
 } from './db-load-survey-summary.use-case.protocols'
 import { fakeSurveySummary } from '@/domain/test'
 import { DbLoadSurveySummaryUseCase } from './db-load-survey-summary.use-case'
@@ -27,6 +28,18 @@ describe('DbLoadSurveySummaryUseCase', () => {
     const promise = sut.load(surveyId)
 
     await expect(promise).rejects.toThrowError(NonexistentSurveyError)
+  })
+
+  it('should throw a LoadSurveySummaryUseCaseError when the repository throws', async () => {
+    const { sut, loadSurveySummaryById } = createSut()
+    const surveyId = faker.datatype.uuid()
+    jest
+      .spyOn(loadSurveySummaryById, 'loadSummaryById')
+      .mockRejectedValueOnce(new Error())
+
+    const promise = sut.load(surveyId)
+
+    await expect(promise).rejects.toThrowError(LoadSurveySummaryUseCaseError)
   })
 
   it('should return a survey summary on success', async () => {
