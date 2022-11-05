@@ -3,3 +3,4 @@ export { NonexistentSurveyError } from '@/domain/use-cases/survey-result/save-su
 export { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
 export { LoadSurveySummaryByIdRepository } from '@/data/protocols/db/survey-repository'
 export { LoadSurveySummaryUseCaseError } from './load-survey-summary.use-case.error'
+export { Optional } from '@/utils'

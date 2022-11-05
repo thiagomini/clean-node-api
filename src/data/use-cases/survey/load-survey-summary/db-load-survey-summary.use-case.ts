@@ -3,6 +3,7 @@ import {
   LoadSurveySummaryUseCase,
   LoadSurveySummaryUseCaseError,
   NonexistentSurveyError,
+  Optional,
   SurveySummaryModel,
 } from './db-load-survey-summary.use-case.protocols'
 
@@ -12,23 +13,11 @@ export class DbLoadSurveySummaryUseCase implements LoadSurveySummaryUseCase {
   ) {}
 
   public async load(surveyId: string): Promise<SurveySummaryModel> {
+    let surveySummary: Optional<SurveySummaryModel>
+
     try {
-      const surveySummary = await this.surveyRepository.loadSummaryById(
-        surveyId
-      )
-
-      if (!surveySummary) {
-        throw new NonexistentSurveyError({
-          surveyId,
-        })
-      }
-
-      return surveySummary
+      surveySummary = await this.surveyRepository.loadSummaryById(surveyId)
     } catch (error) {
-      if (error instanceof NonexistentSurveyError) {
-        throw error
-      }
-
       throw new LoadSurveySummaryUseCaseError({
         cause: error as Error,
         context: {
@@ -36,5 +25,13 @@ export class DbLoadSurveySummaryUseCase implements LoadSurveySummaryUseCase {
         },
       })
     }
+
+    if (!surveySummary) {
+      throw new NonexistentSurveyError({
+        surveyId,
+      })
+    }
+
+    return surveySummary
   }
 }
