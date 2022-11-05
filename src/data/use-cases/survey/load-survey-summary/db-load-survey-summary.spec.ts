@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { createLoadSurveySummaryByIdRepositoryStub } from '@/data/test'
 import { LoadSurveySummaryByIdRepository } from '@/data/protocols/db/survey-repository'
 import { DbLoadSurveySummaryUseCase } from './db-load-survey-summary.use-case'
+import { NonexistentSurveyError } from '@/domain/use-cases/survey-result/save-survey-result/errors'
 
 describe('DbLoadSurveySummaryUseCase', () => {
   it('should call the LoadSurveySummaryByIdRepository with the surveyId', async () => {
@@ -11,6 +12,18 @@ describe('DbLoadSurveySummaryUseCase', () => {
     await sut.load(surveyId)
 
     expect(loadSurveySummaryById.loadSummaryById).toHaveBeenCalledWith(surveyId)
+  })
+
+  it('should throw a NonexistentSurveyError when the survey does not exist', async () => {
+    const { sut, loadSurveySummaryById } = createSut()
+    const surveyId = faker.datatype.uuid()
+    jest
+      .spyOn(loadSurveySummaryById, 'loadSummaryById')
+      .mockResolvedValueOnce(undefined)
+
+    const promise = sut.load(surveyId)
+
+    await expect(promise).rejects.toThrowError(NonexistentSurveyError)
   })
 })
 

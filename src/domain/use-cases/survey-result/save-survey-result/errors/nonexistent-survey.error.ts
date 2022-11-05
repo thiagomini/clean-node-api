@@ -8,6 +8,9 @@ export interface NonexistentSurveyErrorInput
 export class NonexistentSurveyError extends ContextError {
   constructor(errorInput: NonexistentSurveyErrorInput) {
     super({
+      context: {
+        surveyId: errorInput.context,
+      },
       ...errorInput,
       message: `Survey with id ${errorInput.surveyId} does not exist`,
       errorName: NonexistentSurveyError.name,
