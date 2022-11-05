@@ -1,5 +1,5 @@
 import { SurveySummaryModel } from '@/domain/models'
 
-export interface LoadSurveySummaryById {
+export interface LoadSurveySummaryByIdRepository {
   loadSummaryById(id: string): Promise<SurveySummaryModel>
 }

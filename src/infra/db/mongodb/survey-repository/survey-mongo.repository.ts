@@ -1,6 +1,6 @@
 import {
   AddSurveyRepository,
-  LoadSurveySummaryById,
+  LoadSurveySummaryByIdRepository,
 } from '@/data/protocols/db/survey-repository'
 import {
   AddSurveyInput,
@@ -43,7 +43,7 @@ export class SurveyMongoRepository
     AddSurveyRepository,
     LoadSurveysUseCase,
     FindSurveyByIdRepository,
-    LoadSurveySummaryById
+    LoadSurveySummaryByIdRepository
 {
   async loadSummaryById(id: string): Promise<SurveySummaryModel> {
     const existingSurvey = await this.findById(id)
