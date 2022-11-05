@@ -13,18 +13,30 @@ import {
 import { SurveySummaryModel } from '@/domain/models'
 import { LoadSurveysUseCase } from '@/domain/use-cases/survey/list-surveys'
 import { ObjectId } from 'mongodb'
-import {
-  getSurveyResultsCollection,
-  getSurveysCollection,
-  SurveysCollection,
-} from '../helpers/collections'
+import { getSurveysCollection, SurveysCollection } from '../helpers/collections'
 import { isInvalidIdError } from '../helpers/error-helper'
 import { addIdToDocument } from '../helpers/mongo-document-helper'
+import { SurveyResultSchema } from '../schemas'
 
 export type GroupedSurveyResults = Array<{
   _id: string
   numberOfAnswers: number
 }>
+
+export interface SurveysWithResultsCount {
+  _id: ObjectId
+  surveyId: ObjectId
+  question: string
+  answers: Array<{
+    image?: string
+    answer: string
+    count: number
+    percent: number
+  }>
+  createdAt: Date
+  totalAnswers: number
+  results: SurveyResultSchema[]
+}
 
 export class SurveyMongoRepository
   implements
@@ -40,67 +52,120 @@ export class SurveyMongoRepository
       throw new Error(`Survey ${id} does not exist`)
     }
 
-    const surveyAnswerToImageMap =
-      this.getSurveyAnswerToImageMap(existingSurvey)
-
-    const surveyResultsGroupedBySurvey =
-      await this.getSurveyResultsGroupedBySurvey()
-
-    const totalAnswers = this.getTotalNumberOfAnswersFor(
-      surveyResultsGroupedBySurvey
+    const surveysWithResultCount = await this.getSuveyResultsCountAndPercentage(
+      id
     )
 
     return {
-      surveyId: existingSurvey.id,
-      createdAt: existingSurvey.createdAt,
-      question: existingSurvey.question,
-      answers: surveyResultsGroupedBySurvey.map((resultsByAnswer) => ({
-        answer: resultsByAnswer._id,
-        count: resultsByAnswer.numberOfAnswers,
-        percent: (resultsByAnswer.numberOfAnswers / totalAnswers) * 100,
-        image: surveyAnswerToImageMap.get(resultsByAnswer._id),
-      })),
+      surveyId: surveysWithResultCount.surveyId.toString(),
+      createdAt: surveysWithResultCount.createdAt,
+      question: surveysWithResultCount.question,
+      answers: surveysWithResultCount.answers,
     }
   }
 
-  private getSurveyAnswerToImageMap(survey: SurveyModel): Map<string, string> {
-    const surveyAnswerToImageMap = new Map()
-
-    survey.answers.forEach((answer) => {
-      surveyAnswerToImageMap.set(answer.answer, answer.image)
-    })
-
-    return surveyAnswerToImageMap
-  }
-
-  private async getSurveyResultsGroupedBySurvey(): Promise<GroupedSurveyResults> {
-    const surveyResultsCollection = await getSurveyResultsCollection()
-    const surveyResultsGroupedBySurvey = (await surveyResultsCollection
+  private async getSuveyResultsCountAndPercentage(
+    surveyId: string
+  ): Promise<SurveysWithResultsCount> {
+    const surveyCollection = await this.getCollection()
+    const surveyResultsGroupedBySurvey = (await surveyCollection
       .aggregate([
         {
-          $group: {
-            _id: '$answer',
-            numberOfAnswers: {
-              $count: {},
+          $match: {
+            _id: new ObjectId(surveyId),
+          },
+        },
+        {
+          $lookup: {
+            from: 'surveyresults',
+            localField: '_id',
+            foreignField: 'surveyId',
+            as: 'results',
+          },
+        },
+        {
+          $addFields: {
+            totalAnswers: {
+              $size: '$results',
             },
           },
         },
+        {
+          $addFields: {
+            answers: {
+              $map: {
+                input: '$answers',
+                as: 'currentAnswer',
+                in: {
+                  $mergeObjects: [
+                    '$$currentAnswer',
+                    {
+                      count: {
+                        $size: {
+                          $filter: {
+                            input: '$results',
+                            as: 'result',
+                            cond: {
+                              $eq: [
+                                '$$result.answer',
+                                '$$currentAnswer.answer',
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+        {
+          $addFields: {
+            answers: {
+              $map: {
+                input: '$answers',
+                as: 'currentAnswer',
+                in: {
+                  $mergeObjects: [
+                    '$$currentAnswer',
+                    {
+                      percent: {
+                        $cond: {
+                          if: {
+                            $eq: ['$totalAnswers', 0],
+                          },
+                          then: 0,
+                          else: {
+                            $multiply: [
+                              100,
+                              {
+                                $divide: [
+                                  '$$currentAnswer.count',
+                                  '$totalAnswers',
+                                ],
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+        {
+          $addFields: {
+            surveyId: '$_id',
+          },
+        },
       ])
-      .toArray()) as Array<{
-      _id: string
-      numberOfAnswers: number
-    }>
+      .toArray()) as [SurveysWithResultsCount]
 
-    return surveyResultsGroupedBySurvey
-  }
-
-  private getTotalNumberOfAnswersFor(
-    surveyResultsGroupedBySurvey: GroupedSurveyResults
-  ): number {
-    return surveyResultsGroupedBySurvey.reduce(
-      (total, resultsByAnswer) => total + resultsByAnswer.numberOfAnswers,
-      0
-    )
+    return surveyResultsGroupedBySurvey[0]
   }
 
   async findById(id: string): Promise<Optional<SurveyModel>> {

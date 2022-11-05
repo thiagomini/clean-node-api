@@ -53,7 +53,7 @@ describe('SaveSurveyResultController', () => {
     expect(httpResponse).toEqual(
       notFound({
         cause: thrownError,
-        entityName: 'SurveyResult',
+        entityName: 'Survey',
         missingId: request.params?.surveyId,
       })
     )

@@ -172,6 +172,7 @@ describe('SurveyMongoRepository', () => {
         // Arrange
         const sut = await createSut()
         const existingSurvey = await mongoSurveyFactory.create()
+        const [firstAnswer, secondAnswer] = existingSurvey.answers
 
         // Act
         const surveySummary = await sut.loadSummaryById(
@@ -183,17 +184,30 @@ describe('SurveyMongoRepository', () => {
           surveyId: existingSurvey._id.toString(),
           question: existingSurvey.question,
           createdAt: existingSurvey.createdAt,
-          answers: [],
+          answers: [
+            {
+              answer: firstAnswer.answer,
+              image: firstAnswer.image,
+              count: 0,
+              percent: 0,
+            },
+            {
+              answer: secondAnswer.answer,
+              image: secondAnswer.image,
+              count: 0,
+              percent: 0,
+            },
+          ],
         })
       })
     })
 
     describe('when there is a single answer', () => {
-      it('should return a summary with one answer, count 1 and percent as 100', async () => {
+      it('should return a summary with one answer with count 1 and percent as 100, and the others with count 0 and percent 0', async () => {
         // Arrange
         const sut = await createSut()
         const existingSurvey = await mongoSurveyFactory.create()
-        const firstAnswer = existingSurvey.answers[0]
+        const [firstAnswer, secondAnswer] = existingSurvey.answers
 
         const singleAnswer = await surveyResultFactory.create({
           surveyId: existingSurvey._id,
@@ -217,6 +231,12 @@ describe('SurveyMongoRepository', () => {
               count: 1,
               percent: 100,
             },
+            {
+              answer: secondAnswer.answer,
+              image: secondAnswer.image,
+              count: 0,
+              percent: 0,
+            },
           ],
         })
       })
@@ -228,7 +248,7 @@ describe('SurveyMongoRepository', () => {
           // Arrange
           const sut = await createSut()
           const aSurvey = await mongoSurveyFactory.create()
-          const firstAnswer = aSurvey.answers[0]
+          const [firstAnswer, secondAnswer] = aSurvey.answers
 
           await Promise.all([
             surveyResultFactory.create({
@@ -257,6 +277,12 @@ describe('SurveyMongoRepository', () => {
                 image: firstAnswer.image,
                 count: 2,
                 percent: 100,
+              },
+              {
+                answer: secondAnswer.answer,
+                image: secondAnswer.image,
+                count: 0,
+                percent: 0,
               },
             ],
           })

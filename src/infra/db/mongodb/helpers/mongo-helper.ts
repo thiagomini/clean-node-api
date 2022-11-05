@@ -21,9 +21,7 @@ class MongoHelper {
       await this.connect(this.url)
     }
 
-    return (this.client as MongoClient)
-      .db(collectionName)
-      .collection<TModel>(collectionName)
+    return (this.client as MongoClient).db().collection<TModel>(collectionName)
   }
 }
 

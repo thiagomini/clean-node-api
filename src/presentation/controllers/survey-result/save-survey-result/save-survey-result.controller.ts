@@ -57,7 +57,7 @@ export class SaveSurveyResultController implements Controller {
     if (err instanceof NonexistentSurveyError) {
       return notFound({
         cause: err,
-        entityName: 'SurveyResult',
+        entityName: 'Survey',
         missingId: httpRequest.params?.surveyId,
       })
     }
