@@ -1,4 +1,4 @@
-import { SurveyModel } from '@/domain/models'
+import { SurveyModel, SurveySummaryModel } from '@/domain/models'
 import {
   AddSurveyInput,
   AddSurveyUseCase,
@@ -48,23 +48,25 @@ export const createLoadSurveysStub = (): LoadSurveysUseCase => {
 
 export const createLoadSurveySummaryStub = (): LoadSurveySummaryUseCase =>
   createMock<LoadSurveySummaryUseCase>({
-    load: async () => ({
-      surveyId: 'survey_id',
-      question: 'any_question',
-      createdAt: new Date(2022, 0, 1),
-      answers: [
-        {
-          answer: 'answer_1',
-          image: 'image_1',
-          count: 1,
-          percent: 50,
-        },
-        {
-          answer: 'answer_2',
-          image: 'image_2',
-          count: 1,
-          percent: 50,
-        },
-      ],
-    }),
+    load: async () => fakeSurveySummary(),
   })
+
+export const fakeSurveySummary = (): SurveySummaryModel => ({
+  surveyId: 'survey_id',
+  question: 'any_question',
+  createdAt: new Date(2022, 0, 1),
+  answers: [
+    {
+      answer: 'answer_1',
+      image: 'image_1',
+      count: 1,
+      percent: 50,
+    },
+    {
+      answer: 'answer_2',
+      image: 'image_2',
+      count: 1,
+      percent: 50,
+    },
+  ],
+})
