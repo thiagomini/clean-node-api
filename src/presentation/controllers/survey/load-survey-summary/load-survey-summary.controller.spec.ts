@@ -1,11 +1,15 @@
 import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
-import { createLoadSurveySummaryStub } from '../../../../domain/test'
+import {
+  createLoadSurveySummaryStub,
+  fakeSurveySummary,
+} from '../../../../domain/test'
 import { HttpRequest } from '@/presentation/protocols'
 import { LoadSurveySummaryController } from './load-survey-summary.controller'
 import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import {
   internalServerError,
   notFound,
+  ok,
 } from '../../../utils/http-responses-factories'
 
 describe('LoadSurveySummaryController', () => {
@@ -61,6 +65,15 @@ describe('LoadSurveySummaryController', () => {
         stack: stubbedError.stack,
       })
     )
+  })
+
+  it('should return a survey summary on success', async () => {
+    const { sut } = createSut()
+    const request = fakeRequest()
+
+    const response = await sut.handle(request)
+
+    expect(response).toEqual(ok(fakeSurveySummary()))
   })
 })
 

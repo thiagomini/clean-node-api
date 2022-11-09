@@ -18,7 +18,11 @@ export class LoadSurveySummaryController implements Controller {
 
   async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     try {
-      await this.loadSurveySummaryUseCase.load(httpRequest.params?.surveyId)
+      const surveySummary = await this.loadSurveySummaryUseCase.load(
+        httpRequest.params?.surveyId
+      )
+
+      return ok(surveySummary)
     } catch (error) {
       if (error instanceof NonexistentSurveyError) {
         return notFound({
@@ -30,7 +34,5 @@ export class LoadSurveySummaryController implements Controller {
 
       return internalServerError(error as Error)
     }
-
-    return ok({})
   }
 }
