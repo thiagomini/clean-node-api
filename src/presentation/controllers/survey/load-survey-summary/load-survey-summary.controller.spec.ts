@@ -1,16 +1,13 @@
-import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
 import {
-  createLoadSurveySummaryStub,
-  fakeSurveySummary,
-} from '../../../../domain/test'
-import { HttpRequest } from '@/presentation/protocols'
-import { LoadSurveySummaryController } from './load-survey-summary.controller'
-import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
-import {
+  HttpRequest,
   internalServerError,
+  LoadSurveySummaryUseCase,
+  NonexistentSurveyError,
   notFound,
   ok,
-} from '../../../utils/http-responses-factories'
+} from './load-survey-summary-controller.protocols'
+import { createLoadSurveySummaryStub, fakeSurveySummary } from '@/domain/test'
+import { LoadSurveySummaryController } from './load-survey-summary.controller'
 
 describe('LoadSurveySummaryController', () => {
   it('should call LoadSurveySummaryUseCase with the survey id', async () => {

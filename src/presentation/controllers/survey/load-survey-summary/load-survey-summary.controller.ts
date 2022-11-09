@@ -1,15 +1,13 @@
-import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
-import {
-  internalServerError,
-  notFound,
-  ok,
-} from '@/presentation/utils/http-responses-factories'
-import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import {
   Controller,
   HttpRequest,
   HttpResponse,
-} from '../add-survey/add-survey-controller.protocols'
+  internalServerError,
+  LoadSurveySummaryUseCase,
+  NonexistentSurveyError,
+  notFound,
+  ok,
+} from './load-survey-summary-controller.protocols'
 
 export class LoadSurveySummaryController implements Controller {
   constructor(
