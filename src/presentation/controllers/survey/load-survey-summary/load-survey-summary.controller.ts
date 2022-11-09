@@ -1,5 +1,6 @@
 import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
-import { ok } from '@/presentation/utils/http-responses-factories'
+import { notFound, ok } from '@/presentation/utils/http-responses-factories'
+import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import {
   Controller,
   HttpRequest,
@@ -12,7 +13,17 @@ export class LoadSurveySummaryController implements Controller {
   ) {}
 
   async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
-    await this.loadSurveySummaryUseCase.load(httpRequest.params?.surveyId)
+    try {
+      await this.loadSurveySummaryUseCase.load(httpRequest.params?.surveyId)
+    } catch (error) {
+      if (error instanceof NonexistentSurveyError) {
+        return notFound({
+          cause: error,
+          entityName: 'Survey',
+          missingId: httpRequest.params?.surveyId,
+        })
+      }
+    }
 
     return ok({})
   }
