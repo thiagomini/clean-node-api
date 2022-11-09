@@ -1,5 +1,9 @@
 import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
-import { notFound, ok } from '@/presentation/utils/http-responses-factories'
+import {
+  internalServerError,
+  notFound,
+  ok,
+} from '@/presentation/utils/http-responses-factories'
 import { NonexistentSurveyError } from '../../../../domain/use-cases/survey-result/save-survey-result/errors'
 import {
   Controller,
@@ -23,6 +27,8 @@ export class LoadSurveySummaryController implements Controller {
           missingId: httpRequest.params?.surveyId,
         })
       }
+
+      return internalServerError(error as Error)
     }
 
     return ok({})
