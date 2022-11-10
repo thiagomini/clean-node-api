@@ -9,9 +9,15 @@ import { HttpStatusCodes } from '@/presentation/protocols'
 import request from 'supertest'
 import app from '../config/app'
 import { AuthDSL } from '../dsl/auth/auth.dsl'
+import { SurveyDSL } from '../dsl/survey/survey.dsl'
 
 describe('survey routes', () => {
   const authDSL = AuthDSL.create()
+  let surveyDSL: SurveyDSL
+
+  beforeAll(async () => {
+    surveyDSL = await SurveyDSL.create()
+  })
 
   afterAll(async () => {
     await clearSurveysCollection()
@@ -141,6 +147,49 @@ describe('survey routes', () => {
 
       await request(app)
         .get('/api/surveys')
+        .set(AUTH_HEADER, accessToken)
+        .send()
+        .expect(HttpStatusCodes.OK)
+    })
+  })
+
+  describe('[GET] /surveys/{surveyId}/summary', () => {
+    it('should return 403 when user is not authenticated', async () => {
+      await request(app)
+        .get('/api/surveys/id/summary')
+        .send()
+        .expect(HttpStatusCodes.FORBIDDEN)
+    })
+
+    it('should return 403 when user token is invalid', async () => {
+      await request(app)
+        .get('/api/surveys/id/summary')
+        .set(AUTH_HEADER, 'invalid_token')
+        .expect(HttpStatusCodes.FORBIDDEN)
+    })
+
+    it('should return 200 when user is authenticated as an Admin', async () => {
+      const user = await authDSL.signupUser({
+        role: Role.Admin,
+      })
+      const accessToken = user.accessToken as string
+
+      await request(app)
+        .get('/api/surveys')
+        .set(AUTH_HEADER, accessToken)
+        .send()
+        .expect(HttpStatusCodes.OK)
+    })
+
+    it('should return 200 when user is authenticated as a normal User', async () => {
+      const surveyId = await surveyDSL.createSurvey()
+      const user = await authDSL.signupUser({
+        role: Role.User,
+      })
+      const accessToken = user.accessToken as string
+
+      await request(app)
+        .get(`/api/surveys/${surveyId}/summary`)
         .set(AUTH_HEADER, accessToken)
         .send()
         .expect(HttpStatusCodes.OK)
