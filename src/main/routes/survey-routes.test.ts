@@ -168,14 +168,28 @@ describe('survey routes', () => {
         .expect(HttpStatusCodes.FORBIDDEN)
     })
 
-    it('should return 200 when user is authenticated as an Admin', async () => {
+    it('should return 404 when user is authenticated but survey does not exist', async () => {
       const user = await authDSL.signupUser({
         role: Role.Admin,
       })
       const accessToken = user.accessToken as string
 
       await request(app)
-        .get('/api/surveys')
+        .get('/api/surveys/nonenxistentid/summary')
+        .set(AUTH_HEADER, accessToken)
+        .send()
+        .expect(HttpStatusCodes.NOT_FOUND)
+    })
+
+    it('should return 200 when user is authenticated as an Admin', async () => {
+      const surveyId = await surveyDSL.createSurvey()
+      const user = await authDSL.signupUser({
+        role: Role.Admin,
+      })
+      const accessToken = user.accessToken as string
+
+      await request(app)
+        .get(`/api/surveys/${surveyId}/summary`)
         .set(AUTH_HEADER, accessToken)
         .send()
         .expect(HttpStatusCodes.OK)
