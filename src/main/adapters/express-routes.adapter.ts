@@ -1,15 +1,17 @@
 import { Request, RequestHandler, Response } from 'express'
 import { Controller } from '@/presentation/protocols'
+import { RequestTransformer } from './request-transformer.interface'
+import { transformRequest } from './default-request-transformer'
 
-export const adaptRoute = (controller: Controller): RequestHandler => {
+export const adaptRoute = (
+  controller: Controller,
+  requestTransformer: RequestTransformer = transformRequest
+): RequestHandler => {
   return async (req: Request, res: Response) => {
-    const httpRequest = {
-      ...(req.body ?? {}),
-      ...(req.params ?? {}),
-      accountId: req.accountId,
-    }
+    const transformedRequest = requestTransformer(req)
+    transformedRequest.accountId = req.accountId
 
-    const response = await controller.handle(httpRequest)
+    const response = await controller.handle(transformedRequest)
 
     res.status(response.statusCode).json(response.body)
   }
