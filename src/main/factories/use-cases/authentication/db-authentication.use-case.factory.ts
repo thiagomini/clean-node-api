@@ -1,8 +1,8 @@
 import { DbAuthenticationUseCase } from '@/data/use-cases/authentication/db-authentication.use-case'
 import { Authentication } from '@/domain/use-cases/authentication'
 import { BCryptHasherAdapter, JwtEcnrypterAdapter } from '@/infra/cryptography'
-import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository/account-mongo.repository'
-import env from '../../../config/env'
+import { AccountMongoRepository } from '@/infra/db/mongodb/repositories'
+import env from '@/main/config/env'
 
 export const createDbAuthentication = (): Authentication => {
   const accountMongoRepository = new AccountMongoRepository()

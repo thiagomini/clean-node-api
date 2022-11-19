@@ -1,5 +1,5 @@
 import { Controller } from '@/presentation/protocols'
-import { SaveSurveyResultController } from '@/presentation/controllers/survey-result/save-survey-result/save-survey-result.controller'
+import { SaveSurveyResultController } from '@/presentation/controllers'
 import { decorateWithLogger } from '@/main/factories/decorators'
 import { createSaveSurveyResultUseCase } from '@/main/factories/use-cases/survey-result/save-survey-result/save-survey-result-use-case.factory'
 

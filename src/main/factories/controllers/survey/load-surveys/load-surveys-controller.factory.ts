@@ -1,7 +1,7 @@
-import { LoadSurveysController } from '@/presentation/controllers/survey/load-surveys/load-surveys-controller'
+import { LoadSurveysController } from '@/presentation/controllers'
 import { Controller } from '@/presentation/protocols'
-import { decorateWithLogger } from '../../../decorators'
-import { createLoadAccountUseCase } from '../../../use-cases'
+import { decorateWithLogger } from '@/main/factories/decorators'
+import { createLoadAccountUseCase } from '@/main/factories/use-cases'
 
 export const createLoadSurveysController = (): Controller => {
   const loadAccountUseCase = createLoadAccountUseCase()

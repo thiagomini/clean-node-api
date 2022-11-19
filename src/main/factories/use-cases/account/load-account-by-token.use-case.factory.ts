@@ -1,7 +1,7 @@
-import { DbLoadAccountByTokenUseCase } from '@/data/use-cases/account/load-account-by-token/db-load-account-by-token.use-case'
+import { DbLoadAccountByTokenUseCase } from '@/data/use-cases/account/load-account-by-token'
 import { JwtEcnrypterAdapter } from '@/infra/cryptography'
-import { AccountMongoRepository } from '@/infra/db/mongodb/account-repository/account-mongo.repository'
-import env from '../../../config/env'
+import { AccountMongoRepository } from '@/infra/db/mongodb/repositories'
+import env from '@/main/config/env'
 
 export const createDbLoadAccountByToken = (): DbLoadAccountByTokenUseCase => {
   const encrypter = new JwtEcnrypterAdapter(env.jwtSecret)

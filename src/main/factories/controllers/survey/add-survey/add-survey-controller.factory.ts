@@ -1,4 +1,4 @@
-import { AddSurveyController } from '@/presentation/controllers/survey/add-survey/add-survey.controller'
+import { AddSurveyController } from '@/presentation/controllers'
 import { Controller } from '@/presentation/protocols'
 import { decorateWithLogger } from '../../../decorators'
 import { createDbAddSurveyUseCase } from '../../../use-cases/survey'

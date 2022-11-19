@@ -9,12 +9,11 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
-    '!<rootDir>/src/main/**',
-    '!<rootDir>**/test/**',
+    '!<rootDir>/src/**/.interface.ts',
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/tests', '<rootDir>/src'],
   transform: {
     '.+\\.ts$': 'ts-jest',
   },

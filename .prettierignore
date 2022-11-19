@@ -4,3 +4,4 @@ node-modules
 .env
 data
 !src/data/
+!tests/data/

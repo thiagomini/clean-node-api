@@ -1,7 +1,7 @@
 import { Controller } from '@/presentation/protocols'
-import { LoadSurveySummaryController } from '../../../../../presentation/controllers/survey/load-survey-summary/load-survey-summary.controller'
-import { decorateWithLogger } from '../../../decorators'
-import { createLoadSurveySummaryUseCase } from '../../../use-cases'
+import { LoadSurveySummaryController } from '@/presentation/controllers'
+import { decorateWithLogger } from '@/main/factories/decorators'
+import { createLoadSurveySummaryUseCase } from '@/main/factories/use-cases'
 
 export const createLoadSurveySummaryController = (): Controller => {
   const loadSurveySummaryUseCase = createLoadSurveySummaryUseCase()

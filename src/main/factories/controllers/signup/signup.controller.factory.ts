@@ -1,8 +1,10 @@
-import { SignUpController } from '@/presentation/controllers/authentication/signup/signup.controller'
+import { SignUpController } from '@/presentation/controllers'
 import { Controller } from '@/presentation/protocols'
-import { decorateWithLogger } from '../../decorators'
-import { createDbAddAccount } from '../../use-cases'
-import { createDbAuthentication } from '../../use-cases/authentication'
+import { decorateWithLogger } from '@/main/factories/decorators'
+import {
+  createDbAddAccount,
+  createDbAuthentication,
+} from '@/main/factories/use-cases'
 import { createSignupValidation } from './signup-validation.factory'
 
 export const createSignupController = (): Controller => {

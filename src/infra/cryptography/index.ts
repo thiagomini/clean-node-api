@@ -1,2 +1,5 @@
 export * from './bcrypt-hasher.adapter'
 export * from './jwt-encrypter.adapter'
+export * from './hash-comparison.error'
+export * from './encryption.error'
+export * from './hashing.error'

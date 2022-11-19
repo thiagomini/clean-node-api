@@ -1,15 +1,9 @@
 import { Role } from '@/auth'
+import { LoadAccountByTokenUseCase } from '@/domain/use-cases/authentication'
+import { AccessDeniedException } from '@/presentation/errors'
+import { Middleware, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { internalServerError, forbidden, ok } from '@/presentation/utils'
 import { AUTH_HEADER } from './auth-header-key'
-import {
-  HttpRequest,
-  HttpResponse,
-  Middleware,
-  AccessDeniedException,
-  LoadAccountByTokenUseCase,
-  internalServerError,
-  forbidden,
-  ok,
-} from './auth.middleware.protocols'
 
 export class AuthMiddleware implements Middleware {
   constructor(
