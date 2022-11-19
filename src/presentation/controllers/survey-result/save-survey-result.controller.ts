@@ -1,39 +1,41 @@
+import { SaveSurveyResultUseCase } from '@/domain/use-cases/survey-result/save-survey-result'
 import {
   InvalidSurveyAnswerError,
   NonexistentAccountError,
   NonexistentSurveyError,
 } from '@/domain/use-cases/survey-result/save-survey-result/errors'
+import { Controller, HttpResponse } from '@/presentation/protocols'
 import {
   badRequest,
   internalServerError,
   noContent,
   notFound,
 } from '@/presentation/utils/http-responses-factories'
-import { SaveSurveyResultUseCase } from '@/domain/use-cases/survey-result/save-survey-result'
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
 
 export class SaveSurveyResultController implements Controller {
   constructor(
     private readonly saveSurveyResultUseCase: SaveSurveyResultUseCase
   ) {}
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(
+    request: SaveSurveyResultController.Request
+  ): Promise<HttpResponse> {
     try {
-      return await this.upsertSurveyResult(httpRequest)
+      return await this.upsertSurveyResult(request)
     } catch (err) {
-      return this.handleError(err as Error, httpRequest)
+      return this.handleError(err as Error, request)
     }
   }
 
   private async upsertSurveyResult(
-    httpRequest: HttpRequest
+    request: SaveSurveyResultController.Request
   ): Promise<HttpResponse> {
-    const { answer } = httpRequest.body
-    const { accountId } = httpRequest
-    const surveyId = httpRequest.params?.surveyId
+    const { answer } = request
+    const { accountId } = request
+    const surveyId = request.surveyId
 
     await this.saveSurveyResultUseCase.save({
-      accountId: accountId as string,
+      accountId: accountId,
       answer,
       surveyId,
     })
@@ -41,12 +43,15 @@ export class SaveSurveyResultController implements Controller {
     return noContent()
   }
 
-  private handleError(err: Error, httpRequest: HttpRequest): HttpResponse {
+  private handleError(
+    err: Error,
+    httpRequest: SaveSurveyResultController.Request
+  ): HttpResponse {
     if (err instanceof NonexistentAccountError) {
       return notFound({
         cause: err as Error,
         entityName: 'Account',
-        missingId: httpRequest.body?.accountId,
+        missingId: httpRequest.accountId,
       })
     }
 
@@ -54,7 +59,7 @@ export class SaveSurveyResultController implements Controller {
       return notFound({
         cause: err,
         entityName: 'Survey',
-        missingId: httpRequest.params?.surveyId,
+        missingId: httpRequest.surveyId,
       })
     }
 
@@ -63,5 +68,13 @@ export class SaveSurveyResultController implements Controller {
     }
 
     return internalServerError(err)
+  }
+}
+
+export namespace SaveSurveyResultController {
+  export interface Request {
+    accountId: string
+    answer: string
+    surveyId: string
   }
 }

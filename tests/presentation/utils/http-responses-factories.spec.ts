@@ -8,7 +8,7 @@ import {
   ok,
   unauthorized,
 } from '@/presentation/utils/http-responses-factories'
-import { HttpStatusCodes } from '@/presentation/protocols/http-status-codes'
+import { HttpStatusCodes } from '@/presentation/protocols/http-status-codes.enum'
 import { NotFoundError } from '@/presentation/errors/not-found.error'
 
 describe('http responses factories', () => {

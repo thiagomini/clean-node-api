@@ -1,4 +1,4 @@
-import { Validation } from '@/presentation/protocols/validation'
+import { Validation } from '@/presentation/protocols/validation.interface'
 import { ValidationComposite } from '@/validation/validators/validation-composite'
 import { ValidationError } from '@/validation/validators/validation.error'
 import { createValidationStub } from '../../presentation/mocks'

@@ -15,7 +15,7 @@ import {
   ExistingEmailException,
 } from '@/presentation/errors'
 import { createValidationStub, createAuthenticationStub } from '../mocks'
-import { HttpRequest, Validation } from '@/presentation/protocols'
+import { Validation } from '@/presentation/protocols'
 
 describe('SignupController', () => {
   it('should call AddAccountUseCase with correct values', async () => {
@@ -23,14 +23,14 @@ describe('SignupController', () => {
     const { sut, addAccountUseCase } = createSut()
     const addSpy = jest.spyOn(addAccountUseCase, 'findOrCreate')
 
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
     // Assert
     expect(addSpy).toHaveBeenCalledWith({
-      ...pick(httpRequest.body, 'name', 'email', 'password'),
+      ...pick(request, 'name', 'email', 'password'),
       role: Role.User,
     })
   })
@@ -39,10 +39,10 @@ describe('SignupController', () => {
     // Arrange
     const { sut, authenticationStub } = createSut()
     const authenticateSpy = jest.spyOn(authenticationStub, 'authenticate')
-    const httpRequest: HttpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
     // Assert
     expect(authenticateSpy).toHaveBeenCalledWith({
@@ -60,10 +60,10 @@ describe('SignupController', () => {
       throw errorThrown
     })
 
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(errorThrown))
@@ -80,10 +80,10 @@ describe('SignupController', () => {
         throw errorThrown
       })
 
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(errorThrown))
@@ -92,10 +92,10 @@ describe('SignupController', () => {
   it('should return OK (200) with user token if valid data is provided', async () => {
     // Arrange
     const { sut } = createSut()
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    const response = await sut.handle(httpRequest)
+    const response = await sut.handle(request)
 
     // Assert
     expect(response).toEqual(
@@ -110,13 +110,13 @@ describe('SignupController', () => {
     const { sut, validationStub } = createSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
 
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
     // Assert
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(request)
   })
 
   it('should return badRequest if Validation returns an error', async () => {
@@ -126,10 +126,10 @@ describe('SignupController', () => {
       .spyOn(validationStub, 'validate')
       .mockReturnValueOnce(new MissingParamException('any_field'))
 
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
 
     // Assert
     expect(httpResponse).toEqual(
@@ -145,10 +145,10 @@ describe('SignupController', () => {
       isNew: false,
     })
 
-    const httpRequest = createDefaultRequest()
+    const request = createDefaultRequest()
 
     // Act
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
 
     // Assert
     expect(httpResponse).toEqual(
@@ -181,24 +181,11 @@ const createSut = (): SutFactoryResponse => {
   }
 }
 
-type RequestBody = Partial<{
-  name: string
-  email: string
-  password: string
-  passwordConfirmation: string
-}>
-
-function createDefaultRequestBody(): RequestBody {
+function createDefaultRequest(): SignUpController.Request {
   return {
     name: 'any_namy',
     email: 'any_email@mail.com',
     password: 'any_password',
     passwordConfirmation: 'any_password',
-  }
-}
-
-function createDefaultRequest(): HttpRequest {
-  return {
-    body: createDefaultRequestBody(),
   }
 }

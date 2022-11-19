@@ -1,18 +1,17 @@
-import { createMock } from '@golevelup/ts-jest'
-import { SaveSurveyResultController } from '@/presentation/controllers'
 import {
-  NonexistentSurveyError,
-  NonexistentAccountError,
   InvalidSurveyAnswerError,
+  NonexistentAccountError,
+  NonexistentSurveyError,
   SaveSurveyResultUseCase,
 } from '@/domain/use-cases/survey-result/save-survey-result'
-import { HttpRequest } from '@/presentation/protocols'
+import { SaveSurveyResultController } from '@/presentation/controllers'
 import {
-  notFound,
   badRequest,
   internalServerError,
   noContent,
+  notFound,
 } from '@/presentation/utils'
+import { createMock } from '@golevelup/ts-jest'
 
 describe('SaveSurveyResultController', () => {
   it('should call SaveSurveyResultUseCase with correct values', async () => {
@@ -27,8 +26,8 @@ describe('SaveSurveyResultController', () => {
     // Assert
     expect(saveSpy).toHaveBeenCalledWith({
       accountId: request.accountId,
-      surveyId: request.params?.surveyId,
-      answer: request.body.answer,
+      surveyId: request.surveyId,
+      answer: request.answer,
     })
   })
 
@@ -37,7 +36,7 @@ describe('SaveSurveyResultController', () => {
     const { sut, saveSurveyResultUseCaseStub } = createSut()
     const request = fakeRequest()
     const thrownError = new NonexistentSurveyError({
-      surveyId: request.params?.surveyId,
+      surveyId: request.surveyId,
     })
 
     jest
@@ -52,7 +51,7 @@ describe('SaveSurveyResultController', () => {
       notFound({
         cause: thrownError,
         entityName: 'Survey',
-        missingId: request.params?.surveyId,
+        missingId: request.surveyId,
       })
     )
   })
@@ -62,7 +61,7 @@ describe('SaveSurveyResultController', () => {
     const { sut, saveSurveyResultUseCaseStub } = createSut()
     const request = fakeRequest()
     const thrownError = new NonexistentAccountError({
-      accountId: request.body?.accountId,
+      accountId: request.accountId,
     })
 
     jest
@@ -77,7 +76,7 @@ describe('SaveSurveyResultController', () => {
       notFound({
         cause: thrownError,
         entityName: 'Account',
-        missingId: request.body?.accountId,
+        missingId: request.accountId,
       })
     )
   })
@@ -87,7 +86,7 @@ describe('SaveSurveyResultController', () => {
     const { sut, saveSurveyResultUseCaseStub } = createSut()
     const request = fakeRequest()
     const thrownError = new InvalidSurveyAnswerError({
-      answer: request.body?.answer,
+      answer: request.answer,
       answers: [],
     })
 
@@ -147,12 +146,8 @@ const createSut = (): SutFactoryResponse => {
   }
 }
 
-const fakeRequest = (): HttpRequest => ({
-  params: {
-    surveyId: 'valid_survey_id',
-  },
-  body: {
-    answer: 'answer',
-  },
+const fakeRequest = (): SaveSurveyResultController.Request => ({
+  surveyId: 'valid_survey_id',
+  answer: 'answer',
   accountId: 'account_id',
 })

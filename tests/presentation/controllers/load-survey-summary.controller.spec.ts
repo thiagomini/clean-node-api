@@ -1,12 +1,11 @@
-import { LoadSurveySummaryController } from '@/presentation/controllers'
-import {
-  fakeSurveySummary,
-  createLoadSurveySummaryStub,
-} from '../../domain/mocks'
 import { NonexistentSurveyError } from '@/domain/use-cases/survey-result/save-survey-result'
 import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
-import { HttpRequest } from '@/presentation/protocols'
-import { notFound, internalServerError, ok } from '@/presentation/utils'
+import { LoadSurveySummaryController } from '@/presentation/controllers'
+import { internalServerError, notFound, ok } from '@/presentation/utils'
+import {
+  createLoadSurveySummaryStub,
+  fakeSurveySummary,
+} from '../../domain/mocks'
 
 describe('LoadSurveySummaryController', () => {
   it('should call LoadSurveySummaryUseCase with the survey id', async () => {
@@ -16,14 +15,14 @@ describe('LoadSurveySummaryController', () => {
     await sut.handle(request)
 
     expect(loadSurveySummaryUseCaseStub.load).toHaveBeenCalledWith(
-      request.params?.surveyId
+      request.surveyId
     )
   })
 
   it('should return notFoundError if LoadSurveySummaryUseCase throws a SurveyNotFoundError', async () => {
     const { sut, loadSurveySummaryUseCaseStub } = createSut()
     const request = fakeRequest()
-    const surveyId = request.params?.surveyId
+    const surveyId = request.surveyId
 
     jest.spyOn(loadSurveySummaryUseCaseStub, 'load').mockRejectedValueOnce(
       new NonexistentSurveyError({
@@ -88,8 +87,6 @@ const createSut = (): SutFactoryResponse => {
   }
 }
 
-const fakeRequest = (): HttpRequest => ({
-  params: {
-    surveyId: 'survey_id',
-  },
+const fakeRequest = (): LoadSurveySummaryController.Request => ({
+  surveyId: 'survey_id',
 })

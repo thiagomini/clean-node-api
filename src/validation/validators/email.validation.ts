@@ -1,7 +1,7 @@
 import { Optional } from '@/utils'
 import { EmailValidator } from '../protocols'
 import { EmailValidationError } from './email-validation.error'
-import { Validation } from '../../presentation/protocols/validation'
+import { Validation } from '../../presentation/protocols/validation.interface'
 import { InvalidParamException } from '../../presentation/errors'
 
 export class EmailValidation implements Validation {

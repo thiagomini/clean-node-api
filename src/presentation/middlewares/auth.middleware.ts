@@ -1,9 +1,8 @@
 import { Role } from '@/auth'
 import { LoadAccountByTokenUseCase } from '@/domain/use-cases/authentication'
 import { AccessDeniedException } from '@/presentation/errors'
-import { Middleware, HttpRequest, HttpResponse } from '@/presentation/protocols'
-import { internalServerError, forbidden, ok } from '@/presentation/utils'
-import { AUTH_HEADER } from './auth-header-key'
+import { HttpResponse, Middleware } from '@/presentation/protocols'
+import { forbidden, internalServerError, ok } from '@/presentation/utils'
 
 export class AuthMiddleware implements Middleware {
   constructor(
@@ -11,18 +10,18 @@ export class AuthMiddleware implements Middleware {
     private readonly role?: Role
   ) {}
 
-  async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
+  async handle(request: AuthMiddleware.Request): Promise<HttpResponse> {
     try {
-      return await this.verifyAccessTokenFrom(httpRequest)
+      return await this.verifyAccessTokenFrom(request)
     } catch (error) {
       return internalServerError(error as Error)
     }
   }
 
   private async verifyAccessTokenFrom(
-    httpRequest: HttpRequest
+    request: AuthMiddleware.Request
   ): Promise<HttpResponse> {
-    const accessToken = httpRequest?.headers?.[AUTH_HEADER]
+    const accessToken = request.accessToken
 
     if (!accessToken) {
       return forbidden(new AccessDeniedException())
@@ -39,5 +38,11 @@ export class AuthMiddleware implements Middleware {
     }
 
     return forbidden(new AccessDeniedException())
+  }
+}
+
+export namespace AuthMiddleware {
+  export interface Request {
+    accessToken?: string
   }
 }

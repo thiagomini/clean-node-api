@@ -2,7 +2,6 @@ import { Role } from '@/auth'
 import { Optional } from '@/utils'
 import { fakeAccount } from '../../domain/mocks'
 import { AccessDeniedException } from '@/presentation/errors'
-import { HttpRequest } from '@/presentation/protocols'
 import { AuthMiddleware } from '@/presentation/middlewares'
 import { AccountModel } from '@/domain/models'
 import { LoadAccountByTokenUseCase } from '@/domain/use-cases/authentication'
@@ -13,10 +12,10 @@ describe('AuthMiddleware', () => {
     it('should return 403 if no x-access-token header is provided', async () => {
       // Arrange
       const { sut } = createSut()
-      const httpRequest: HttpRequest = {}
+      const request = {}
 
       // Act
-      const response = await sut.handle(httpRequest)
+      const response = await sut.handle(request)
 
       // Assert
       expect(response).toEqual(forbidden(new AccessDeniedException()))
@@ -25,11 +24,11 @@ describe('AuthMiddleware', () => {
     it('should call loadAccountByToken with correct values', async () => {
       // Arrange
       const { sut, loadAccountByTokenStub } = createSut(Role.Admin)
-      const httpRequest = createFakeRequest()
+      const request = createFakeRequest()
       const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
 
       // Act
-      await sut.handle(httpRequest)
+      await sut.handle(request)
 
       // Assert
       expect(loadSpy).toHaveBeenCalledWith('any_token', Role.Admin)
@@ -41,10 +40,10 @@ describe('AuthMiddleware', () => {
       jest
         .spyOn(loadAccountByTokenStub, 'load')
         .mockResolvedValueOnce(undefined)
-      const httpRequest = createFakeRequest()
+      const request = createFakeRequest()
 
       // Act
-      const response = await sut.handle(httpRequest)
+      const response = await sut.handle(request)
 
       // Assert
       expect(response).toEqual(forbidden(new AccessDeniedException()))
@@ -53,10 +52,10 @@ describe('AuthMiddleware', () => {
     it('should return 200 with account id if token is valid and user exists', async () => {
       // Arrange
       const { sut } = createSut()
-      const httpRequest = createFakeRequest()
+      const request = createFakeRequest()
 
       // Act
-      const response = await sut.handle(httpRequest)
+      const response = await sut.handle(request)
 
       // Assert
       const accountId = fakeAccount().id
@@ -73,10 +72,10 @@ describe('AuthMiddleware', () => {
       jest
         .spyOn(loadAccountByTokenStub, 'load')
         .mockRejectedValueOnce(new Error())
-      const httpRequest = createFakeRequest()
+      const request = createFakeRequest()
 
       // Act
-      const response = await sut.handle(httpRequest)
+      const response = await sut.handle(request)
 
       // Assert
       expect(response).toEqual(internalServerError(new Error()))
@@ -109,8 +108,6 @@ const createLoadAccountByTokenStub = (): LoadAccountByTokenUseCase => {
   return loadAccountByTokenStub
 }
 
-const createFakeRequest = (): HttpRequest => ({
-  headers: {
-    'x-access-token': 'any_token',
-  },
+const createFakeRequest = (): AuthMiddleware.Request => ({
+  accessToken: 'any_token',
 })

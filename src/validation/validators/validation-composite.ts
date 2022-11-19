@@ -1,5 +1,5 @@
 import { Optional } from '@/utils'
-import { Validation } from '@/presentation/protocols/validation'
+import { Validation } from '@/presentation/protocols/validation.interface'
 import { ValidationError } from './validation.error'
 
 export class ValidationComposite implements Validation {

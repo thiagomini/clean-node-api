@@ -1,10 +1,5 @@
 import { AddSurveyUseCase } from '@/domain/use-cases/survey/add-survey'
-import {
-  Controller,
-  Validation,
-  HttpRequest,
-  HttpResponse,
-} from '@/presentation/protocols'
+import { Controller, Validation, HttpResponse } from '@/presentation/protocols'
 import {
   badRequest,
   internalServerError,
@@ -17,22 +12,24 @@ export class AddSurveyController implements Controller {
     private readonly addSurveyUseCase: AddSurveyUseCase
   ) {}
 
-  async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
+  async handle(request: AddSurveyController.Request): Promise<HttpResponse> {
     try {
-      return await this.createSurvey(httpRequest)
+      return await this.createSurvey(request)
     } catch (err) {
       return internalServerError(err as Error)
     }
   }
 
-  private async createSurvey(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const errorOrUndefined = this.validation.validate(httpRequest.body)
+  private async createSurvey(
+    request: AddSurveyController.Request
+  ): Promise<HttpResponse> {
+    const errorOrUndefined = this.validation.validate(request)
 
     if (errorOrUndefined) {
       return badRequest(errorOrUndefined)
     }
 
-    const { question, answers } = httpRequest.body
+    const { question, answers } = request
 
     await this.addSurveyUseCase.add({
       question,
@@ -40,5 +37,17 @@ export class AddSurveyController implements Controller {
     })
 
     return noContent()
+  }
+}
+
+export namespace AddSurveyController {
+  export interface Request {
+    question: string
+    answers: Answer[]
+  }
+
+  interface Answer {
+    image?: string
+    answer: string
   }
 }

@@ -1,10 +1,12 @@
-import { HttpRequest, Middleware } from '@/presentation/protocols'
+import { Middleware } from '@/presentation/protocols'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+import { AUTH_HEADER } from '../../presentation/middlewares'
 
 export const adaptMiddleware = (middleware: Middleware): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const httpRequest: HttpRequest = {
-      headers: req.headers,
+    const httpRequest = {
+      accessToken: req.headers?.[AUTH_HEADER],
+      ...(req.headers ?? {}),
     }
 
     const response = await middleware.handle(httpRequest)

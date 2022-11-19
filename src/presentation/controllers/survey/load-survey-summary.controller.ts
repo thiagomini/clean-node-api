@@ -1,10 +1,10 @@
 import { NonexistentSurveyError } from '@/domain/use-cases/survey-result/save-survey-result'
 import { LoadSurveySummaryUseCase } from '@/domain/use-cases/survey/load-survey-summary'
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { Controller, HttpResponse } from '@/presentation/protocols'
 import {
-  ok,
-  notFound,
   internalServerError,
+  notFound,
+  ok,
 } from '@/presentation/utils/http-responses-factories'
 
 export class LoadSurveySummaryController implements Controller {
@@ -12,10 +12,12 @@ export class LoadSurveySummaryController implements Controller {
     private readonly loadSurveySummaryUseCase: LoadSurveySummaryUseCase
   ) {}
 
-  async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
+  async handle(
+    request: LoadSurveySummaryController.Request
+  ): Promise<HttpResponse> {
     try {
       const surveySummary = await this.loadSurveySummaryUseCase.load(
-        httpRequest.params?.surveyId
+        request.surveyId
       )
 
       return ok(surveySummary)
@@ -24,11 +26,17 @@ export class LoadSurveySummaryController implements Controller {
         return notFound({
           cause: error,
           entityName: 'Survey',
-          missingId: httpRequest.params?.surveyId,
+          missingId: request.surveyId,
         })
       }
 
       return internalServerError(error as Error)
     }
+  }
+}
+
+export namespace LoadSurveySummaryController {
+  export interface Request {
+    surveyId: string
   }
 }

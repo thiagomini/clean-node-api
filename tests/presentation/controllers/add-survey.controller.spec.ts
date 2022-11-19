@@ -3,7 +3,7 @@ import {
   internalServerError,
   noContent,
 } from '@/presentation/utils'
-import { HttpRequest, Validation } from '@/presentation/protocols'
+import { Validation } from '@/presentation/protocols'
 import { AddSurveyController } from '@/presentation/controllers'
 import { AddSurveyUseCase } from '@/domain/use-cases/survey/add-survey'
 import { createAddSurveyStub } from '../../domain/mocks'
@@ -13,23 +13,23 @@ describe('AddSurveyController', () => {
     // Arrange
     const { validationStub, sut } = createSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
-    const httpRequest = createFakeRequest()
+    const request = createFakeRequest()
 
     // Act
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
     // Assert
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(validateSpy).toHaveBeenCalledWith(request)
   })
 
   it('should return 400 if validation fails', async () => {
     // Arrange
     const { validationStub, sut } = createSut()
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
-    const httpRequest = createFakeRequest()
+    const request = createFakeRequest()
 
     // Act
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
 
     // Assert
     expect(httpResponse).toEqual(badRequest(new Error()))
@@ -39,23 +39,23 @@ describe('AddSurveyController', () => {
     // Arrange
     const { sut, addSurveyStub } = createSut()
     const addSpy = jest.spyOn(addSurveyStub, 'add')
-    const httpRequest = createFakeRequest()
+    const request = createFakeRequest()
 
     // Act
-    await sut.handle(httpRequest)
+    await sut.handle(request)
 
     // Assert
-    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+    expect(addSpy).toHaveBeenCalledWith(request)
   })
 
   it('should return 500 if AddSurveyUseCase fails', async () => {
     // Arrange
     const { addSurveyStub, sut } = createSut()
     jest.spyOn(addSurveyStub, 'add').mockRejectedValueOnce(new Error())
-    const httpRequest = createFakeRequest()
+    const request = createFakeRequest()
 
     // Act
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
 
     // Assert
     expect(httpResponse).toEqual(internalServerError(new Error()))
@@ -88,14 +88,12 @@ const createSut = (): SutFactoryResponse => {
   }
 }
 
-const createFakeRequest = (): HttpRequest => ({
-  body: {
-    question: 'any_question',
-    answers: [
-      {
-        image: 'any_image',
-        answer: 'any_answer',
-      },
-    ],
-  },
+const createFakeRequest = (): AddSurveyController.Request => ({
+  question: 'any_question',
+  answers: [
+    {
+      image: 'any_image',
+      answer: 'any_answer',
+    },
+  ],
 })

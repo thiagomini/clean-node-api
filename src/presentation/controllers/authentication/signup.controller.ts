@@ -1,19 +1,14 @@
-import { Authentication } from '@/domain/use-cases/authentication'
 import { Role } from '@/auth'
+import { AddAccountUseCase } from '@/domain/use-cases/account/add-account'
+import { Authentication } from '@/domain/use-cases/authentication'
 import { ExistingEmailException } from '@/presentation/errors'
+import { Controller, HttpResponse, Validation } from '@/presentation/protocols'
 import {
   badRequest,
   forbidden,
   internalServerError,
   ok,
 } from '@/presentation/utils/http-responses-factories'
-import { AddAccountUseCase } from '@/domain/use-cases/account/add-account'
-import {
-  Controller,
-  Validation,
-  HttpRequest,
-  HttpResponse,
-} from '@/presentation/protocols'
 
 export class SignUpController implements Controller {
   constructor(
@@ -22,24 +17,25 @@ export class SignUpController implements Controller {
     private readonly authentication: Authentication
   ) {}
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(request: SignUpController.Request): Promise<HttpResponse> {
     try {
-      return await this.signUp(httpRequest)
+      return await this.signUp(request)
     } catch (error) {
       console.error(error)
       return internalServerError(error as Error)
     }
   }
 
-  private async signUp(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { body } = httpRequest
-    const errorOrUndefined = this.validation.validate(body)
+  private async signUp(
+    request: SignUpController.Request
+  ): Promise<HttpResponse> {
+    const errorOrUndefined = this.validation.validate(request)
 
     if (errorOrUndefined) {
       return badRequest(errorOrUndefined)
     }
 
-    const { name, password, email } = body
+    const { name, password, email } = request
 
     const account = await this.addAccountUseCase.findOrCreate({
       name,
@@ -58,5 +54,14 @@ export class SignUpController implements Controller {
     })
 
     return ok({ accessToken })
+  }
+}
+
+export namespace SignUpController {
+  export interface Request {
+    name: string
+    password: string
+    email: string
+    passwordConfirmation: string
   }
 }
