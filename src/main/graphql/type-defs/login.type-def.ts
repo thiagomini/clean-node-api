@@ -14,3 +14,10 @@ export default gql`
     password: String!
   }
 `
+
+export interface LoginArgs {
+  loginInput: {
+    email: string
+    password: string
+  }
+}
