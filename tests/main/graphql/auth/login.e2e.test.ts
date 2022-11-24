@@ -44,6 +44,7 @@ describe('login e2e', () => {
       .send(queryData)
       .expect(HttpStatusCodes.OK)
 
+    expect(response.body.errors).toBeUndefined()
     expect(response.body).toMatchObject({
       data: {
         login: {

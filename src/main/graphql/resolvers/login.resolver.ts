@@ -1,14 +1,10 @@
+import { adaptResolver } from '../../adapters/apollo-server-resolver.adapter'
 import { createLoginController } from '../../factories'
-import { LoginArgs } from '../type-defs/login.type-def'
+import { LoginArgs, LoginInput } from '../type-defs/login.type-def'
 
 export default {
   Query: {
-    async login(_parent: never, args: LoginArgs) {
-      const loginController = createLoginController()
-
-      const httpResponse = await loginController.handle(args.loginInput)
-
-      return httpResponse.body
-    },
+    login: async (_parent: never, args: LoginArgs) =>
+      await adaptResolver<LoginInput>(createLoginController(), args.loginInput),
   },
 }

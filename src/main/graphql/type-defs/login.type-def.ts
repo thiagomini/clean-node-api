@@ -16,8 +16,10 @@ export default gql`
 `
 
 export interface LoginArgs {
-  loginInput: {
-    email: string
-    password: string
-  }
+  loginInput: LoginInput
+}
+
+export interface LoginInput {
+  email: string
+  password: string
 }
