@@ -6,18 +6,12 @@ import {
 } from '@/infra/db/mongodb/helpers'
 import { AuthDSL } from '../../dsl/auth/auth.dsl'
 import { HttpStatusCodes } from '@/presentation/protocols'
+import { QueryBuilder } from '../query.builder'
 
 describe('login e2e', () => {
   const authDSL = AuthDSL.create()
 
-  const queryData = {
-    query: `query loginUser($loginInput: LoginInput!) {
-      login(loginInput: $loginInput) { 
-        accessToken
-      }
-    }`,
-    variables: {},
-  }
+  const queryBuilder = new QueryBuilder()
 
   beforeEach(async () => {
     await clearAccountsCollection()
@@ -32,12 +26,10 @@ describe('login e2e', () => {
       password: '123',
     })
 
-    queryData.variables = {
-      loginInput: {
-        email: existingUser.email,
-        password: '123',
-      },
-    }
+    const queryData = queryBuilder.loginUser({
+      email: existingUser.email,
+      password: '123',
+    })
 
     const response = await request(app)
       .post('/graphql')
