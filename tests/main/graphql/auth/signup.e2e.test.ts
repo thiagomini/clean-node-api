@@ -10,7 +10,7 @@ import { MutationBuilder } from '../mutation-builder'
 describe('signup e2e', () => {
   const mutationBuilder = new MutationBuilder()
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await clearAccountsCollection()
   })
 

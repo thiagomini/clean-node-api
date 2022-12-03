@@ -13,7 +13,7 @@ describe('login e2e', () => {
 
   const queryBuilder = new QueryBuilder()
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await clearAccountsCollection()
   })
 

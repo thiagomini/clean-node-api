@@ -16,4 +16,22 @@ export class QueryBuilder {
 
     return queryData
   }
+
+  public surveys(): GqlHttpRequest {
+    const queryData = {
+      query: `query Surveys {
+        surveys { 
+          id
+          question
+          answers {
+            image
+            answer
+          },
+          createdAt
+        }
+      }`,
+    }
+
+    return queryData
+  }
 }
