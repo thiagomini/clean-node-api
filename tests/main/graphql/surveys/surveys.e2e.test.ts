@@ -38,6 +38,7 @@ describe('surveys e2e', () => {
         surveys: [
           {
             id: existingSurveyId,
+            createdAt: expect.any(String),
           },
         ],
       },
