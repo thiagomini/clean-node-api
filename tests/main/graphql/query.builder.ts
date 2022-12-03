@@ -34,4 +34,27 @@ export class QueryBuilder {
 
     return queryData
   }
+
+  public surveySummary(surveyId: string): GqlHttpRequest {
+    const queryData = {
+      query: `query loginUser($surveyId: String!) {
+        surveySummary(surveyId: $surveyId) { 
+          surveyId
+          question
+          answers {
+            image
+            answer
+            count
+            percent
+          }
+          createdAt
+        }
+      }`,
+      variables: {
+        surveyId,
+      },
+    }
+
+    return queryData
+  }
 }
