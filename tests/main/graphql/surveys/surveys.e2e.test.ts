@@ -43,4 +43,20 @@ describe('surveys e2e', () => {
       },
     })
   })
+
+  it('should return an empty array when there are no surveys', async () => {
+    const queryData = queryBuilder.surveys()
+
+    const response = await request(app)
+      .post('/graphql')
+      .send(queryData)
+      .expect(HttpStatusCodes.OK)
+
+    expect(response.body.errors).toBeUndefined()
+    expect(response.body).toMatchObject({
+      data: {
+        surveys: [],
+      },
+    })
+  })
 })
