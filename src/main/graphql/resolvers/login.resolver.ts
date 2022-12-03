@@ -10,14 +10,17 @@ import {
 export default {
   Query: {
     login: async (_parent: never, args: LoginArgs) =>
-      await adaptResolver<LoginInput>(createLoginController(), args.loginInput),
+      await adaptResolver<LoginInput>({
+        controller: createLoginController(),
+        input: args.loginInput,
+      }),
   },
 
   Mutation: {
     signUp: async (_parent: never, args: SignUpArgs) =>
-      await adaptResolver<SignUpInput>(
-        createSignupController(),
-        args.signupInput
-      ),
+      await adaptResolver<SignUpInput>({
+        controller: createSignupController(),
+        input: args.signupInput,
+      }),
   },
 }

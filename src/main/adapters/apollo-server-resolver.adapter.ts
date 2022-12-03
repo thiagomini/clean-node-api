@@ -1,10 +1,16 @@
 import { Controller } from '@/presentation/protocols'
 
-export const adaptResolver = async <TInput = Record<string, unknown>>(
-  controller: Controller,
-  input?: TInput,
+export interface AdaptResolverOptions<TInput = Record<string, unknown>> {
+  controller: Controller
+  input?: TInput
   attributeToReturn?: string
-): Promise<unknown> => {
+}
+
+export const adaptResolver = async <TInput = Record<string, unknown>>({
+  controller,
+  attributeToReturn,
+  input,
+}: AdaptResolverOptions<TInput>): Promise<unknown> => {
   const response = await controller.handle(input)
 
   if (attributeToReturn) {
