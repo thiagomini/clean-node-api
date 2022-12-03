@@ -21,4 +21,5 @@ module.exports = {
     // RegExp used to map any module like @/domain to the actual file under src/domain.
     '@/(.*)': '<rootDir>/src/$1',
   },
+  setupFilesAfterEnv: ['jest-extended/all'],
 }

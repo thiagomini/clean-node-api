@@ -12,5 +12,6 @@
       "@/*": ["*"]
     }
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
+  "files": ["tests/global.d.ts"]
 }

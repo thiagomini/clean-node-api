@@ -1,6 +1,7 @@
 import { clearSurveysCollection, mongoHelper } from '@/infra/db/mongodb/helpers'
 import app from '@/main/config/app'
 import { HttpStatusCodes } from '@/presentation/protocols'
+import validator from 'validator'
 import request from 'supertest'
 import { SurveyDSL } from '../../dsl/survey/survey.dsl'
 import { QueryBuilder } from '../query.builder'
@@ -23,14 +24,19 @@ describe('surveys e2e', () => {
   })
 
   it('should return a list of surveys on success', async () => {
+    // Arrange
     const existingSurveyId = await surveyDSL.createSurvey()
-
     const queryData = queryBuilder.surveys()
 
+    // Act
     const response = await request(app)
       .post('/graphql')
       .send(queryData)
       .expect(HttpStatusCodes.OK)
+
+    // Assert
+    const isIsoDate = (string: string): boolean =>
+      validator.isISO8601(string, { strict: true, strictSeparator: true })
 
     expect(response.body.errors).toBeUndefined()
     expect(response.body).toMatchObject({
@@ -38,7 +44,7 @@ describe('surveys e2e', () => {
         surveys: [
           {
             id: existingSurveyId,
-            createdAt: expect.any(String),
+            createdAt: expect.toSatisfy(isIsoDate),
           },
         ],
       },
