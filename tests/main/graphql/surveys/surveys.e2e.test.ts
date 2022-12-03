@@ -1,26 +1,62 @@
-import { clearSurveysCollection, mongoHelper } from '@/infra/db/mongodb/helpers'
+import {
+  clearAccountsCollection,
+  clearSurveysCollection,
+  mongoHelper,
+} from '@/infra/db/mongodb/helpers'
 import app from '@/main/config/app'
 import { HttpStatusCodes } from '@/presentation/protocols'
 import validator from 'validator'
 import request from 'supertest'
 import { SurveyDSL } from '../../dsl/survey/survey.dsl'
 import { QueryBuilder } from '../query.builder'
+import { AuthDSL } from '../../dsl/auth/auth.dsl'
+import { AUTH_HEADER } from '@/presentation/middlewares'
 
 describe('surveys e2e', () => {
   const queryBuilder = new QueryBuilder()
+  const authDSL = AuthDSL.create()
   let surveyDSL: SurveyDSL
+
+  let authenticatedUserToken: string
 
   beforeAll(async () => {
     surveyDSL = await SurveyDSL.create()
     await clearSurveysCollection()
   })
 
+  beforeEach(async () => {
+    authenticatedUserToken = (await authDSL.signupUser()).accessToken as string
+  })
+
   afterEach(async () => {
     await clearSurveysCollection()
+    await clearAccountsCollection()
   })
 
   afterAll(async () => {
     await mongoHelper.disconnect()
+  })
+
+  it('should throw an error when the user is not authenticated', async () => {
+    // Arrange
+    const queryData = queryBuilder.surveys()
+
+    // Act
+    const response = await request(app)
+      .post('/graphql')
+      .send(queryData)
+      .expect(HttpStatusCodes.OK)
+
+    // Assert
+    expect(response.body.errors).toMatchObject([
+      {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+        message: 'Access denied',
+      },
+    ])
+    expect(response.body.data).toBeNull()
   })
 
   it('should return a list of surveys on success', async () => {
@@ -31,6 +67,7 @@ describe('surveys e2e', () => {
     // Act
     const response = await request(app)
       .post('/graphql')
+      .set(AUTH_HEADER, authenticatedUserToken)
       .send(queryData)
       .expect(HttpStatusCodes.OK)
 
@@ -56,6 +93,7 @@ describe('surveys e2e', () => {
 
     const response = await request(app)
       .post('/graphql')
+      .set(AUTH_HEADER, authenticatedUserToken)
       .send(queryData)
       .expect(HttpStatusCodes.OK)
 
